@@ -57,9 +57,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\jonat\\Desktop\\PROJECTS\\PaintProject\\Shared Models\\Shared Models.csproj",
-      "projectName": "Shared Models",
-      "projectPath": "C:\\Users\\jonat\\Desktop\\PROJECTS\\PaintProject\\Shared Models\\Shared Models.csproj",
+      "projectUniqueName": "C:\\Users\\jonat\\Desktop\\PROJECTS\\PaintProject\\Shared Models\\Shared.csproj",
+      "projectName": "Shared",
+      "projectPath": "C:\\Users\\jonat\\Desktop\\PROJECTS\\PaintProject\\Shared Models\\Shared.csproj",
       "packagesPath": "C:\\Users\\jonat\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\jonat\\Desktop\\PROJECTS\\PaintProject\\Shared Models\\obj\\",
       "projectStyle": "PackageReference",

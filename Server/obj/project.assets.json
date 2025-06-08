@@ -183,17 +183,17 @@
           "lib/net5.0/ZstdSharp.dll": {}
         }
       },
-      "Shared Models/1.0.0": {
+      "Shared/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v5.0",
         "dependencies": {
           "Newtonsoft.Json": "13.0.3"
         },
         "compile": {
-          "bin/placeholder/Shared Models.dll": {}
+          "bin/placeholder/Shared.dll": {}
         },
         "runtime": {
-          "bin/placeholder/Shared Models.dll": {}
+          "bin/placeholder/Shared.dll": {}
         }
       }
     }
@@ -608,17 +608,17 @@
         "zstdsharp.port.nuspec"
       ]
     },
-    "Shared Models/1.0.0": {
+    "Shared/1.0.0": {
       "type": "project",
-      "path": "../Shared Models/Shared Models.csproj",
-      "msbuildProject": "../Shared Models/Shared Models.csproj"
+      "path": "../Shared Models/Shared.csproj",
+      "msbuildProject": "../Shared Models/Shared.csproj"
     }
   },
   "projectFileDependencyGroups": {
     "net5.0": [
       "MongoDB.Driver >= 3.4.0",
       "Newtonsoft.Json >= 13.0.3",
-      "Shared Models >= 1.0.0"
+      "Shared >= 1.0.0"
     ]
   },
   "packageFolders": {
@@ -653,8 +653,8 @@
         "net5.0": {
           "targetAlias": "net5.0",
           "projectReferences": {
-            "C:\\Users\\jonat\\Desktop\\PROJECTS\\PaintProject\\Shared Models\\Shared Models.csproj": {
-              "projectPath": "C:\\Users\\jonat\\Desktop\\PROJECTS\\PaintProject\\Shared Models\\Shared Models.csproj"
+            "C:\\Users\\jonat\\Desktop\\PROJECTS\\PaintProject\\Shared Models\\Shared.csproj": {
+              "projectPath": "C:\\Users\\jonat\\Desktop\\PROJECTS\\PaintProject\\Shared Models\\Shared.csproj"
             }
           }
         }

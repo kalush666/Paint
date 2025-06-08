@@ -2,7 +2,7 @@
 
 namespace Shared_Models
 {
-    public class Class1
+    public class Shared
     {
     }
 }
