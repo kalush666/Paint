@@ -11,7 +11,5 @@ namespace Shared_Models.Models
         public Position Position { get; set; }
 
         public abstract string shapeType { get; }
-
-
     }
 }

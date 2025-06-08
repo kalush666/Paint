@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using Shared_Models.Models;
 using Newtonsoft.Json;
+using Server;
 
 namespace PainterServer.Services
 {
@@ -15,8 +16,8 @@ namespace PainterServer.Services
         private readonly int _port;
         private readonly TcpListener _listener;
         private readonly CancellationTokenSource _cancellationTokenSource;
-        private readonly object _lock = new();
-        private readonly List<Sketch> _sketchStore = new();
+        private readonly SemaphoreSlim _semaphore = new(1, 1);
+        private readonly MongoSketchStore _mongoStore = new();
 
         public TcpSketchServer()
         {
@@ -57,8 +58,9 @@ namespace PainterServer.Services
         {
             try
             {
-                using var stream = client.GetStream();
+                await _semaphore.WaitAsync();
 
+                using var stream = client.GetStream();
                 var buffer = new byte[8192];
                 var requestData = new List<byte>();
                 int totalBytes = 0;
@@ -78,12 +80,8 @@ namespace PainterServer.Services
                 }
 
                 string jsonInput = Encoding.UTF8.GetString(requestData.ToArray());
-
-                lock (_lock)
-                {
-                    Console.WriteLine($"Received data: {jsonInput}");
-                    Console.WriteLine($"Received bytes: {totalBytes}");
-                }
+                Console.WriteLine($"Received data: {jsonInput}");
+                Console.WriteLine($"Received bytes: {totalBytes}");
 
                 Sketch? sketch = JsonConvert.DeserializeObject<Sketch>(jsonInput);
 
@@ -94,11 +92,8 @@ namespace PainterServer.Services
                     return;
                 }
 
-                lock (_lock)
-                {
-                    _sketchStore.Add(sketch);
-                    Console.WriteLine($"Sketch '{sketch.Name}' added with {sketch.Shapes.Count} shapes.");
-                }
+                await _mongoStore.InsetSketchAsync(sketch);
+                Console.WriteLine($"Sketch '{sketch.Name}' added with {sketch.Shapes.Count} shapes.");
 
                 await SendResponse(stream, $"Sketch '{sketch.Name}' uploaded successfully.");
             }
@@ -109,6 +104,7 @@ namespace PainterServer.Services
             }
             finally
             {
+                _semaphore.Release();
                 try { client.Close(); } catch { }
             }
         }
