@@ -5,8 +5,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using Shared_Models.Models;
-using Newtonsoft.Json;
 using Server;
 
 namespace PainterServer.Services
@@ -17,7 +15,6 @@ namespace PainterServer.Services
         private TcpListener _listener;
         private CancellationTokenSource _cancellationTokenSource = new();
         private Task? _listenerTask;
-        private readonly SemaphoreSlim _semaphore = new(1, 1);
         private readonly MongoSketchStore _mongoStore = new();
 
         public TcpSketchServer()
@@ -72,8 +69,6 @@ namespace PainterServer.Services
         {
             try
             {
-                await _semaphore.WaitAsync(token);
-
                 using var stream = client.GetStream();
                 var buffer = new byte[8192];
                 var requestData = new List<byte>();
@@ -93,23 +88,49 @@ namespace PainterServer.Services
                         break;
                 }
 
-                string jsonInput = Encoding.UTF8.GetString(requestData.ToArray());
+                string jsonInput = Encoding.UTF8.GetString(requestData.ToArray()).Trim();
                 Console.WriteLine($"Received data: {jsonInput}");
-                Console.WriteLine($"Received bytes: {totalBytes}");
 
-                Sketch? sketch = JsonConvert.DeserializeObject<Sketch>(jsonInput);
-
-                if (sketch == null || sketch.Shapes == null)
+                if (jsonInput.StartsWith("GET:"))
                 {
-                    Console.WriteLine("Invalid sketch received.");
-                    await SendResponse(stream, "ERROR: Invalid sketch");
-                    return;
+                    string sketchName = jsonInput[4..].Trim();
+                    if (!FileLockManager.TryLock(sketchName))
+                    {
+                        await SendResponse(stream, $"ERROR: sketch '{sketchName}' is locked");
+                        return;
+                    }
+
+                    try
+                    {
+                        string? sketchJson = await _mongoStore.GetJsonByNameAsync(sketchName);
+                        if (sketchJson == null)
+                        {
+                            await SendResponse(stream, $"ERROR: sketch '{sketchName}' not found");
+                        }
+                        else
+                        {
+                            await SendResponse(stream, sketchJson);
+                        }
+                    }
+                    finally
+                    {
+                        FileLockManager.Unlock(sketchName);
+                    }
                 }
-
-                await _mongoStore.InsertSketchAsync(sketch);
-                Console.WriteLine($"Sketch '{sketch.Name}' added with {sketch.Shapes.Count} shapes.");
-
-                await SendResponse(stream, $"Sketch '{sketch.Name}' uploaded successfully.");
+                else
+                {
+                    try
+                    {
+                        await _mongoStore.InsertJsonAsync(jsonInput);
+                        Console.WriteLine("Sketch inserted successfully.");
+                        await SendResponse(stream, "Sketch uploaded successfully.");
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Insert failed: {ex.Message}");
+                        await SendResponse(stream, $"ERROR: {ex.Message}");
+                    }
+                }
             }
             catch (OperationCanceledException)
             {
@@ -122,7 +143,6 @@ namespace PainterServer.Services
             }
             finally
             {
-                _semaphore.Release();
                 try { client.Close(); } catch { }
             }
         }

@@ -4,9 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using Shared_Models.Models;
 using PainterServer.Utils;
-using Newtonsoft.Json;
 
 namespace Server
 {
@@ -21,24 +19,27 @@ namespace Server
             _collection = database.GetCollection<BsonDocument>(MongoConfig.CollectionName);
         }
 
-        public async Task<Sketch?> GetSketchByNameAsync(string name)
+        public async Task<string?> GetJsonByNameAsync(string name)
         {
             var filter = Builders<BsonDocument>.Filter.Eq("Name", name);
             var document = await _collection.Find(filter).FirstOrDefaultAsync();
-            return document != null ? JsonConvert.DeserializeObject<Sketch>(document.ToJson()) : null;
+            return document?.ToJson();
         }
 
-        public async Task InsertSketchAsync(Sketch sketch)
+        public async Task InsertJsonAsync(string json)
         {
-            if (sketch == null || string.IsNullOrWhiteSpace(sketch.Name)) throw new ArgumentException("invalid Sketch name");
+            var doc = BsonDocument.Parse(json);
+            if (!doc.Contains("Name") || string.IsNullOrWhiteSpace(doc["Name"].AsString))
+                throw new ArgumentException("Invalid or missing 'Name' in sketch JSON");
 
-            var existing = await GetSketchByNameAsync(sketch.Name);
-            if (existing != null) throw new InvalidOperationException($"Sketch with the name {sketch.Name} already exists");
+            string name = doc["Name"].AsString;
+            var filter = Builders<BsonDocument>.Filter.Eq("Name", name);
+            var exists = await _collection.Find(filter).AnyAsync();
+            if (exists)
+                throw new InvalidOperationException($"Sketch with the name {name} already exists");
 
-            var json = JsonConvert.SerializeObject(sketch);
-            var document = BsonDocument.Parse(json);
-            await _collection.InsertOneAsync(document);
-            Console.WriteLine($"Sketch {sketch.Name} insert to MongoDB");
+            await _collection.InsertOneAsync(doc);
+            Console.WriteLine($"Sketch {name} inserted to MongoDB");
         }
 
         public async Task DeleteSketchAsync(string name)
@@ -47,14 +48,13 @@ namespace Server
             var result = await _collection.DeleteOneAsync(filter);
             Console.WriteLine(result.DeletedCount > 0
                 ? $"Sketch {name} deleted from db"
-                : $"error while deleting {name} from db");
+                : $"Error while deleting {name} from db");
         }
 
-        public async Task<List<Sketch>> GetAllAsync()
+        public async Task<List<string>> GetAllJsonAsync()
         {
             var documents = await _collection.Find(new BsonDocument()).ToListAsync();
-
-            return documents.Select(doc => JsonConvert.DeserializeObject<Sketch>(doc.ToJson())).Where(sketch => sketch != null).ToList();
+            return documents.Select(doc => doc.ToJson()).ToList();
         }
     }
 }
