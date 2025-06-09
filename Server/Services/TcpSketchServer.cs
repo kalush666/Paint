@@ -14,8 +14,9 @@ namespace PainterServer.Services
     public class TcpSketchServer
     {
         private readonly int _port;
-        private readonly TcpListener _listener;
-        private readonly CancellationTokenSource _cancellationTokenSource;
+        private TcpListener _listener;
+        private CancellationTokenSource _cancellationTokenSource = new();
+        private Task? _listenerTask;
         private readonly SemaphoreSlim _semaphore = new(1, 1);
         private readonly MongoSketchStore _mongoStore = new();
 
@@ -23,22 +24,27 @@ namespace PainterServer.Services
         {
             _port = int.TryParse(Environment.GetEnvironmentVariable("PORT"), out var envPort) ? envPort : 5000;
             _listener = new TcpListener(IPAddress.Any, _port);
-            _cancellationTokenSource = new CancellationTokenSource();
         }
 
-        public void Start()
+        public void StartListener()
         {
+            _listener = new TcpListener(IPAddress.Any, _port);
             _listener.Start();
             Console.WriteLine($"TCP Sketch Server listening on port {_port}");
 
-            Task.Run(async () =>
+            _listenerTask = Task.Run(async () =>
             {
                 while (!_cancellationTokenSource.Token.IsCancellationRequested)
                 {
                     try
                     {
-                        TcpClient client = await _listener.AcceptTcpClientAsync();
-                        _ = Task.Run(() => HandleClient(client));
+                        var client = await _listener.AcceptTcpClientAsync(_cancellationTokenSource.Token);
+                        _ = Task.Run(() => HandleClient(client, _cancellationTokenSource.Token));
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        Console.WriteLine("Listener task cancelled.");
+                        break;
                     }
                     catch (Exception ex)
                     {
@@ -48,17 +54,25 @@ namespace PainterServer.Services
             });
         }
 
-        public void Stop()
+        public void Suspend()
         {
+            Console.WriteLine("Suspending server...");
             _cancellationTokenSource.Cancel();
             _listener.Stop();
         }
 
-        private async Task HandleClient(TcpClient client)
+        public void Resume()
+        {
+            Console.WriteLine("Resuming server...");
+            _cancellationTokenSource = new CancellationTokenSource();
+            StartListener();
+        }
+
+        private async Task HandleClient(TcpClient client, CancellationToken token)
         {
             try
             {
-                await _semaphore.WaitAsync();
+                await _semaphore.WaitAsync(token);
 
                 using var stream = client.GetStream();
                 var buffer = new byte[8192];
@@ -67,14 +81,14 @@ namespace PainterServer.Services
 
                 while (stream.DataAvailable || totalBytes == 0)
                 {
-                    var bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
+                    var bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length, token);
                     if (bytesRead == 0) break;
 
                     requestData.AddRange(buffer[..bytesRead]);
                     totalBytes += bytesRead;
 
                     if (stream.DataAvailable)
-                        await Task.Delay(10);
+                        await Task.Delay(10, token);
                     else
                         break;
                 }
@@ -92,10 +106,14 @@ namespace PainterServer.Services
                     return;
                 }
 
-                await _mongoStore.InsetSketchAsync(sketch);
+                await _mongoStore.InsertSketchAsync(sketch);
                 Console.WriteLine($"Sketch '{sketch.Name}' added with {sketch.Shapes.Count} shapes.");
 
                 await SendResponse(stream, $"Sketch '{sketch.Name}' uploaded successfully.");
+            }
+            catch (OperationCanceledException)
+            {
+                Console.WriteLine("Client handling was cancelled.");
             }
             catch (Exception ex)
             {
