@@ -38,7 +38,7 @@ namespace PainterServer.Services
                 {
                     try
                     {
-                        var client = await _listener.AcceptTcpClientAsync(_cancellationTokenSource.Token);
+                        var client = await _listener.AcceptTcpClientAsync();
                         _ = Task.Run(() => HandleClient(client, _cancellationTokenSource.Token));
                     }
                     catch (OperationCanceledException)

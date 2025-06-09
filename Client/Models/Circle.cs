@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace Shared_Models.Models
 {
-    class Line : ShapeBase
+    class Circle : ShapeBase
     {
-        public Position Start { get; set; }
-        public Position End { get; set; }
-        public override string shapeType => "Line";
+        public Position Center { get; set; }
+        public double Radius { get; set; }
+        public override string shapeType => "Circle";
     }
 }
