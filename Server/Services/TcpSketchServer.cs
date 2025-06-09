@@ -37,7 +37,7 @@ namespace PainterServer.Services
                 {
                     try
                     {
-                        var client = await _listener.AcceptTcpClientAsync();
+                        TcpClient client = await _listener.AcceptTcpClientAsync();
                         _ = Task.Run(() => HandleClient(client));
                     }
                     catch (Exception ex)
