@@ -71,5 +71,15 @@ namespace Client
         {
             throw new NotImplementedException();
         }
+
+        private void OptionsButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            var optionsWindow = new OptionsWindow();
+            if (optionsWindow.ShowDialog() == true)
+            {
+                currentColor = optionsWindow.SelectedColor;
+                currentStrokeThikness = optionsWindow.SelectedThickness;
+            }
+        }
     }
 }

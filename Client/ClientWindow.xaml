@@ -26,13 +26,10 @@
                 MouseUp="Canvas_OnMouseUp"
                 Grid.Row="1"/>
 
-
-        <StackPanel Orientation="Vertical" Grid.Row="2">
+        <StackPanel Orientation="Vertical" Grid.Row="2" HorizontalAlignment="Left">
             <TextBlock Text="shapes:"
                        FontSize="14" FontWeight="Bold"/>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left"
-                        Margin="0,11,0,-1"
-            >
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,11,0,-1">
                 <Button x:Name="LineButton" Content="Line" Margin="5"  Click="LineButton_OnClick"/>
                 <Button x:Name="RectangleButton" Content="Rectangle" Margin="5" Click="RectangleButton_OnClick"/>
                 <Button x:Name="CircleButton" Content="Circle" Margin="5" Click="CircleButton_OnClick"/>
@@ -40,13 +37,12 @@
         </StackPanel>
 
         <StackPanel Orientation="Vertical" Grid.Row="2" HorizontalAlignment="Right">
-            <TextBlock Text=":options"
-                       FontSize="14" FontWeight="Bold" HorizontalAlignment="Right"/>
-            <StackPanel Orientation=" Horizontal" HorizontalAlignment="Left"
-                        Margin="0,11,0,-1">
+            <TextBlock Text="options:" FontSize="14" FontWeight="Bold" HorizontalAlignment="Right"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,11,0,-1">
                 <Button x:Name="UploadButton" Content="Upload" Margin="5" Click="UploadButton_OnClick"/>
                 <Button x:Name="ClearButton" Content="Clear" Margin="5" Click="ClearButton_OnClick"/>
                 <Button x:Name="ImportButton" Content="Import" Margin="5" Click="ImportButton_OnClick"/>
+                <Button x:Name="OptionsButton" Content="Brush Options" Margin="5" Click="OptionsButton_OnClick"/>
             </StackPanel>
         </StackPanel>
     </Grid>
