@@ -4,7 +4,6 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using Server;
 using Server.Handlers;
 
@@ -79,19 +78,11 @@ namespace PainterServer.Services
                 {
                     var handler = new DownloadHandler(_mongoStore, stream, token);
                     await handler.HandleAsync();
-                    return;
                 }
-
-                try
+                else
                 {
-                    await _mongoStore.InsertJsonAsync(message);
-                    Console.WriteLine("Sketch inserted successfully.");
-                    await SendResponse(stream, "Sketch uploaded successfully.");
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Insert failed: {ex.Message}");
-                    await SendResponse(stream, $"ERROR: {ex.Message}");
+                    var handler = new UploadHandler(_mongoStore, stream, token, message);
+                    await handler.HandleAsync();
                 }
             }
             catch (OperationCanceledException)
