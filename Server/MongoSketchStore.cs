@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -52,18 +53,8 @@ namespace Server
         public async Task<List<Sketch>> GetAllAsync()
         {
             var documents = await _collection.Find(new BsonDocument()).ToListAsync();
-            var sketches = new List<Sketch>();
 
-            foreach (var doc in documents)
-            {
-                var sketch = JsonConvert.DeserializeObject<Sketch>(doc.ToJson());
-                if (sketch != null)
-                {
-                    sketches.Add(sketch);
-                }
-            }
-
-            return sketches;
+            return documents.Select(doc => JsonConvert.DeserializeObject<Sketch>(doc.ToJson())).Where(sketch => sketch != null).ToList();
         }
     }
 }
