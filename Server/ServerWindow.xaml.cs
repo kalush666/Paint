@@ -31,11 +31,17 @@ namespace Server
 
             foreach (var json in sketchFiles)
             {
+                var obj = Newtonsoft.Json.Linq.JObject.Parse(json);
+                string displayName = obj["Name"]?.ToString() + ".json";
+
                 var button = new Button
                 {
-                    Content = json,
+                    Content = displayName,
                     Margin = new Thickness(0, 5, 0, 5),
-                    HorizontalAlignment = HorizontalAlignment.Stretch
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    HorizontalContentAlignment = HorizontalAlignment.Center,
+                    Padding = new Thickness(10,5,10,5),
+                    MinWidth = 100
                 };
 
 
