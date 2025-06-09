@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -26,7 +27,7 @@ namespace Server
             return document != null ? JsonConvert.DeserializeObject<Sketch>(document.ToJson()) : null;
         }
 
-        public async Task InsetSketchAsync(Sketch sketch)
+        public async Task InsertSketchAsync(Sketch sketch)
         {
             if (sketch == null || string.IsNullOrWhiteSpace(sketch.Name)) throw new ArgumentException("invalid Sketch name");
 
@@ -46,6 +47,23 @@ namespace Server
             Console.WriteLine(result.DeletedCount > 0
                 ? $"Sketch {name} deleted from db"
                 : $"error while deleting {name} from db");
+        }
+
+        public async Task<List<Sketch>> GetAllAsync()
+        {
+            var documents = await _collection.Find(new BsonDocument()).ToListAsync();
+            var sketches = new List<Sketch>();
+
+            foreach (var doc in documents)
+            {
+                var sketch = JsonConvert.DeserializeObject<Sketch>(doc.ToJson());
+                if (sketch != null)
+                {
+                    sketches.Add(sketch);
+                }
+            }
+
+            return sketches;
         }
     }
 }
