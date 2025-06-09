@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Server;
+using Server.Handlers;
 
 namespace PainterServer.Services
 {
@@ -70,66 +71,27 @@ namespace PainterServer.Services
             try
             {
                 using var stream = client.GetStream();
-                var buffer = new byte[8192];
-                var requestData = new List<byte>();
-                int totalBytes = 0;
+                var buffer = new byte[1024];
+                var byteRead = await stream.ReadAsync(buffer, 0, buffer.Length, token);
+                var message = Encoding.UTF8.GetString(buffer, 0, byteRead).Trim();
 
-                while (stream.DataAvailable || totalBytes == 0)
+                if (message.StartsWith("GET:"))
                 {
-                    var bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length, token);
-                    if (bytesRead == 0) break;
-
-                    requestData.AddRange(buffer[..bytesRead]);
-                    totalBytes += bytesRead;
-
-                    if (stream.DataAvailable)
-                        await Task.Delay(10, token);
-                    else
-                        break;
+                    var handler = new DownloadHandler(_mongoStore, stream, token);
+                    await handler.HandleAsync();
+                    return;
                 }
 
-                string jsonInput = Encoding.UTF8.GetString(requestData.ToArray()).Trim();
-                Console.WriteLine($"Received data: {jsonInput}");
-
-                if (jsonInput.StartsWith("GET:"))
+                try
                 {
-                    string sketchName = jsonInput[4..].Trim();
-                    if (!FileLockManager.TryLock(sketchName))
-                    {
-                        await SendResponse(stream, $"ERROR: sketch '{sketchName}' is locked");
-                        return;
-                    }
-
-                    try
-                    {
-                        string? sketchJson = await _mongoStore.GetJsonByNameAsync(sketchName);
-                        if (sketchJson == null)
-                        {
-                            await SendResponse(stream, $"ERROR: sketch '{sketchName}' not found");
-                        }
-                        else
-                        {
-                            await SendResponse(stream, sketchJson);
-                        }
-                    }
-                    finally
-                    {
-                        FileLockManager.Unlock(sketchName);
-                    }
+                    await _mongoStore.InsertJsonAsync(message);
+                    Console.WriteLine("Sketch inserted successfully.");
+                    await SendResponse(stream, "Sketch uploaded successfully.");
                 }
-                else
+                catch (Exception ex)
                 {
-                    try
-                    {
-                        await _mongoStore.InsertJsonAsync(jsonInput);
-                        Console.WriteLine("Sketch inserted successfully.");
-                        await SendResponse(stream, "Sketch uploaded successfully.");
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Insert failed: {ex.Message}");
-                        await SendResponse(stream, $"ERROR: {ex.Message}");
-                    }
+                    Console.WriteLine($"Insert failed: {ex.Message}");
+                    await SendResponse(stream, $"ERROR: {ex.Message}");
                 }
             }
             catch (OperationCanceledException)
