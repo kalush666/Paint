@@ -9,12 +9,12 @@ Client
 none
 false
 TRACE;DEBUG;NET;NET5_0;NETCOREAPP
-C:\Users\jonat\Desktop\PROJECTS\PaintProject\Client\App.xaml
-11407045341
+
+2-1094938431
 
 14-1347154539
 1942137490335
-MainWindow.xaml;
+App.xaml;MainWindow.xaml;
 
 False
 
