@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows;
 using Client.Enums;
 using Client.Models;
 using Newtonsoft.Json.Linq;
@@ -15,9 +16,20 @@ namespace Client.Factories
                 BasicShapeType.Line => new Line(),
                 BasicShapeType.Rectangle => new Rectangle(),
                 BasicShapeType.Circle => new Circle(),
-                _ => throw new NotSupportedException($"{type} is not a basic type");
+                _ => throw new NotSupportedException($"{type} is not a basic type")
             };
         }
+
+        public static ShapeBase Create(BasicShapeType type, Position startPoint, Position endPoint)
+        {
+            return type switch
+            {
+                BasicShapeType.Line => new Line(startPoint,endPoint),
+                BasicShapeType.Rectangle => new Rectangle(startPoint,endPoint),
+                BasicShapeType.Circle => new Circle(startPoint.MidPosition(endPoint),startPoint.Distance(endPoint)),
+                _ => throw new NotSupportedException($"{type} is not a basic type")
+            };
+    }
 
         public static ShapeBase? createShapeFromString(string typeString)
         {
