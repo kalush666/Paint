@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Client.Enums;
+using Client.Models;
 using Newtonsoft.Json.Linq;
 using Shared_Models.Models;
-using Shared_Models.Enums;
 
-namespace Server.Patterns
+namespace Client.Factories
 {
     public static class ShapeFactory
     {

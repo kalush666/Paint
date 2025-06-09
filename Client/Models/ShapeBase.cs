@@ -1,7 +1,6 @@
 ﻿using System;
-using Shared_Models.Models;
 
-namespace Shared_Models.Models
+namespace Client.Models
 {
     public abstract class ShapeBase
     {

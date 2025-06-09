@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Shared_Models.Models;
 
-namespace Shared_Models.Models
+namespace Client.Models
 {
     class Circle : ShapeBase
     {

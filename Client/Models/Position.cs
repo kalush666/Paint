@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Input.Manipulations;
 
-namespace Shared_Models.Models
+namespace Client.Models
 {
     public struct Position
     {
@@ -16,9 +14,25 @@ namespace Shared_Models.Models
             this.Y = y;
         }
 
+        public Position(Point point)
+        {
+            this.X = point.X;
+            this.Y = point.Y;
+        }
+
         public override string ToString()
         {
             return $"{X},{Y}";
+        }
+
+        public double Distance(Position p1)
+        {
+            return Math.Sqrt(Math.Pow(this.X - p1.X, 2) + Math.Pow(this.Y - p1.Y, 2));
+        }
+
+        public Position MidPosition(Position p1)
+        {
+            return new Position((this.X + p1.X) / 2, (this.Y + p1.Y) / 2);
         }
     }
 }

@@ -1,16 +1,15 @@
-﻿<Window x:Class="Client.MainWindow"
+﻿<Window x:Class="Client.ClientWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Client"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="ClientWindow" Height="450" Width="800">
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
@@ -46,8 +45,8 @@
             <StackPanel Orientation=" Horizontal" HorizontalAlignment="Left"
                         Margin="0,11,0,-1">
                 <Button x:Name="UploadButton" Content="Upload" Margin="5" Click="UploadButton_OnClick"/>
-                <Button x:Name="ClearButton" Content="Clear" Margin="5" Click="UploadButton_OnClick"/>
-                <Button x:Name="ImportButton" Content="Import" Margin="5" Click="UploadButton_OnClick"/>
+                <Button x:Name="ClearButton" Content="Clear" Margin="5" Click="ClearButton_OnClick"/>
+                <Button x:Name="ImportButton" Content="Import" Margin="5" Click="ImportButton_OnClick"/>
             </StackPanel>
         </StackPanel>
     </Grid>

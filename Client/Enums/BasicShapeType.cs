@@ -1,9 +1,10 @@
-﻿namespace Shared_Models.Enums
+﻿namespace Client.Enums
 {
     public enum BasicShapeType
     {
         Line,
         Rectangle,
-        Circle
+        Circle,
+        None
     }
 }
