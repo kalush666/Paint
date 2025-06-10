@@ -12,43 +12,44 @@ namespace Server.Handlers
         private readonly MongoSketchStore _mongoStore;
         private readonly NetworkStream _stream;
         private readonly CancellationToken _token;
+        private readonly string _sketchName;
 
-        public DownloadHandler(MongoSketchStore mongo, NetworkStream stream, CancellationToken cancellationToken)
+        public DownloadHandler(MongoSketchStore mongo, NetworkStream stream, CancellationToken cancellationToken, string sketchName)
         {
             this._mongoStore = mongo;
             this._stream = stream;
             this._token = cancellationToken;
+            this._sketchName = sketchName;
         }
 
         public async Task HandleAsync()
         {
             try
             {
-                var buffer = new byte[1024];
-                var byteRead = await _stream.ReadAsync(buffer, 0, buffer.Length, _token);
-                var sketchName = Encoding.UTF8.GetString(buffer, 0, byteRead).Trim();
+                Console.WriteLine($"Download request for: {_sketchName}");
 
-                if (!LockManager.TryLock(sketchName))
+                if (!LockManager.TryLock(_sketchName))
                 {
-                    await SendResponseAsync($"ERROR: sketch '{sketchName}' is locked");
+                    await SendResponseAsync($"ERROR: sketch '{_sketchName}' is locked");
                     return;
                 }
 
                 try
                 {
-                    var sketchJson = await _mongoStore.GetJsonByNameAsync(sketchName);
+                    var sketchJson = await _mongoStore.GetJsonByNameAsync(_sketchName);
                     if (sketchJson == null)
                     {
-                        await SendResponseAsync($"ERROR: sketch '{sketchName}' not found");
+                        await SendResponseAsync($"ERROR: sketch '{_sketchName}' not found");
                     }
                     else
                     {
+                        Console.WriteLine($"Sending sketch: {_sketchName}");
                         await SendResponseAsync(sketchJson);
                     }
                 }
                 finally
                 {
-                    LockManager.Unlock(sketchName);
+                    LockManager.Unlock(_sketchName);
                 }
             }
             catch (Exception ex)
@@ -60,10 +61,20 @@ namespace Server.Handlers
 
         private async Task SendResponseAsync(string response)
         {
-            var responseBytes = Encoding.UTF8.GetBytes(response);
-            await _stream.WriteAsync(responseBytes, 0, responseBytes.Length, _token);
-            await _stream.FlushAsync(_token);
-            _stream.Close();
+            try
+            {
+                var responseBytes = Encoding.UTF8.GetBytes(response);
+                await _stream.WriteAsync(responseBytes, 0, responseBytes.Length, _token);
+                await _stream.FlushAsync(_token);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error sending response: {ex.Message}");
+            }
+            finally
+            {
+                try { _stream.Close(); } catch { }
+            }
         }
     }
 }
