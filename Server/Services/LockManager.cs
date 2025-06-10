@@ -30,25 +30,7 @@ namespace Server.Services
             return _locks.ContainsKey(name);
         }
 
-        public static void ClearExpiredLocks(TimeSpan maxAge)
-        {
-            var cutoff = DateTime.UtcNow - maxAge;
-            var toRemove = new List<string>();
 
-            foreach (var kvp in _locks)
-            {
-                if (kvp.Value.AcquiredAt < cutoff)
-                {
-                    toRemove.Add(kvp.Key);
-                }
-            }
-
-            foreach (var key in toRemove)
-            {
-                _locks.TryRemove(key, out _);
-                Console.WriteLine($"Removed expired lock for: {key}");
-            }
-        }
 
         private class LockInfo
         {
