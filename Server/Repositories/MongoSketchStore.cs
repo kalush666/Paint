@@ -39,7 +39,7 @@ namespace Server.Repositories
             var filter = Builders<BsonDocument>.Filter.Eq("Name", name);
             var exists = await _collection.Find(filter).AnyAsync();
             if (exists)
-                throw new InvalidOperationException($"Sketch with the name {name} already exists");
+                throw new InvalidOperationException(AppErrors.Mongo.AlreadyExists);
 
             await _collection.InsertOneAsync(doc);
             Console.WriteLine($"Sketch {name} inserted to MongoDB");

@@ -23,6 +23,7 @@ namespace Server
 
         public ServerWindow()
         {
+
             InitializeComponent();
             _server.StartListener();
             LoadSketchList();

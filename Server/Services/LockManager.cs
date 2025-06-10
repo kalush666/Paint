@@ -1,34 +1,53 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Threading;
+using Common.Events;
 
 namespace Server.Services
 {
-    public static class LockManager
+    public class LockManager
     {
-        private static readonly ConcurrentDictionary<string, CancellationTokenSource> _locks = new();
+        private readonly ConcurrentDictionary<string, CancellationTokenSource> _locks = new();
 
-        public static bool TryLock(string name,out CancellationToken token)
+        public LockManager()
+        {
+            LockHub.LockRequested += HandleLock;
+            LockHub.UnlockRequested += HandleUnlock;
+        }
+
+        private void HandleLock(string name)
+        {
+            TryLock(name, out _);
+        }
+
+        private void HandleUnlock(string name)
+        {
+            Unlock(name);
+        }
+
+        public bool TryLock(string name, out CancellationToken token)
         {
             var cts = new CancellationTokenSource();
             if (_locks.TryAdd(name, cts))
             {
                 token = cts.Token;
+                Console.WriteLine($"Locked: {name}");
                 return true;
             }
 
             token = CancellationToken.None;
+            Console.WriteLine($"Failed to lock (already locked): {name}");
             return false;
         }
 
-        public static void Unlock(string name)
+        public void Unlock(string name)
         {
-            if (_locks.TryRemove(name, out var cts))
-            {
-                cts.Cancel();
-                cts.Dispose();
-            }
+            if (!_locks.TryRemove(name, out var cts)) return;
+            cts.Cancel();
+            cts.Dispose();
+            Console.WriteLine($"Unlocked: {name}");
         }
+
+        public bool IsLocked(string name) => _locks.ContainsKey(name);
     }
 }

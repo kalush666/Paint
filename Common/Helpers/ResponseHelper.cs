@@ -21,7 +21,7 @@ namespace Server.Handlers
             }
             catch
             {
-                return Result<string>.Failure(AppErrors.Response.UnableTosend);
+                return Result<string>.Failure(AppErrors.Response.UnableToSend);
             }
             finally
             {

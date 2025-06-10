@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Linq;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using Common.Errors;
+using MongoDB.Bson;
+using Newtonsoft.Json;
 using Server.Repositories;
 
 namespace Server.Handlers
@@ -12,43 +15,73 @@ namespace Server.Handlers
         private readonly MongoSketchStore _mongoStore;
         private readonly NetworkStream _stream;
         private readonly CancellationToken _token;
-        private readonly string _sketchName;
+        private readonly string _request;
 
-        public DownloadHandler(MongoSketchStore mongo, NetworkStream stream, CancellationToken cancellationToken, string sketchName)
+        public DownloadHandler(MongoSketchStore mongo, NetworkStream stream, CancellationToken cancellationToken, string request)
         {
-            this._mongoStore = mongo;
-            this._stream = stream;
-            this._token = cancellationToken;
-            this._sketchName = sketchName;
+            _mongoStore = mongo;
+            _stream = stream;
+            _token = cancellationToken;
+            _request = request;
         }
 
         public async Task HandleAsync()
         {
             try
             {
-                Console.WriteLine($"Download request for: {_sketchName}");
+                if (_request.Equals("GET:ALL", StringComparison.OrdinalIgnoreCase))
+                {
+                    Console.WriteLine("Download request for all sketches");
+                    try
+                    {
+                        var allJson = await _mongoStore.GetAllJsonAsync();
+                        var names = allJson.Select(json =>
+                        {
+                            try
+                            {
+                                var doc = BsonDocument.Parse(json);
+                                return doc.GetValue("Name", "").AsString;
+                            }
+                            catch
+                            {
+                                return AppErrors.Mongo.ReadError;
+                            }
+                        }).Where(name => !string.IsNullOrWhiteSpace(name)).ToList();
+
+                        var resultJson = JsonConvert.SerializeObject(names, Formatting.None);
+                        await ResponseHelper.SendAsync(_stream, resultJson, _token);
+                    }
+                    catch
+                    {
+                        await ResponseHelper.SendAsync(_stream, AppErrors.Mongo.ReadError, _token);
+                    }
+                    return;
+                }
+
+                var sketchName = _request.Substring(4);
+                Console.WriteLine($"Download request for: {sketchName}");
 
                 try
                 {
-                    var sketchJson = await _mongoStore.GetJsonByNameAsync(_sketchName);
+                    var sketchJson = await _mongoStore.GetJsonByNameAsync(sketchName);
                     if (sketchJson == null)
                     {
                         await ResponseHelper.SendAsync(_stream, AppErrors.Mongo.SketchNotFound, _token);
                     }
                     else
                     {
-                        Console.WriteLine($"Sending sketch: {_sketchName}");
+                        Console.WriteLine($"Sending sketch: {sketchName}");
                         await ResponseHelper.SendAsync(_stream, sketchJson, _token);
                     }
                 }
-                catch (Exception ex)
+                catch
                 {
                     await ResponseHelper.SendAsync(_stream, AppErrors.Generic.OperationFailed, _token);
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"DownloadHandler error: {ex.Message}");
+                Console.WriteLine(AppErrors.Generic.OperationFailed);
                 await ResponseHelper.SendAsync(_stream, AppErrors.Generic.OperationFailed, _token);
             }
         }

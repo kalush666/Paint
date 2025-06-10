@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -8,6 +9,7 @@ using Client.Factories;
 using Client.Helpers;
 using Client.Models;
 using Client.Services;
+using Common.Events;
 
 namespace Client.Views
 {
@@ -20,7 +22,6 @@ namespace Client.Views
         private Brush currentColor = Brushes.Black;
         private double currentStrokeThikness = 2;
         private ClientCommunicationService communicationService;
-        private string? latestSketch;
 
         public ClientWindow()
         {
@@ -28,6 +29,16 @@ namespace Client.Views
             shapeAdded += OnShapeAdded;
             communicationService = new ClientCommunicationService();
             currentSketch.Name = "Untitled Sketch";
+
+            this.Closing += OnClientWindowClosing;
+        }
+
+        private void OnClientWindowClosing(object sender, CancelEventArgs e)
+        {
+            if (!string.IsNullOrWhiteSpace(currentSketch.Name))
+            {
+                LockHub.TriggerUnlock(currentSketch.Name);
+            }
         }
 
         private static void OnShapeAdded(object sender, string type) => Console.WriteLine($"shape added :{type}");
@@ -123,7 +134,10 @@ namespace Client.Views
                 if (importedSketch == null) return;
 
                 Canvas.Children.Clear();
+
+                LockHub.TriggerUnlock(currentSketch.Name);
                 currentSketch = importedSketch;
+                LockHub.TriggerLock(currentSketch.Name);
 
                 foreach (var shape in currentSketch.Shapes)
                 {

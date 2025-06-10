@@ -1,12 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Documents;
 using Client.Convertors;
 using Newtonsoft.Json;
 using Client.Factories;
 using Client.Models;
+using Common.Errors;
+using Common.Utils;
 using Newtonsoft.Json.Linq;
 
 namespace Client.Services
@@ -77,9 +82,16 @@ namespace Client.Services
                 await stream.WriteAsync(requestData, 0, requestData.Length);
                 await stream.FlushAsync();
 
-                var buffer = new byte[8192];
-                var bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
-                var response = Encoding.UTF8.GetString(buffer, 0, bytesRead);
+                using var responseStream = new MemoryStream();
+                var requestBuffer = new byte[4096];
+                int bytesRead;
+                while ((bytesRead = await stream.ReadAsync(requestBuffer, 0, requestBuffer.Length)) > 0)
+                {
+                    responseStream.Write(requestBuffer, 0, bytesRead);
+                    if (!stream.DataAvailable) break;
+                }
+                var response = Encoding.UTF8.GetString(responseStream.ToArray());
+
 
                 if (response.StartsWith("ERROR:"))
                 {
@@ -112,5 +124,46 @@ namespace Client.Services
                 throw new Exception($"Failed to download sketch: {ex.Message}", ex);
             }
         }
+
+        public async Task<Result<List<string>>> GetAllSketchNames()
+        {
+            try
+            {
+                using var client = new TcpClient();
+                client.ReceiveTimeout = _timeoutMs;
+                client.SendTimeout = _timeoutMs;
+
+                await client.ConnectAsync(_serverHost, _serverPort);
+                await using var stream = client.GetStream();
+
+                var request = "GET:ALL";
+                var requestData = Encoding.UTF8.GetBytes(request);
+                await stream.WriteAsync(requestData, 0, requestData.Length);
+                await stream.FlushAsync();
+
+                using var responseStream = new MemoryStream();
+                var responseBuffer = new byte[4096];
+                int bytesRead;
+                while ((bytesRead = await stream.ReadAsync(responseBuffer, 0, responseBuffer.Length)) > 0)
+                {
+                    responseStream.Write(responseBuffer, 0, bytesRead);
+                    if (!stream.DataAvailable) break;
+                }
+
+                var response = Encoding.UTF8.GetString(responseStream.ToArray());
+                if (response.Equals(AppErrors.Generic.OperationFailed))
+                    return Result<List<string>>.Failure(response);
+
+                var jsonArray = JArray.Parse(response);
+                var names = jsonArray.Select(j => j.ToString()).ToList();
+
+                return Result<List<string>>.Success(names);
+            }
+            catch (Exception ex)
+            {
+                return Result<List<string>>.Failure(AppErrors.Generic.OperationFailed);
+            }
+        }
+
     }
 }

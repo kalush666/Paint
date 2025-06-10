@@ -1,4 +1,6 @@
-﻿namespace Server.Events
+﻿using System;
+
+namespace Common.Events
 {
     public static class LockHub
     {
