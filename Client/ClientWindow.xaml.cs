@@ -60,16 +60,19 @@ namespace Client
         private void LineButton_OnClick(object sender, RoutedEventArgs e)
         {
             currentShape = BasicShapeType.Line;
+            UpdateButtonSelection("Line");
         }
 
         private void RectangleButton_OnClick(object sender, RoutedEventArgs e)
         {
             currentShape = BasicShapeType.Rectangle;
+            UpdateButtonSelection("Rectangle");
         }
 
         private void CircleButton_OnClick(object sender, RoutedEventArgs e)
         {
             currentShape = BasicShapeType.Circle;
+            UpdateButtonSelection("Circle");
         }
 
         private void UploadButton_OnClick(object sender, RoutedEventArgs e)
