@@ -1,7 +1,6 @@
 C:\Users\jonat\Desktop\PROJECTS\PaintProject\Server\obj\Debug\net5.0-windows\Server.csproj.AssemblyReference.cache
 C:\Users\jonat\Desktop\PROJECTS\PaintProject\Server\obj\Debug\net5.0-windows\ServerWindow.g.cs
 C:\Users\jonat\Desktop\PROJECTS\PaintProject\Server\obj\Debug\net5.0-windows\Server_MarkupCompile.cache
-C:\Users\jonat\Desktop\PROJECTS\PaintProject\Server\obj\Debug\net5.0-windows\Server_MarkupCompile.lref
 C:\Users\jonat\Desktop\PROJECTS\PaintProject\Server\obj\Debug\net5.0-windows\Server.dll
 C:\Users\jonat\Desktop\PROJECTS\PaintProject\Server\obj\Debug\net5.0-windows\ref\Server.dll
 C:\Users\jonat\Desktop\PROJECTS\PaintProject\Server\obj\Debug\net5.0-windows\Server.pdb
