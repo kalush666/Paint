@@ -1,9 +1,12 @@
-﻿🎨 Paint Project – Fullstack WPF + C# + MongoDB
+﻿# 🎨 Paint Project – Fullstack WPF + C# + MongoDB
 
 This project is a fullstack paint application featuring a WPF client, a C# backend server, and MongoDB for persistent storage. It enables users to draw, save, and load shapes like lines, rectangles, and circles with real-time communication between the client and the server.
 
-📁 Project Structure
+---
 
+## 📁 Project Structure
+
+```
 PaintProject/
 ├── .vs/
 │   └── PaintProject/DesignTimeBuild/.dtbcache.v2
@@ -53,33 +56,34 @@ PaintProject/
 ├── docker-compose.yml
 ├── PaintProject.sln
 └── run.bat
+```
 
-🚀 How It Works
+---
 
-The Client is a WPF app where users can draw and manipulate shapes.
+## 🚀 How It Works
 
-The Server handles communication, shape logic, and data storage.
+1. The **Client** is a WPF app where users can draw and manipulate shapes.
+2. The **Server** handles communication, shape logic, and data storage.
+3. Shapes are saved and retrieved from **MongoDB**, running in a Docker container.
+4. Shared models are reused across the client and server using a shared library.
 
-Shapes are saved and retrieved from MongoDB, running in a Docker container.
+---
 
-Shared models are reused across the client and server using a shared library.
+## 🛠️ Technologies Used
 
-🛠️ Technologies Used
+* 💻 **WPF** (.NET) – Graphical client interface
+* 🧠 **C# .NET** – Server logic and shared models
+* 🧾 **MongoDB** – Shape data storage
+* 🐳 **Docker** – Containerization for database
+* 🔁 **JSON** – Data exchange format
 
-💻 WPF (.NET) – Graphical client interface
+---
 
-🧠 C# .NET – Server logic and shared models
-
-🧾 MongoDB – Shape data storage
-
-🐳 Docker – Containerization for database
-
-🔁 JSON – Data exchange format
-
-⚙️ run.bat – One-Click Launcher
+## ⚙️ `run.bat` – One-Click Launcher
 
 This file launches the whole stack in one command:
 
+```bat
 @echo off
 
 REM Start MongoDB
@@ -93,31 +97,31 @@ Timeout /t 2 >nul
 
 REM Start WPF client
 start dotnet run --project Client
+```
 
-✅ Usage: Just double-click run.bat to start everything!
+✅ **Usage:** Just double-click `run.bat` to start everything!
 
-🐳 Starts MongoDB via Docker.
+* 🐳 Starts MongoDB via Docker.
+* 🖥️ Runs the backend server.
+* 🖼️ Opens the WPF client.
 
-🖥️ Runs the backend server.
+---
 
-🖼️ Opens the WPF client.
+## 📦 Features
 
-📦 Features
+* ✏️ Draw shapes (line, rectangle, circle...)
+* 💾 Save/load drawings from MongoDB
+* ♻️ Real-time client-server communication
+* 🏗️ Shared model logic via common class library
+* 🧪 Import/export data from database
 
-✏️ Draw shapes (line, rectangle, circle...)
+---
 
-💾 Save/load drawings from MongoDB
+## 🔧 Docker Setup (MongoDB)
 
-♻️ Real-time client-server communication
+`docker-compose.yml`:
 
-🏗️ Shared model logic via common class library
-
-🧪 Import/export data from database
-
-🔧 Docker Setup (MongoDB)
-
-docker-compose.yml:
-
+```yaml
 version: '3.8'
 services:
   mongodb:
@@ -129,34 +133,33 @@ services:
       - mongo_data:/data/db
 volumes:
   mongo_data:
+```
 
-🧠 Key Folders
+---
 
-Folder
+## 🧠 Key Folders
 
-Purpose
+| Folder    | Purpose                                   |
+| --------- | ----------------------------------------- |
+| `Client/` | WPF UI app for drawing shapes             |
+| `Server/` | Handles shape logic and Mongo integration |
 
-Client/
+---
 
-WPF UI app for drawing shapes
+## 📎 Notes
 
-Server/
+* 🟨 If shapes are not loading: make sure MongoDB is running and properly populated.
+* 🔁 Data is serialized using `Newtonsoft.Json`.
+* 💡 Extendable via ShapeFactory and Enums in Shared Models.
 
-Handles shape logic and Mongo integration
+---
 
-📎 Notes
+## 👨‍💻 Author
 
-🟨 If shapes are not loading: make sure MongoDB is running and properly populated.
+Built by Jonathan Kalush – [GitHub](https://github.com/kalush666)
 
-🔁 Data is serialized using Newtonsoft.Json.
+---
 
-💡 Extendable via ShapeFactory and Enums in Shared Models.
-
-👨‍💻 Author
-
-Built by Jonathan Kalush – GitHub
-
-📜 License
+## 📜 License
 
 MIT License © 2025
-
