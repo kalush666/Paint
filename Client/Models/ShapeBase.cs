@@ -25,7 +25,7 @@ namespace Client.Models
 
         public abstract UIElement ToUI(Brush color, double strokeThickness);
 
-        protected Brush GetBrushFromName(string colorName)
+        public Brush GetBrushFromName(string colorName)
         {
             return colorName switch
             {
