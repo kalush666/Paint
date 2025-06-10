@@ -5,9 +5,9 @@ using System.Windows.Media;
 using Client.Convertors;
 using Client.Enums;
 using Client.Factories;
+using Client.Helpers;
 using Client.Models;
 using Client.Services;
-using Client.Utils;
 
 namespace Client.Views
 {

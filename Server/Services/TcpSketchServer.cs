@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -92,14 +93,22 @@ namespace Server.Services
                     }
                 }
 
-                using var stream = client.GetStream();
-                var buffer = new byte[4096];
-                var byteRead = await stream.ReadAsync(buffer, 0, buffer.Length, token);
-                var message = Encoding.UTF8.GetString(buffer, 0, byteRead).Trim();
+                await using var stream = client.GetStream();
 
-                if (message.StartsWith("GET:"))
+                using var responseStream = new MemoryStream();
+                var responseChunk = new byte[4096];
+                int bytesRead;
+                while ((bytesRead = await stream.ReadAsync(responseChunk, 0, responseChunk.Length)) > 0)
                 {
-                    var sketchName = message.Substring(4);
+                    responseStream.Write(responseChunk, 0, bytesRead);
+                    if (!stream.DataAvailable) break;
+                }
+
+                var clientRequest = Encoding.UTF8.GetString(responseChunk, 0, bytesRead).Trim();
+
+                if (clientRequest.StartsWith("GET:"))
+                {
+                    var sketchName = clientRequest.Substring(4);
                     var handler = new DownloadHandler(_mongoStore, stream, token, sketchName);
                     await handler.HandleAsync();
                 }
@@ -124,7 +133,7 @@ namespace Server.Services
             }
         }
 
-        private async Task SendResponse(NetworkStream stream, string response)
+        private static async Task SendResponse(NetworkStream stream, string response)
         {
             try
             {

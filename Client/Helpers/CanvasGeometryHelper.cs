@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Client.Models;
 using Common.Errors;
 
-namespace Client.Utils
+namespace Client.Helpers
 {
     public static class CanvasGeometryHelper
     {
