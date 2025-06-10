@@ -43,8 +43,8 @@ namespace Client.Factories
 
         public static ShapeBase? createShapeFromJson(JObject json)
         {
-            var typeToken = json["Type"] ?? json["type"];
-            if (typeToken==null)
+            var typeToken = json["Type"] ?? json["type"] ?? json["shapeType"];
+            if (typeToken == null)
             {
                 return null;
             }
