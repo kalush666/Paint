@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Common.Errors;
 using Server.Repositories;
-using Server.Services;
 
 namespace Server.Handlers
 {
@@ -29,52 +28,28 @@ namespace Server.Handlers
             {
                 Console.WriteLine($"Download request for: {_sketchName}");
 
-                if (!LockManager.TryLock(_sketchName,out var lockToken))
-                {
-                    await SendResponseAsync($"ERROR: sketch '{_sketchName}' is locked");
-                    return;
-                }
-
                 try
                 {
                     var sketchJson = await _mongoStore.GetJsonByNameAsync(_sketchName);
                     if (sketchJson == null)
                     {
-                        await SendResponseAsync($"ERROR: sketch '{_sketchName}' not found");
+                        await ResponseHelper.SendAsync(_stream, AppErrors.Mongo.SketchNotFound, _token);
                     }
                     else
                     {
                         Console.WriteLine($"Sending sketch: {_sketchName}");
-                        await SendResponseAsync(sketchJson);
+                        await ResponseHelper.SendAsync(_stream, sketchJson, _token);
                     }
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
-                    await SendResponseAsync("ERROR: Exception occurred while processing download");
+                    await ResponseHelper.SendAsync(_stream, AppErrors.Generic.OperationFailed, _token);
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"DownloadHandler error: {ex.Message}");
-                await SendResponseAsync("ERROR: Exception occurred while processing download");
-            }
-        }
-
-        private async Task SendResponseAsync(string response)
-        {
-            try
-            {
-                var responseBytes = Encoding.UTF8.GetBytes(response);
-                await _stream.WriteAsync(responseBytes, 0, responseBytes.Length, _token);
-                await _stream.FlushAsync(_token);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error sending response: {ex.Message}");
-            }
-            finally
-            {
-                try { _stream.Close(); } catch { }
+                await ResponseHelper.SendAsync(_stream, AppErrors.Generic.OperationFailed, _token);
             }
         }
     }

@@ -26,7 +26,7 @@
 
         public static class Response
         {
-            public const string UnableTosend = "Unable to send message";
+            public const string UnableToSend = "Unable to send message";
         }
 
         public static class Generic
@@ -39,5 +39,14 @@
         {
             public const string NotAShape = "Given shape type is not a base shape";
         }
+
+        public static class Server
+        {
+            public const string Suspended = "Server is currently suspended.";
+            public const string ListenerCancelled = "Server listener task was cancelled.";
+            public const string AcceptClientError = "Error occurred while accepting a client.";
+            public const string ClientHandlingCancelled = "Client handling was cancelled.";
+        }
+
     }
 }

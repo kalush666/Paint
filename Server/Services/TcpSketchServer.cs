@@ -5,6 +5,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Common.Errors;
 using Server.Handlers;
 using Server.Repositories;
 
@@ -49,12 +50,12 @@ namespace Server.Services
                     }
                     catch (OperationCanceledException)
                     {
-                        Console.WriteLine("Listener task cancelled.");
+                        Console.WriteLine(AppErrors.Server.ListenerCancelled);
                         break;
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
-                        Console.WriteLine($"Error accepting client: {ex.Message}");
+                        Console.WriteLine(AppErrors.Server.AcceptClientError);
                     }
                 }
             });
@@ -90,7 +91,7 @@ namespace Server.Services
                 {
                     if (_isSuspended)
                     {
-                        _ = SendResponse(client.GetStream(), "ERROR: Server is suspended");
+                        _ = ResponseHelper.SendAsync(client.GetStream(), AppErrors.Server.Suspended, token);
                         return;
                     }
                 }
@@ -122,33 +123,17 @@ namespace Server.Services
             }
             catch (OperationCanceledException)
             {
-                Console.WriteLine("Client handling was cancelled.");
+                Console.WriteLine(AppErrors.Server.ClientHandlingCancelled);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Console.WriteLine($"Error in client handler: {ex.Message}");
-                await SendResponse(client.GetStream(), "ERROR: Exception occurred");
+                Console.WriteLine(AppErrors.Generic.OperationFailed);
+                await ResponseHelper.SendAsync(client.GetStream(), AppErrors.Generic.OperationFailed, token);
             }
             finally
             {
                 try { client.Close(); } catch { }
             }
         }
-
-        private static async Task SendResponse(NetworkStream stream, string response)
-        {
-            try
-            {
-                var responseBytes = Encoding.UTF8.GetBytes(response);
-                await stream.WriteAsync(responseBytes, 0, responseBytes.Length);
-                await stream.FlushAsync();
-                stream.Close();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error sending response: {ex.Message}");
-            }
-        }
-
     }
 }
