@@ -28,3 +28,5 @@ C:\Users\jonat\Desktop\PROJECTS\PaintProject\Server\obj\Debug\net5.0-windows\Ser
 C:\Users\jonat\Desktop\PROJECTS\PaintProject\Server\obj\Debug\net5.0-windows\Server.genruntimeconfig.cache
 C:\Users\jonat\Desktop\PROJECTS\PaintProject\Server\obj\Debug\net5.0-windows\Views\ServerWindow.baml
 C:\Users\jonat\Desktop\PROJECTS\PaintProject\Server\obj\Debug\net5.0-windows\Views\ServerWindow.g.cs
+C:\Users\jonat\Desktop\PROJECTS\PaintProject\Server\bin\Debug\net5.0-windows\Common.dll
+C:\Users\jonat\Desktop\PROJECTS\PaintProject\Server\bin\Debug\net5.0-windows\Common.pdb

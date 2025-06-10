@@ -21,10 +21,5 @@ namespace Client.Models
             this.End = end;
         }
 
-        public override void EnsureFitsCanvas(double canvasWidth, double canvasHeight)
-        {
-            this.Start = ensureFitsPosition(this.Start, canvasWidth, canvasHeight);
-            this.End = ensureFitsPosition(this.End, canvasWidth, canvasHeight);
-        }
     }
 }

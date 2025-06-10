@@ -19,6 +19,16 @@
         "runtime": {
           "lib/netstandard2.0/Newtonsoft.Json.dll": {}
         }
+      },
+      "Common/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v5.0",
+        "compile": {
+          "bin/placeholder/Common.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Common.dll": {}
+        }
       }
     }
   },
@@ -106,10 +116,16 @@
         "newtonsoft.json.nuspec",
         "packageIcon.png"
       ]
+    },
+    "Common/1.0.0": {
+      "type": "project",
+      "path": "../Common/Common.csproj",
+      "msbuildProject": "../Common/Common.csproj"
     }
   },
   "projectFileDependencyGroups": {
     "net5.0-windows7.0": [
+      "Common >= 1.0.0",
       "Microsoft.VisualBasic >= 10.3.0",
       "Newtonsoft.Json >= 13.0.3"
     ]
@@ -145,7 +161,11 @@
       "frameworks": {
         "net5.0-windows7.0": {
           "targetAlias": "net5.0-windows",
-          "projectReferences": {}
+          "projectReferences": {
+            "C:\\Users\\jonat\\Desktop\\PROJECTS\\PaintProject\\Common\\Common.csproj": {
+              "projectPath": "C:\\Users\\jonat\\Desktop\\PROJECTS\\PaintProject\\Common\\Common.csproj"
+            }
+          }
         }
       },
       "warningProperties": {

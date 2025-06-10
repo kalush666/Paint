@@ -4,8 +4,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Client.Convertors;
 using Newtonsoft.Json;
-using Shared_Models.Models;
 using Client.Factories;
+using Client.Models;
 using Newtonsoft.Json.Linq;
 
 namespace Client.Services

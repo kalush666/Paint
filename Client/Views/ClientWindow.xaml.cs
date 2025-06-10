@@ -7,8 +7,9 @@ using Client.Enums;
 using Client.Factories;
 using Client.Models;
 using Client.Services;
+using Client.Utils;
 
-namespace Client
+namespace Client.Views
 {
     public partial class ClientWindow : Window
     {
@@ -28,7 +29,7 @@ namespace Client
             currentSketch.Name = "Untitled Sketch";
         }
 
-        private void OnShapeAdded(object sender, string type) => Console.WriteLine($"shape added :{type}");
+        private static void OnShapeAdded(object sender, string type) => Console.WriteLine($"shape added :{type}");
 
         private void Canvas_OnMouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -49,13 +50,13 @@ namespace Client
             shape.SetColor(currentColor);
             shape.StrokeThikness = currentStrokeThikness;
 
-            shape.EnsureFitsCanvas(Canvas.ActualWidth, Canvas.ActualHeight);
+            CanvasGeometryHelper.EnsureFitsCanvas(Canvas.ActualWidth, Canvas.ActualHeight,shape);
 
             currentSketch.addShape(shape);
             shapeAdded?.Invoke(this, currentShape.ToString());
 
-            var UiElement = ShapeToUiElementConvertor.ConvertToUiElement(shape.Color, shape.StrokeThikness, shape);
-            Canvas.Children.Add(UiElement);
+            var uiElement = ShapeToUiElementConvertor.ConvertToUiElement(shape);
+            Canvas.Children.Add(uiElement);
         }
 
         private void LineButton_OnClick(object sender, RoutedEventArgs e)
@@ -118,23 +119,22 @@ namespace Client
             try
             {
                 var importedSketch = await communicationService.DownloadSketchAsync(sketchName);
-                if (importedSketch != null)
+                if (importedSketch == null) return;
+
+                Canvas.Children.Clear();
+                currentSketch = importedSketch;
+
+                foreach (var shape in currentSketch.Shapes)
                 {
-                    Canvas.Children.Clear();
-                    currentSketch = importedSketch;
+                    CanvasGeometryHelper.EnsureFitsCanvas(Canvas.ActualWidth, Canvas.ActualHeight,shape);
 
-                    foreach (var shape in currentSketch.Shapes)
-                    {
-                        shape.EnsureFitsCanvas(Canvas.ActualWidth, Canvas.ActualHeight);
+                    shape.Color = shape.GetBrushFromName(shape.ColorName);
 
-                        shape.Color = shape.GetBrushFromName(shape.ColorName);
-
-                        var uiElement = shape.ToUI(shape.Color, shape.StrokeThikness);
-                        Canvas.Children.Add(uiElement);
-                    }
-
-                    MessageBox.Show($"Sketch '{currentSketch.Name}' imported successfully with {currentSketch.Shapes.Count} shapes!", "Import Success");
+                    var uiElement = ShapeToUiElementConvertor.ConvertToUiElement(shape);
+                    Canvas.Children.Add(uiElement);
                 }
+
+                MessageBox.Show($"Sketch '{currentSketch.Name}' imported successfully with {currentSketch.Shapes.Count} shapes!", "Import Success");
             }
             catch (Exception ex)
             {
@@ -144,19 +144,24 @@ namespace Client
 
         private void OptionsButton_OnClick(object sender, RoutedEventArgs e)
         {
-            var optionsWindow = new OptionsWindow();
-
-            optionsWindow.ColorPicker.SelectedIndex = GetColorIndex(currentColor);
-            optionsWindow.StrokeSlider.Value = currentStrokeThikness;
-
-            if (optionsWindow.ShowDialog() == true)
+            var optionsWindow = new OptionsWindow
             {
-                currentColor = optionsWindow.SelectedColor;
-                currentStrokeThikness = optionsWindow.SelectedThickness;
+                ColorPicker =
+                {
+                    SelectedIndex = GetColorIndex(currentColor)
+                },
+                StrokeSlider =
+                {
+                    Value = currentStrokeThikness
+                }
+            };
 
-                MessageBox.Show($"Settings updated:\nColor: {GetColorName(currentColor)}\nStroke Thickness: {currentStrokeThikness}",
-                    "Settings Applied");
-            }
+            if (optionsWindow.ShowDialog() != true) return;
+            currentColor = optionsWindow.SelectedColor;
+            currentStrokeThikness = optionsWindow.SelectedThickness;
+
+            MessageBox.Show($"Settings updated:\nColor: {GetColorName(currentColor)}\nStroke Thickness: {currentStrokeThikness}",
+                "Settings Applied");
         }
 
         private void UpdateButtonSelection(string selectedShape)

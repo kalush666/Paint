@@ -5,7 +5,6 @@ using Client.Models;
 using Common.Errors;
 using Common.Utils;
 using Newtonsoft.Json.Linq;
-using Shared_Models.Models;
 
 namespace Client.Factories
 {
