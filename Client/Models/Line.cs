@@ -1,15 +1,30 @@
 ﻿using System.Windows;
 using System.Windows.Media;
-using Shared_Models.Models;
+using Newtonsoft.Json;
 
 namespace Client.Models
 {
+    [JsonObject(MemberSerialization.OptIn)]
     class Line : ShapeBase
     {
+        [JsonProperty]
         public Position Start { get; set; }
+
+        [JsonProperty]
         public Position End { get; set; }
+
+        [JsonProperty]
         public override string shapeType => "Line";
-        public override UIElement ToUI(Brush color,double strokeThikness)
+
+        public Line() { }
+
+        public Line(Position start, Position end)
+        {
+            this.Start = start;
+            this.End = end;
+        }
+
+        public override UIElement ToUI(Brush color, double strokeThickness)
         {
             return new System.Windows.Shapes.Line
             {
@@ -18,17 +33,8 @@ namespace Client.Models
                 X2 = End.X,
                 Y2 = End.Y,
                 Stroke = color,
-                StrokeThickness = strokeThikness
+                StrokeThickness = strokeThickness
             };
-        }
-
-        public Line() { }
-
-
-        public Line(Position start, Position end)
-        {
-            this.Start = start;
-            this.End = end;
         }
     }
 }

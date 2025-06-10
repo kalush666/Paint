@@ -2,15 +2,31 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using Newtonsoft.Json;
 
 namespace Client.Models
 {
+    [JsonObject(MemberSerialization.OptIn)]
     class Rectangle : ShapeBase
     {
+        [JsonProperty]
         public Position StartPosition { get; set; }
+
+        [JsonProperty]
         public Position EndPosition { get; set; }
+
+        [JsonProperty]
         public override string shapeType => "Rectangle";
-        public override UIElement ToUI(Brush color,double strokeThikness)
+
+        public Rectangle() { }
+
+        public Rectangle(Position startPosition, Position endPosition)
+        {
+            StartPosition = startPosition;
+            EndPosition = endPosition;
+        }
+
+        public override UIElement ToUI(Brush color, double strokeThickness)
         {
             double x = Math.Min(StartPosition.X, EndPosition.X);
             double y = Math.Min(StartPosition.Y, EndPosition.Y);
@@ -22,23 +38,12 @@ namespace Client.Models
                 Width = width,
                 Height = height,
                 Stroke = color,
-                StrokeThickness = strokeThikness
+                StrokeThickness = strokeThickness
             };
 
             Canvas.SetLeft(rect, x);
             Canvas.SetTop(rect, y);
             return rect;
-        }
-
-
-        public Rectangle()
-        {
-        }
-
-        public Rectangle(Position startPosition, Position endPosition)
-        {
-            StartPosition = startPosition;
-            EndPosition = endPosition;
         }
     }
 }
