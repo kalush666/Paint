@@ -139,10 +139,10 @@ volumes:
 
 ## 🧠 Key Folders
 
-| Folder    | Purpose                                   |
-| --------- | ----------------------------------------- |
-| `Client/` | WPF UI app for drawing shapes             |
-| `Server/` | Handles shape logic and Mongo integration |
+| Folder    | Purpose                                                                     |
+| --------- | --------------------------------------------------------------------------- |
+| `Client/` | WPF UI app for drawing shapes                                               |
+| `Server/` | Handles shape logic and Mongo integration +ui for managing files and access |
 
 ---
 
@@ -150,7 +150,6 @@ volumes:
 
 * 🟨 If shapes are not loading: make sure MongoDB is running and properly populated.
 * 🔁 Data is serialized using `Newtonsoft.Json`.
-* 💡 Extendable via ShapeFactory and Enums in Shared Models.
 
 ---
 
