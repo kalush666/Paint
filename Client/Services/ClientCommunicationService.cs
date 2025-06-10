@@ -13,11 +13,13 @@ namespace Client.Services
     {
         private readonly string _serverHost;
         private readonly int _serverPort;
+        private readonly int _timeoutMs;
 
-        public ClientCommunicationService(string serverHost = "localhost", int serverPort = 5000)
+        public ClientCommunicationService(string serverHost = "localhost", int serverPort = 5000, int timeoutMs = 10000)
         {
             _serverHost = serverHost;
             _serverPort = serverPort;
+            _timeoutMs = timeoutMs;
         }
 
         public async Task<string> UploadSketchAsync(Sketch sketch)
@@ -25,6 +27,9 @@ namespace Client.Services
             try
             {
                 using var client = new TcpClient();
+                client.ReceiveTimeout = _timeoutMs;
+                client.SendTimeout = _timeoutMs;
+
                 await client.ConnectAsync(_serverHost, _serverPort);
 
                 using var stream = client.GetStream();
@@ -52,6 +57,9 @@ namespace Client.Services
             try
             {
                 using var client = new TcpClient();
+                client.ReceiveTimeout = _timeoutMs;
+                client.SendTimeout = _timeoutMs;
+
                 await client.ConnectAsync(_serverHost, _serverPort);
 
                 using var stream = client.GetStream();
@@ -61,13 +69,13 @@ namespace Client.Services
                 await stream.WriteAsync(requestData, 0, requestData.Length);
                 await stream.FlushAsync();
 
-                var buffer = new byte[4096];
+                var buffer = new byte[8192]; // Increased buffer size
                 var bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
                 var response = Encoding.UTF8.GetString(buffer, 0, bytesRead);
 
                 if (response.StartsWith("ERROR:"))
                 {
-                    throw new Exception(response);
+                    throw new Exception(response.Substring(6)); // Remove "ERROR:" prefix
                 }
 
                 var json = JObject.Parse(response);
@@ -100,6 +108,8 @@ namespace Client.Services
             try
             {
                 using var client = new TcpClient();
+                client.ReceiveTimeout = 5000;
+                client.SendTimeout = 5000;
                 await client.ConnectAsync(_serverHost, _serverPort);
                 return client.Connected;
             }
