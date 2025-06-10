@@ -7,35 +7,28 @@ namespace Server.Services
 {
     public static class LockManager
     {
-        private static readonly ConcurrentDictionary<string, LockInfo> _locks = new();
+        private static readonly ConcurrentDictionary<string, CancellationTokenSource> _locks = new();
 
-        public static bool TryLock(string name)
+        public static bool TryLock(string name,out CancellationToken token)
         {
-            var lockInfo = new LockInfo
+            var cts = new CancellationTokenSource();
+            if (_locks.TryAdd(name, cts))
             {
-                AcquiredAt = DateTime.UtcNow,
-                ThreadId = Thread.CurrentThread.ManagedThreadId
-            };
+                token = cts.Token;
+                return true;
+            }
 
-            return _locks.TryAdd(name, lockInfo);
+            token = CancellationToken.None;
+            return false;
         }
 
         public static void Unlock(string name)
         {
-            _locks.TryRemove(name, out _);
-        }
-
-        public static bool IsLocked(string name)
-        {
-            return _locks.ContainsKey(name);
-        }
-
-
-
-        private class LockInfo
-        {
-            public DateTime AcquiredAt { get; set; }
-            public int ThreadId { get; set; }
+            if (_locks.TryRemove(name, out var cts))
+            {
+                cts.Cancel();
+                cts.Dispose();
+            }
         }
     }
 }

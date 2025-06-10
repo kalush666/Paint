@@ -20,6 +20,7 @@ namespace Client.Views
         private Brush currentColor = Brushes.Black;
         private double currentStrokeThikness = 2;
         private ClientCommunicationService communicationService;
+        private string? latestSketch;
 
         public ClientWindow()
         {

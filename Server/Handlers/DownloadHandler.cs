@@ -29,7 +29,7 @@ namespace Server.Handlers
             {
                 Console.WriteLine($"Download request for: {_sketchName}");
 
-                if (!LockManager.TryLock(_sketchName))
+                if (!LockManager.TryLock(_sketchName,out var lockToken))
                 {
                     await SendResponseAsync($"ERROR: sketch '{_sketchName}' is locked");
                     return;
@@ -48,9 +48,9 @@ namespace Server.Handlers
                         await SendResponseAsync(sketchJson);
                     }
                 }
-                finally
+                catch(Exception ex)
                 {
-                    LockManager.Unlock(_sketchName);
+                    await SendResponseAsync("ERROR: Exception occurred while processing download");
                 }
             }
             catch (Exception ex)

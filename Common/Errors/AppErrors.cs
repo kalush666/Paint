@@ -21,6 +21,7 @@
             public const string SketchNotFound = "Sketch not found in the database.";
             public const string ReadError = "Unable to read sketch from MongoDB.";
             public const string DeleteError = "Unable to delete sketch from MongoDB.";
+            public const string AlreadyExists = "Sketch by this name already exist";
         }
 
         public static class Response
