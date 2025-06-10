@@ -4,10 +4,9 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Server;
 using Server.Handlers;
 
-namespace PainterServer.Services
+namespace Server.Services
 {
     public class TcpSketchServer
     {
@@ -16,6 +15,8 @@ namespace PainterServer.Services
         private CancellationTokenSource _cancellationTokenSource = new();
         private Task? _listenerTask;
         private readonly MongoSketchStore _mongoStore = new();
+        private bool _isSuspended = false;
+        private readonly object _suspendLock = new object();
 
         public TcpSketchServer()
         {
@@ -25,6 +26,11 @@ namespace PainterServer.Services
 
         public void StartListener()
         {
+            lock (_suspendLock)
+            {
+                if (_isSuspended) return;
+            }
+
             _listener = new TcpListener(IPAddress.Any, _port);
             _listener.Start();
             Console.WriteLine($"TCP Sketch Server listening on port {_port}");
@@ -53,30 +59,48 @@ namespace PainterServer.Services
 
         public void Suspend()
         {
-            Console.WriteLine("Suspending server...");
-            _cancellationTokenSource.Cancel();
-            _listener.Stop();
+            lock (_suspendLock)
+            {
+                Console.WriteLine("Suspending server...");
+                _isSuspended = true;
+                _cancellationTokenSource.Cancel();
+                _listener.Stop();
+            }
         }
 
         public void Resume()
         {
-            Console.WriteLine("Resuming server...");
-            _cancellationTokenSource = new CancellationTokenSource();
-            StartListener();
+            lock (_suspendLock)
+            {
+                Console.WriteLine("Resuming server...");
+                _isSuspended = false;
+                _cancellationTokenSource = new CancellationTokenSource();
+                StartListener();
+            }
         }
 
         private async Task HandleClient(TcpClient client, CancellationToken token)
         {
             try
             {
+                lock (_suspendLock)
+                {
+                    if (_isSuspended)
+                    {
+                        SendResponse(client.GetStream(), "ERROR: Server is suspended");
+                        return;
+                    }
+                }
+
                 using var stream = client.GetStream();
-                var buffer = new byte[1024];
+                var buffer = new byte[4096]; // Increased buffer size
                 var byteRead = await stream.ReadAsync(buffer, 0, buffer.Length, token);
                 var message = Encoding.UTF8.GetString(buffer, 0, byteRead).Trim();
 
                 if (message.StartsWith("GET:"))
                 {
-                    var handler = new DownloadHandler(_mongoStore, stream, token);
+                    var sketchName = message.Substring(4);
+                    var handler = new DownloadHandler(_mongoStore, stream, token, sketchName);
                     await handler.HandleAsync();
                 }
                 else
