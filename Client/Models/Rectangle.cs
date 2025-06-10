@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 namespace Client.Models
 {
     [JsonObject(MemberSerialization.OptIn)]
-    class Rectangle : ShapeBase
+    public class Rectangle : ShapeBase
     {
         [JsonProperty]
         public Position StartPosition { get; set; }

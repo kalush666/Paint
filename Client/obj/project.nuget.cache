@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "4e+ugP82IB1ExJu2Xk8dvTTXmhq+dhHfCwluTthKcR+DR0Q785YISZ0p46uQfw2IwYr02w/D2N2Kxv4lQQP/7Q==",
+  "dgSpecHash": "SVBbemdzyN3OumBxm3D0NT1eVH06rb+7l+QeU0x5rL6g8O2Xy8o+MIitS6dbr+VhE1asDoLyuYvVIr/cpkW6cg==",
   "success": true,
   "projectFilePath": "C:\\Users\\jonat\\Desktop\\PROJECTS\\PaintProject\\Client\\Client.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\jonat\\.nuget\\packages\\microsoft.visualbasic\\10.3.0\\microsoft.visualbasic.10.3.0.nupkg.sha512",
     "C:\\Users\\jonat\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512"
   ],
   "logs": []

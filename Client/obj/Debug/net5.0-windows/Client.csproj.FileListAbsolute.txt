@@ -20,7 +20,7 @@ C:\Users\jonat\Desktop\PROJECTS\PaintProject\Client\obj\Debug\net5.0-windows\Cli
 C:\Users\jonat\Desktop\PROJECTS\PaintProject\Client\obj\Debug\net5.0-windows\ref\Client.dll
 C:\Users\jonat\Desktop\PROJECTS\PaintProject\Client\obj\Debug\net5.0-windows\Client.pdb
 C:\Users\jonat\Desktop\PROJECTS\PaintProject\Client\obj\Debug\net5.0-windows\Client.genruntimeconfig.cache
-C:\Users\jonat\Desktop\PROJECTS\PaintProject\Client\obj\Debug\net5.0-windows\OptionsWindow.baml
-C:\Users\jonat\Desktop\PROJECTS\PaintProject\Client\obj\Debug\net5.0-windows\ClientWindow.g.cs
-C:\Users\jonat\Desktop\PROJECTS\PaintProject\Client\obj\Debug\net5.0-windows\OptionsWindow.g.cs
-C:\Users\jonat\Desktop\PROJECTS\PaintProject\Client\obj\Debug\net5.0-windows\ClientWindow.baml
+C:\Users\jonat\Desktop\PROJECTS\PaintProject\Client\obj\Debug\net5.0-windows\Views\OptionsWindow.baml
+C:\Users\jonat\Desktop\PROJECTS\PaintProject\Client\obj\Debug\net5.0-windows\Views\ClientWindow.g.cs
+C:\Users\jonat\Desktop\PROJECTS\PaintProject\Client\obj\Debug\net5.0-windows\Views\OptionsWindow.g.cs
+C:\Users\jonat\Desktop\PROJECTS\PaintProject\Client\obj\Debug\net5.0-windows\Views\ClientWindow.baml

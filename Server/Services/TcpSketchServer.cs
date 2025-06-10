@@ -93,7 +93,7 @@ namespace Server.Services
                 }
 
                 using var stream = client.GetStream();
-                var buffer = new byte[4096]; // Increased buffer size
+                var buffer = new byte[4096];
                 var byteRead = await stream.ReadAsync(buffer, 0, buffer.Length, token);
                 var message = Encoding.UTF8.GetString(buffer, 0, byteRead).Trim();
 

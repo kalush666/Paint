@@ -12,9 +12,20 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Page Include="App.xaml">
+	  <Page Include="App.xaml" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ApplicationDefinition Update="App.xaml">
+	    <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
 	    <Generator>MSBuild:Compile</Generator>
-	  </Page>
+	  </ApplicationDefinition>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Update="App.xaml.cs">
+	    <SubType>Code</SubType>
+	  </Compile>
 	</ItemGroup>
 
 </Project>

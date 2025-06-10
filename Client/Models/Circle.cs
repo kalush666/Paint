@@ -8,7 +8,7 @@ using Shared_Models.Models;
 namespace Client.Models
 {
     [JsonObject(MemberSerialization.OptIn)]
-    class Circle : ShapeBase
+    public class Circle : ShapeBase
     {
         [JsonProperty]
         public Position Center { get; set; }

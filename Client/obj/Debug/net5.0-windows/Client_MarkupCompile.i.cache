@@ -10,11 +10,11 @@ none
 false
 TRACE;DEBUG;NET;NET5_0;NETCOREAPP
 C:\Users\jonat\Desktop\PROJECTS\PaintProject\Client\App.xaml
-2-33824767
+2-113490476
 
-151424328778
+15-1355273376
 1942137490335
-ClientWindow.xaml;OptionsWindow.xaml;
+Views\ClientWindow.xaml;Views\OptionsWindow.xaml;
 
 False
 

@@ -1,5 +1,4 @@
 C:\Users\jonat\Desktop\PROJECTS\PaintProject\Server\obj\Debug\net5.0-windows\Server.csproj.AssemblyReference.cache
-C:\Users\jonat\Desktop\PROJECTS\PaintProject\Server\obj\Debug\net5.0-windows\ServerWindow.g.cs
 C:\Users\jonat\Desktop\PROJECTS\PaintProject\Server\obj\Debug\net5.0-windows\Server_MarkupCompile.cache
 C:\Users\jonat\Desktop\PROJECTS\PaintProject\Server\obj\Debug\net5.0-windows\Server.dll
 C:\Users\jonat\Desktop\PROJECTS\PaintProject\Server\obj\Debug\net5.0-windows\ref\Server.dll
@@ -20,7 +19,6 @@ C:\Users\jonat\Desktop\PROJECTS\PaintProject\Server\bin\Debug\net5.0-windows\Sha
 C:\Users\jonat\Desktop\PROJECTS\PaintProject\Server\bin\Debug\net5.0-windows\Snappier.dll
 C:\Users\jonat\Desktop\PROJECTS\PaintProject\Server\bin\Debug\net5.0-windows\ZstdSharp.dll
 C:\Users\jonat\Desktop\PROJECTS\PaintProject\Server\obj\Debug\net5.0-windows\App.g.cs
-C:\Users\jonat\Desktop\PROJECTS\PaintProject\Server\obj\Debug\net5.0-windows\ServerWindow.baml
 C:\Users\jonat\Desktop\PROJECTS\PaintProject\Server\obj\Debug\net5.0-windows\Server.g.resources
 C:\Users\jonat\Desktop\PROJECTS\PaintProject\Server\obj\Debug\net5.0-windows\Server.GeneratedMSBuildEditorConfig.editorconfig
 C:\Users\jonat\Desktop\PROJECTS\PaintProject\Server\obj\Debug\net5.0-windows\Server.AssemblyInfoInputs.cache
@@ -28,3 +26,5 @@ C:\Users\jonat\Desktop\PROJECTS\PaintProject\Server\obj\Debug\net5.0-windows\Ser
 C:\Users\jonat\Desktop\PROJECTS\PaintProject\Server\obj\Debug\net5.0-windows\Server.csproj.CoreCompileInputs.cache
 C:\Users\jonat\Desktop\PROJECTS\PaintProject\Server\obj\Debug\net5.0-windows\Server.csproj.CopyComplete
 C:\Users\jonat\Desktop\PROJECTS\PaintProject\Server\obj\Debug\net5.0-windows\Server.genruntimeconfig.cache
+C:\Users\jonat\Desktop\PROJECTS\PaintProject\Server\obj\Debug\net5.0-windows\Views\ServerWindow.baml
+C:\Users\jonat\Desktop\PROJECTS\PaintProject\Server\obj\Debug\net5.0-windows\Views\ServerWindow.g.cs

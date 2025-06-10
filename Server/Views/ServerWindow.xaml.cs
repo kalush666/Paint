@@ -17,6 +17,7 @@ namespace Server
         private CancellationTokenSource suspendToken = new CancellationTokenSource();
         private MongoSketchStore _mongoStore = new MongoSketchStore();
         private Timer _refreshTimer;
+        private bool _isSuspended = false;
 
         public ServerWindow()
         {
@@ -109,16 +110,17 @@ namespace Server
 
         private void SuspendButton_OnClick(object sender, RoutedEventArgs e)
         {
-            if (!suspendToken.IsCancellationRequested)
+            if (!_isSuspended)
             {
                 _server.Suspend();
+                _isSuspended = true;
                 SuspendButton.Content = "Resume";
                 _refreshTimer?.Change(Timeout.Infinite, Timeout.Infinite);
             }
             else
             {
-                suspendToken = new CancellationTokenSource();
                 _server.Resume();
+                _isSuspended = false;
                 SuspendButton.Content = "Suspend";
                 _refreshTimer?.Change(TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(5));
             }
