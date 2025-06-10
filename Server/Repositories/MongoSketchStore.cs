@@ -6,15 +6,14 @@ using System.Threading.Tasks;
 using Common.Errors;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using PainterServer.Utils;
+using Server.Config;
+using Server.Helpers;
 
 namespace Server.Repositories
 {
     public class MongoSketchStore
     {
         private readonly IMongoCollection<BsonDocument> _collection;
-        public Action<string>? SketchInserted;
-        public Action<string>? SketchDeleted;
 
         public MongoSketchStore()
         {
@@ -36,7 +35,7 @@ namespace Server.Repositories
             if (!doc.Contains("Name") || string.IsNullOrWhiteSpace(doc["Name"].AsString))
                 throw new ArgumentException("Invalid or missing 'Name' in sketch JSON");
 
-            string name = doc["Name"].AsString;
+            var name = doc["Name"].AsString;
             var filter = Builders<BsonDocument>.Filter.Eq("Name", name);
             var exists = await _collection.Find(filter).AnyAsync();
             if (exists)
@@ -44,7 +43,7 @@ namespace Server.Repositories
 
             await _collection.InsertOneAsync(doc);
             Console.WriteLine($"Sketch {name} inserted to MongoDB");
-            SketchInserted?.Invoke(name);
+            SketchStoreNotifier.NotifyInserted(name);
         }
 
         public async Task DeleteSketchAsync(string name)
@@ -55,7 +54,7 @@ namespace Server.Repositories
             if (result.DeletedCount > 0)
             {
                 Console.WriteLine($"sketch {name} deleted from db");
-                SketchDeleted?.Invoke(name);
+                SketchStoreNotifier.NotifyInserted(name);
             }
             else
             {

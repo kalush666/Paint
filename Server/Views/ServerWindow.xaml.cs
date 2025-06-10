@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Server.Helpers;
 using Server.Repositories;
 using Server.Services;
 
@@ -26,8 +27,8 @@ namespace Server
             _server.StartListener();
             LoadSketchList();
 
-            _mongoStore.SketchInserted += name => Dispatcher.Invoke(async () => await RefreshSketchListAsync());
-            _mongoStore.SketchDeleted += name => Dispatcher.Invoke(async () => await RefreshSketchListAsync());
+            SketchStoreNotifier.SketchInserted += name => Dispatcher.Invoke(async () => await RefreshSketchListAsync());
+            SketchStoreNotifier.SketchDeleted += name => Dispatcher.Invoke(async () => await RefreshSketchListAsync());
         }
 
         private async void LoadSketchList()
@@ -47,7 +48,7 @@ namespace Server
                     foreach (var json in sketchFiles)
                     {
                         var obj = Newtonsoft.Json.Linq.JObject.Parse(json);
-                        string displayName = obj["Name"]?.ToString() + ".json";
+                        var displayName = obj["Name"] + ".json";
 
                         var stackPanel = new StackPanel
                         {
@@ -74,7 +75,7 @@ namespace Server
                             MinWidth = 80
                         };
 
-                        string sketchName = obj["Name"]?.ToString();
+                        var sketchName = obj["Name"]?.ToString();
                         deleteButton.Click += async (s, e) => await DeleteSketch(sketchName);
 
                         stackPanel.Children.Add(nameButton);

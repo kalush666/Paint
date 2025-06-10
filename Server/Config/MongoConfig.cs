@@ -1,4 +1,4 @@
-﻿namespace PainterServer.Utils
+﻿namespace Server.Config
 {
     public static class MongoConfig
     {

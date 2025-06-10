@@ -116,7 +116,7 @@ namespace Server.Services
                 }
                 else
                 {
-                    var handler = new UploadHandler(_mongoStore, stream, token, message);
+                    var handler = new UploadHandler(_mongoStore, stream, token, clientRequest);
                     await handler.HandleAsync();
                 }
             }
