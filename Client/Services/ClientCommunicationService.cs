@@ -2,6 +2,7 @@
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using Client.Convertors;
 using Newtonsoft.Json;
 using Shared_Models.Models;
 using Client.Factories;
@@ -87,7 +88,7 @@ namespace Client.Services
                 {
                     foreach (var shapeJson in shapesArray)
                     {
-                        var shape = ShapeFactory.createShapeFromJson(shapeJson as JObject);
+                        var shape = JsonToShapeConvertor.ConvertToShape(shapeJson as JObject);
                         if (shape != null)
                         {
                             sketch.Shapes.Add(shape);

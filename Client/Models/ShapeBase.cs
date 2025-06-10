@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Media;
+using Client.Enums;
 using Newtonsoft.Json;
 
 namespace Client.Models
@@ -21,9 +22,8 @@ namespace Client.Models
         public double StrokeThikness { get; set; } = 2;
 
         [JsonProperty]
-        public abstract string shapeType { get; }
+        public abstract BasicShapeType shapeType { get; }
 
-        public abstract UIElement ToUI(Brush color, double strokeThickness);
 
         public Brush GetBrushFromName(string colorName)
         {

@@ -14,12 +14,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		run.bat = run.bat
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Errors", "Errors", "{FAA7545F-F27F-4FFB-BBCC-631ECF805ED3}"
-	ProjectSection(SolutionItems) = preProject
-		AppErrors.cs = AppErrors.cs
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{2298B88A-6F83-446E-8A2F-E0BDB831DFF5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{4601DEDB-A487-49C8-86BA-32DCC246E44B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,12 +30,13 @@ Global
 		{747FB21B-6B55-416D-B6D7-7143FBFD2700}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{747FB21B-6B55-416D-B6D7-7143FBFD2700}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{747FB21B-6B55-416D-B6D7-7143FBFD2700}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4601DEDB-A487-49C8-86BA-32DCC246E44B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4601DEDB-A487-49C8-86BA-32DCC246E44B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4601DEDB-A487-49C8-86BA-32DCC246E44B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4601DEDB-A487-49C8-86BA-32DCC246E44B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{FAA7545F-F27F-4FFB-BBCC-631ECF805ED3} = {2298B88A-6F83-446E-8A2F-E0BDB831DFF5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D69BE29F-424A-4CE5-A9A7-0CF5522A0CF3}

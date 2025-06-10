@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Media;
+using Client.Enums;
 using Newtonsoft.Json;
 
 namespace Client.Models
@@ -14,7 +15,7 @@ namespace Client.Models
         public Position End { get; set; }
 
         [JsonProperty]
-        public override string shapeType => "Line";
+        public override BasicShapeType shapeType => BasicShapeType.Line;
 
         public Line() { }
 
@@ -22,19 +23,6 @@ namespace Client.Models
         {
             this.Start = start;
             this.End = end;
-        }
-
-        public override UIElement ToUI(Brush color, double strokeThickness)
-        {
-            return new System.Windows.Shapes.Line
-            {
-                X1 = Start.X,
-                Y1 = Start.Y,
-                X2 = End.X,
-                Y2 = End.Y,
-                Stroke = color,
-                StrokeThickness = strokeThickness
-            };
         }
 
         public override void EnsureFitsCanvas(double canvasWidth, double canvasHeight)

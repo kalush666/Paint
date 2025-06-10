@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using Client.Enums;
 using Newtonsoft.Json;
 using Shared_Models.Models;
 
@@ -17,7 +18,7 @@ namespace Client.Models
         public double Radius { get; set; }
 
         [JsonProperty]
-        public override string shapeType => "Circle";
+        public override BasicShapeType shapeType => BasicShapeType.Circle;
 
         public Circle() { }
 
@@ -27,20 +28,6 @@ namespace Client.Models
             Radius = radius;
         }
 
-        public override UIElement ToUI(Brush color, double strokeThickness)
-        {
-            var ellipse = new System.Windows.Shapes.Ellipse
-            {
-                Width = Radius * 2,
-                Height = Radius * 2,
-                Stroke = color,
-                StrokeThickness = strokeThickness
-            };
-
-            Canvas.SetLeft(ellipse, Center.X - Radius);
-            Canvas.SetTop(ellipse, Center.Y - Radius);
-            return ellipse;
-        }
 
         public override void EnsureFitsCanvas(double canvasWidth, double canvasHeight)
         {

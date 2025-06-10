@@ -1,4 +1,4 @@
-﻿namespace Server.Utils
+﻿namespace Common.Utils
 {
     public class Result<T>
     {

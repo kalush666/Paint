@@ -5,8 +5,8 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Server.Utils;
-using 
+using Common.Errors;
+using Common.Utils;
 
 namespace Server.Handlers
 {
@@ -32,7 +32,7 @@ namespace Server.Handlers
             }
             catch (Exception ex)
             {
-                return Result<string>.Failure();
+                return Result<string>.Failure(AppErrors.Response.UnableTosend);
             }
             finally
             {
