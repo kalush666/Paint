@@ -19,8 +19,7 @@
 
         <TextBlock Text="Stroke Thickness:" Margin="10,10,0,5"/>
         <Slider x:Name="StrokeSlider" Minimum="1" Maximum="10" Value="2"
-                TickFrequency="1" IsSnapToTickEnabled="True"/>
-
-        <Button Content="Apply" Margin="0,15,0,0" Click="ApplyButton_Click"/>
+                TickFrequency="1" IsSnapToTickEnabled="True" ValueChanged="StrokeSlider_ValueChanged"/>
+        <Button Content="Apply" Click="ApplyButton_Click"/>
     </StackPanel>
 </Window>

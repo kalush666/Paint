@@ -31,5 +31,10 @@ namespace Client
             DialogResult = true;
             Close();
         }
+
+        private void StrokeSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+
+        }
     }
 }

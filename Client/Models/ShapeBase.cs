@@ -47,12 +47,12 @@ namespace Client.Models
                 _ => "Black"
             };
         }
-        private Position ensureFitsPosition(Position p, double maxWidth, double maxHeight)
+        protected Position ensureFitsPosition(Position p, double maxWidth, double maxHeight)
         {
             return new Position(Math.Max(0, Math.Min(p.X, maxWidth)),
                 Math.Max(0, Math.Min(p.Y, maxHeight)));
         }
 
-        public abstract void EnsureFitsCanvas();
+        public abstract void EnsureFitsCanvas(double canvasWidth, double canvasHeight);
     }
 }

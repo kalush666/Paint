@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Net;
 using System.Windows;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using Client.Enums;
 using Client.Factories;
 using Client.Models;
 using Client.Services;
+using Shared_Models.Models;
 
 namespace Client
 {
@@ -16,7 +14,7 @@ namespace Client
     {
         private BasicShapeType currentShape = BasicShapeType.None;
         private Position startPoint;
-        private List<ShapeBase> shapes = new();
+        private Sketch currentSketch = new Sketch();
         public event EventHandler<String>? shapeAdded;
         private Brush currentColor = Brushes.Black;
         private double currentStrokeThikness = 2;
@@ -27,10 +25,10 @@ namespace Client
             InitializeComponent();
             shapeAdded += OnShapeAdded;
             communicationService = new ClientCommunicationService();
+            currentSketch.Name = "Untitled Sketch";
         }
 
         private void OnShapeAdded(object sender, string type) => Console.WriteLine($"shape added :{type}");
-
 
         private void Canvas_OnMouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -51,13 +49,14 @@ namespace Client
             shape.SetColor(currentColor);
             shape.StrokeThikness = currentStrokeThikness;
 
-            shapes.Add(shape);
+            shape.EnsureFitsCanvas(Canvas.ActualWidth, Canvas.ActualHeight);
+
+            currentSketch.addShape(shape);
             shapeAdded?.Invoke(this, currentShape.ToString());
 
             var UiElement = shape.ToUI(shape.Color, shape.StrokeThikness);
             Canvas.Children.Add(UiElement);
         }
-
 
         private void LineButton_OnClick(object sender, RoutedEventArgs e)
         {
@@ -79,15 +78,22 @@ namespace Client
 
         private async void UploadButton_OnClick(object sender, RoutedEventArgs e)
         {
+            if (currentSketch.Shapes.Count == 0)
+            {
+                MessageBox.Show("No shapes to upload. Please draw something first.", "Nothing to Upload");
+                return;
+            }
+
             var sketchName = Microsoft.VisualBasic.Interaction.InputBox(
-                "Enter sketch name:", "Upload Sketch", "");
+                "Enter sketch name:", "Upload Sketch", currentSketch.Name);
 
             if (string.IsNullOrWhiteSpace(sketchName)) return;
 
             try
             {
-                var sketch = new Shared_Models.Models.Sketch(sketchName, shapes);
-                var result = await communicationService.UploadSketchAsync(sketch);
+                currentSketch.Name = sketchName;
+
+                var result = await communicationService.UploadSketchAsync(currentSketch);
                 MessageBox.Show(result, "Upload Result");
             }
             catch (Exception ex)
@@ -99,7 +105,7 @@ namespace Client
         private void ClearButton_OnClick(object sender, RoutedEventArgs e)
         {
             Canvas.Children.Clear();
-            shapes.Clear();
+            currentSketch.clear();
         }
 
         private async void ImportButton_OnClick(object sender, RoutedEventArgs e)
@@ -111,20 +117,23 @@ namespace Client
 
             try
             {
-                var sketch = await communicationService.DownloadSketchAsync(sketchName);
-                if (sketch != null)
+                var importedSketch = await communicationService.DownloadSketchAsync(sketchName);
+                if (importedSketch != null)
                 {
                     Canvas.Children.Clear();
-                    shapes.Clear();
-                    shapes.AddRange(sketch.Shapes);
+                    currentSketch = importedSketch;
 
-                    foreach (var shape in sketch.Shapes)
+                    foreach (var shape in currentSketch.Shapes)
                     {
-                        var uiElement = shape.ToUI(shape.GetBrushFromName(shape.ColorName), shape.StrokeThikness);
+                        shape.EnsureFitsCanvas(Canvas.ActualWidth, Canvas.ActualHeight);
+
+                        shape.Color = shape.GetBrushFromName(shape.ColorName);
+
+                        var uiElement = shape.ToUI(shape.Color, shape.StrokeThikness);
                         Canvas.Children.Add(uiElement);
                     }
 
-                    MessageBox.Show("Sketch imported successfully!", "Import Success");
+                    MessageBox.Show($"Sketch '{currentSketch.Name}' imported successfully with {currentSketch.Shapes.Count} shapes!", "Import Success");
                 }
             }
             catch (Exception ex)
@@ -136,10 +145,17 @@ namespace Client
         private void OptionsButton_OnClick(object sender, RoutedEventArgs e)
         {
             var optionsWindow = new OptionsWindow();
+
+            optionsWindow.ColorPicker.SelectedIndex = GetColorIndex(currentColor);
+            optionsWindow.StrokeSlider.Value = currentStrokeThikness;
+
             if (optionsWindow.ShowDialog() == true)
             {
                 currentColor = optionsWindow.SelectedColor;
                 currentStrokeThikness = optionsWindow.SelectedThickness;
+
+                MessageBox.Show($"Settings updated:\nColor: {GetColorName(currentColor)}\nStroke Thickness: {currentStrokeThikness}",
+                    "Settings Applied");
             }
         }
 
@@ -161,6 +177,30 @@ namespace Client
                     CircleButton.FontWeight = FontWeights.Bold;
                     break;
             }
+        }
+
+        private int GetColorIndex(Brush color)
+        {
+            return color switch
+            {
+                var c when c == Brushes.Black => 0,
+                var c when c == Brushes.Red => 1,
+                var c when c == Brushes.Green => 2,
+                var c when c == Brushes.Blue => 3,
+                _ => 0
+            };
+        }
+
+        private string GetColorName(Brush color)
+        {
+            return color switch
+            {
+                var c when c == Brushes.Black => "Black",
+                var c when c == Brushes.Red => "Red",
+                var c when c == Brushes.Green => "Green",
+                var c when c == Brushes.Blue => "Blue",
+                _ => "Black"
+            };
         }
     }
 }

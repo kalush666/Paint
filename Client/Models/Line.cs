@@ -41,5 +41,6 @@ namespace Client.Models
         {
             this.Start = ensureFitsPosition(this.Start, canvasWidth, canvasHeight);
             this.End = ensureFitsPosition(this.End, canvasWidth, canvasHeight);
+        }
     }
 }
