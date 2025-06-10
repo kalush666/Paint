@@ -1,16 +1,20 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Common.Errors;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using PainterServer.Utils;
 
-namespace Server
+namespace Server.Repositories
 {
     public class MongoSketchStore
     {
         private readonly IMongoCollection<BsonDocument> _collection;
+        public Action<string>? SketchInserted;
+        public Action<string>? SketchDeleted;
 
         public MongoSketchStore()
         {
@@ -40,15 +44,23 @@ namespace Server
 
             await _collection.InsertOneAsync(doc);
             Console.WriteLine($"Sketch {name} inserted to MongoDB");
+            SketchInserted?.Invoke(name);
         }
 
         public async Task DeleteSketchAsync(string name)
         {
             var filter = Builders<BsonDocument>.Filter.Eq("Name", name);
             var result = await _collection.DeleteOneAsync(filter);
-            Console.WriteLine(result.DeletedCount > 0
-                ? $"Sketch {name} deleted from db"
-                : $"Error while deleting {name} from db");
+
+            if (result.DeletedCount > 0)
+            {
+                Console.WriteLine($"sketch {name} deleted from db");
+                SketchDeleted?.Invoke(name);
+            }
+            else
+            {
+                Console.WriteLine(AppErrors.Mongo.DeleteError);
+            }
         }
 
         public async Task<List<string>> GetAllJsonAsync()

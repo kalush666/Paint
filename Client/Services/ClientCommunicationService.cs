@@ -52,7 +52,7 @@ namespace Client.Services
                     if(!stream.DataAvailable) break;
                 }
 
-                return response = Encoding.UTF8.GetString(responseStream.ToArray());
+                return Encoding.UTF8.GetString(responseStream.ToArray());
             }
             catch (Exception ex)
             {

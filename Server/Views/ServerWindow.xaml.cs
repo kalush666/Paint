@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Server.Repositories;
 using Server.Services;
 
 namespace Server
@@ -25,8 +26,8 @@ namespace Server
             _server.StartListener();
             LoadSketchList();
 
-            _refreshTimer = new Timer(async _ => await RefreshSketchListAsync(), null,
-                TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(5));
+            _mongoStore.SketchInserted += name => Dispatcher.Invoke(async () => await RefreshSketchListAsync());
+            _mongoStore.SketchDeleted += name => Dispatcher.Invoke(async () => await RefreshSketchListAsync());
         }
 
         private async void LoadSketchList()
