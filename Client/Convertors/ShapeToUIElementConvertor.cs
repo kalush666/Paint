@@ -10,8 +10,10 @@ namespace Client.Convertors
 {
     public static class ShapeToUiElementConvertor
     {
-        public static UIElement ConvertToUiElement(Brush color, double strokeThickness, ShapeBase shape)
+        public static UIElement ConvertToUiElement(ShapeBase shape)
         {
+            var color = shape.Color;
+            var strokeThickness = shape.StrokeThikness;
             switch (shape)
             {
                 case Circle circle:
@@ -36,10 +38,10 @@ namespace Client.Convertors
                         StrokeThickness = strokeThickness
                     };
                 case Rectangle rectangle:
-                    double x = Math.Min(rectangle.StartPosition.X, rectangle.EndPosition.X);
-                    double y = Math.Min(rectangle.StartPosition.Y, rectangle.EndPosition.Y);
-                    double width = Math.Abs(rectangle.EndPosition.X - rectangle.StartPosition.X);
-                    double height = Math.Abs(rectangle.EndPosition.Y - rectangle.StartPosition.Y);
+                    var x = Math.Min(rectangle.StartPosition.X, rectangle.EndPosition.X);
+                    var y = Math.Min(rectangle.StartPosition.Y, rectangle.EndPosition.Y);
+                    var width = Math.Abs(rectangle.EndPosition.X - rectangle.StartPosition.X);
+                    var height = Math.Abs(rectangle.EndPosition.Y - rectangle.StartPosition.Y);
 
                     var rect = new System.Windows.Shapes.Rectangle
                     {

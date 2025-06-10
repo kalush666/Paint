@@ -2,11 +2,11 @@
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using Client.Convertors;
 using Client.Enums;
 using Client.Factories;
 using Client.Models;
 using Client.Services;
-using Shared_Models.Models;
 
 namespace Client
 {
@@ -54,7 +54,7 @@ namespace Client
             currentSketch.addShape(shape);
             shapeAdded?.Invoke(this, currentShape.ToString());
 
-            var UiElement = shape.ToUI(shape.Color, shape.StrokeThikness);
+            var UiElement = ShapeToUiElementConvertor.ConvertToUiElement(shape.Color, shape.StrokeThikness, shape);
             Canvas.Children.Add(UiElement);
         }
 

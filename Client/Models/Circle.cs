@@ -4,20 +4,15 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using Client.Enums;
 using Newtonsoft.Json;
-using Shared_Models.Models;
 
 namespace Client.Models
 {
-    [JsonObject(MemberSerialization.OptIn)]
     public class Circle : ShapeBase
     {
-        [JsonProperty]
         public Position Center { get; set; }
 
-        [JsonProperty]
         public double Radius { get; set; }
 
-        [JsonProperty]
         public override BasicShapeType shapeType => BasicShapeType.Circle;
 
         public Circle() { }

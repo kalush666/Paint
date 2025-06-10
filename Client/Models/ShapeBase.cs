@@ -6,22 +6,16 @@ using Newtonsoft.Json;
 
 namespace Client.Models
 {
-    [JsonObject(MemberSerialization.OptIn)]
     public abstract class ShapeBase
     {
-        [JsonProperty]
         public Guid Id { get; set; } = Guid.NewGuid();
 
-        [JsonProperty]
         public string ColorName { get; set; } = "Black";
 
-        [JsonIgnore]
         public Brush Color { get; set; } = Brushes.Black;
 
-        [JsonProperty]
         public double StrokeThikness { get; set; } = 2;
 
-        [JsonProperty]
         public abstract BasicShapeType shapeType { get; }
 
 

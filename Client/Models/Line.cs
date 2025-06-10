@@ -5,16 +5,12 @@ using Newtonsoft.Json;
 
 namespace Client.Models
 {
-    [JsonObject(MemberSerialization.OptIn)]
     public class Line : ShapeBase
     {
-        [JsonProperty]
         public Position Start { get; set; }
 
-        [JsonProperty]
         public Position End { get; set; }
 
-        [JsonProperty]
         public override BasicShapeType shapeType => BasicShapeType.Line;
 
         public Line() { }
