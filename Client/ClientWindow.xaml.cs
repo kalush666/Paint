@@ -8,7 +8,7 @@ using System.Windows.Media;
 using Client.Enums;
 using Client.Factories;
 using Client.Models;
-using Client.Services; // Add this for the communication service
+using Client.Services;
 
 namespace Client
 {
@@ -48,17 +48,16 @@ namespace Client
             var shape = ShapeFactory.Create(currentShape, startPoint, endPoint);
             if (shape == null) return;
 
-            // Set the shape's color and thickness
             shape.SetColor(currentColor);
             shape.StrokeThikness = currentStrokeThikness;
 
             shapes.Add(shape);
             shapeAdded?.Invoke(this, currentShape.ToString());
 
-            // Use the shape's own properties for rendering
             var UiElement = shape.ToUI(shape.Color, shape.StrokeThikness);
             Canvas.Children.Add(UiElement);
         }
+
 
         private void LineButton_OnClick(object sender, RoutedEventArgs e)
         {

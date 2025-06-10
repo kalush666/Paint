@@ -69,13 +69,13 @@ namespace Client.Services
                 await stream.WriteAsync(requestData, 0, requestData.Length);
                 await stream.FlushAsync();
 
-                var buffer = new byte[8192]; // Increased buffer size
+                var buffer = new byte[8192];
                 var bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
                 var response = Encoding.UTF8.GetString(buffer, 0, bytesRead);
 
                 if (response.StartsWith("ERROR:"))
                 {
-                    throw new Exception(response.Substring(6)); // Remove "ERROR:" prefix
+                    throw new Exception(response.Substring(6));
                 }
 
                 var json = JObject.Parse(response);

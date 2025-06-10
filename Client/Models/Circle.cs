@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using Newtonsoft.Json;
@@ -39,6 +40,25 @@ namespace Client.Models
             Canvas.SetLeft(ellipse, Center.X - Radius);
             Canvas.SetTop(ellipse, Center.Y - Radius);
             return ellipse;
+        }
+
+        public override void EnsureFitsCanvas(double canvasWidth, double canvasHeight)
+        {
+            var minX = this.Radius;
+            var maxX = canvasWidth - this.Radius;
+            var minY = this.Radius;
+            var maxY = canvasHeight - this.Radius;
+
+            this.Center = new Position(
+                Math.Max(minX, Math.Min(this.Center.X, maxX)),
+                Math.Max(minY, Math.Min(this.Center.Y, maxY))
+            );
+
+            var maxRadius = Math.Min(
+                Math.Min(this.Center.X, canvasWidth - this.Center.X),
+                Math.Min(this.Center.Y, canvasHeight - this.Center.Y)
+            );
+            this.Radius = Math.Min(this.Radius, maxRadius);
         }
     }
 }

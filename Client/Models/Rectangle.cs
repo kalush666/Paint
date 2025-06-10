@@ -45,5 +45,11 @@ namespace Client.Models
             Canvas.SetTop(rect, y);
             return rect;
         }
+
+        public override void EnsureFitsCanvas(double canvasWidth, double canvasHeight)
+        {
+            this.StartPosition = ensureFitsPosition(this.StartPosition, canvasWidth, canvasHeight);
+            this.EndPosition = ensureFitsPosition(this.EndPosition, canvasWidth, canvasHeight);
+        }
     }
 }

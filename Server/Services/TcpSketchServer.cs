@@ -87,7 +87,7 @@ namespace Server.Services
                 {
                     if (_isSuspended)
                     {
-                        SendResponse(client.GetStream(), "ERROR: Server is suspended");
+                        _ = SendResponse(client.GetStream(), "ERROR: Server is suspended");
                         return;
                     }
                 }
@@ -138,5 +138,6 @@ namespace Server.Services
                 Console.WriteLine($"Error sending response: {ex.Message}");
             }
         }
+
     }
 }
