@@ -1,6 +1,7 @@
-﻿using Client.Models;
-using Common.Utils;
+﻿using System;
+using Client.Models;
 using Newtonsoft.Json.Linq;
+using Client.Enums;
 
 namespace Client.Convertors
 {
@@ -8,19 +9,14 @@ namespace Client.Convertors
     {
         public static ShapeBase? ConvertToShape(JObject json)
         {
-            var typeToken = json["Type"] ?? json["type"] ?? json["shapeType"];
-            if (typeToken == null)
-            {
-                return null;
-            }
+            BasicShapeType typeToken = json["shapeType"].ToObject<BasicShapeType>();
 
-            var typeString = typeToken.ToString().ToLower();
 
-            return typeString switch
-            {
-                "line" => json.ToObject<Line>(),
-                "rectangle" => json.ToObject<Rectangle>(),
-                "circle" => json.ToObject<Circle>(),
+            return typeToken switch
+            { 
+                BasicShapeType.Line => json.ToObject<Line>(),
+                BasicShapeType.Rectangle => json.ToObject<Rectangle>(),
+                BasicShapeType.Circle => json.ToObject<Circle>(),
                 _ => null
             };
         }

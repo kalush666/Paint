@@ -107,7 +107,7 @@ namespace Server.Services
                     if (!stream.DataAvailable) break;
                 }
 
-                var clientRequest = Encoding.UTF8.GetString(responseChunk, 0, bytesRead).Trim();
+                var clientRequest = Encoding.UTF8.GetString(responseStream.ToArray()).Trim();
                 if (clientRequest.StartsWith("GET:"))
                 {
                     var handler = new DownloadHandler(_mongoStore, stream, token, clientRequest.Trim());

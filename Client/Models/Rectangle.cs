@@ -12,6 +12,7 @@ namespace Client.Models
         public Position StartPosition { get; set; }
         public Position EndPosition { get; set; }
 
+        
         public override BasicShapeType shapeType => BasicShapeType.Rectangle;
 
         public Rectangle() { }

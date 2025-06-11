@@ -91,6 +91,7 @@ namespace Client.Services
                     if (!stream.DataAvailable) break;
                 }
                 var response = Encoding.UTF8.GetString(responseStream.ToArray());
+                Console.WriteLine(response);
 
 
                 if (response.StartsWith("ERROR:"))
@@ -105,6 +106,7 @@ namespace Client.Services
                 };
 
                 var shapesArray = json["Shapes"] as JArray;
+                Console.WriteLine(shapesArray);
                 if (shapesArray != null)
                 {
                     foreach (var shapeJson in shapesArray)
@@ -116,11 +118,12 @@ namespace Client.Services
                         }
                     }
                 }
-
+                Console.WriteLine(sketch.Shapes.Count);
                 return sketch;
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex);
                 throw new Exception($"Failed to download sketch: {ex.Message}", ex);
             }
         }
@@ -136,7 +139,7 @@ namespace Client.Services
                 await client.ConnectAsync(_serverHost, _serverPort);
                 await using var stream = client.GetStream();
 
-                var request = "GET:ALL";
+                var request = "GET:ALL:NAMES";
                 var requestData = Encoding.UTF8.GetBytes(request);
                 await stream.WriteAsync(requestData, 0, requestData.Length);
                 await stream.FlushAsync();

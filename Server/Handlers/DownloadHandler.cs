@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
 using System.Threading;
@@ -31,7 +32,7 @@ namespace Server.Handlers
             {
                 if (_request.Equals("GET:ALL", StringComparison.OrdinalIgnoreCase))
                 {
-                    Console.WriteLine("Download request for all sketches Names");
+                    Console.WriteLine("Download request for all sketches");
                     try
                     {
                         var allJson = await _mongoStore.GetAllJsonAsync();
@@ -58,6 +59,29 @@ namespace Server.Handlers
                     return;
                 }
 
+                if (_request.Equals("GET:ALL:NAMES",StringComparison.OrdinalIgnoreCase))
+                {
+                    Console.WriteLine("Download request for all sketches");
+                    try
+                    {
+                        var allSketchNames = await _mongoStore.GetAllSketchNamesAsync();
+                        if (allSketchNames.Error != null) 
+                        {
+                            await ResponseHelper.SendAsync(_stream, AppErrors.Mongo.ReadError, _token);
+                        }
+                        else
+                        {
+                            var resultJson = JsonConvert.SerializeObject(allSketchNames.Value ?? new List<string>(), Formatting.None);
+                            await ResponseHelper.SendAsync(_stream, resultJson, _token);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        await ResponseHelper.SendAsync(_stream, AppErrors.Mongo.ReadError, _token);
+                    }
+                    return;
+                }
+
                 var sketchName = _request.Substring(4);
                 Console.WriteLine($"Download request for: {sketchName}");
 
@@ -70,7 +94,6 @@ namespace Server.Handlers
                     }
                     else
                     {
-                        Console.WriteLine($"Sending sketch: {sketchName}");
                         await ResponseHelper.SendAsync(_stream, sketchJson, _token);
                     }
                 }
