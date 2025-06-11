@@ -8,23 +8,31 @@ This project is a fullstack paint application featuring a WPF client, a C# backe
 
 ```
 PaintProject/
-├── .vs/
-│   └── PaintProject/DesignTimeBuild/.dtbcache.v2
-│   └── PaintProject/v16/.suo
+├── PaintProject.sln
+├── run.bat
+├── docker-compose.yml
+│
+├── Common/
+│   ├── Errors/
+│   │   └── AppErrors.cs
+│   ├── Events/
+│   │   └── LockHub.cs
+│   ├── Helpers/
+│   │   └── ResponseHelper.cs
+│   └── Common.csproj
 │
 ├── Client/
 │   ├── App.xaml
 │   ├── App.xaml.cs
-│   ├── AssemblyInfo.cs
 │   ├── Client.csproj
-│   ├── ClientWindow.xaml
-│   ├── ClientWindow.xaml.cs
-│   ├── OptionsWindow.xaml
-│   ├── OptionsWindow.xaml.cs
+│   ├── Convertors/
+│   │   └── JsonToShapeConvertor.cs
 │   ├── Enums/
 │   │   └── BasicShapeType.cs
 │   ├── Factories/
 │   │   └── ShapeFactory.cs
+│   ├── Helpers/
+│   │   └── CanvasGeometryHelper.cs
 │   ├── Models/
 │   │   ├── Circle.cs
 │   │   ├── Line.cs
@@ -34,28 +42,33 @@ PaintProject/
 │   │   └── Sketch.cs
 │   ├── Services/
 │   │   └── ClientCommunicationService.cs
-│   └── bin/, obj/, *.dll, *.pdb, etc.
+│   └── Views/
+│       ├── ClientWindow.xaml
+│       ├── ClientWindow.xaml.cs
+│       ├── ImportSelectionWindow.xaml
+│       ├── ImportSelectionWindow.xaml.cs
+│       ├── OptionsWindow.xaml
+│       └── OptionsWindow.xaml.cs
 │
 ├── Server/
 │   ├── App.xaml
 │   ├── App.xaml.cs
-│   ├── ServerWindow.xaml
-│   ├── ServerWindow.xaml.cs
-│   ├── MongoSketchStore.cs
 │   ├── Server.csproj
+│   ├── Config/
+│   │   └── MongoConfig.cs
 │   ├── Handlers/
-│   │   ├── UploadHandler.cs
-│   │   └── DownloadHandler.cs
+│   │   ├── DownloadHandler.cs
+│   │   └── UploadHandler.cs
+│   ├── Helpers/
+│   │   └── SketchStoreNotifier.cs
+│   ├── Repositories/
+│   │   └── MongoSketchStore.cs
 │   ├── Services/
 │   │   ├── LockManager.cs
 │   │   └── TcpSketchServer.cs
-│   ├── Utils/
-│   │   └── MongoConfig.cs
-│   └── bin/, obj/, *.dll, *.pdb, etc.
-│
-├── docker-compose.yml
-├── PaintProject.sln
-└── run.bat
+│   └── Views/
+│       ├── ServerWindow.xaml
+│       └── ServerWindow.xaml.cs
 ```
 
 ---
@@ -143,7 +156,7 @@ volumes:
 | --------- | --------------------------------------------------------------------------- |
 | `Client/` | WPF UI app for drawing shapes                                               |
 | `Server/` | Handles shape logic and Mongo integration +ui for managing files and access |
-
+| `Common/` | Contains Utilities and errors that are used in both client and server       |
 ---
 
 ## 📎 Notes
@@ -158,7 +171,3 @@ volumes:
 Built by Jonathan Kalush – [GitHub](https://github.com/kalush666)
 
 ---
-
-## 📜 License
-
-MIT License © 2025
