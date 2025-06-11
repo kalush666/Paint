@@ -171,7 +171,3 @@ volumes:
 Built by Jonathan Kalush – [GitHub](https://github.com/kalush666)
 
 ---
-
-## 📜 License
-
-MIT License © 2025
