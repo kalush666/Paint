@@ -9,6 +9,7 @@ using Client.Factories;
 using Client.Helpers;
 using Client.Models;
 using Client.Services;
+using Common.Errors;
 using Common.Events;
 
 namespace Client.Views
@@ -62,7 +63,7 @@ namespace Client.Views
             shape.SetColor(currentColor);
             shape.StrokeThikness = currentStrokeThikness;
 
-            CanvasGeometryHelper.EnsureFitsCanvas(Canvas.ActualWidth, Canvas.ActualHeight,shape);
+            CanvasGeometryHelper.EnsureFitsCanvas(Canvas.ActualWidth, Canvas.ActualHeight, shape);
 
             currentSketch.addShape(shape);
             shapeAdded?.Invoke(this, currentShape.ToString());
@@ -123,14 +124,27 @@ namespace Client.Views
 
         private async void ImportButton_OnClick(object sender, RoutedEventArgs e)
         {
-            var sketchName = Microsoft.VisualBasic.Interaction.InputBox(
-                "Enter sketch name to import:", "Import Sketch", "");
+            var selectedImport ="";
+            var allSketchNames = await communicationService.GetAllSketchNames();
+            if (allSketchNames.Error != null)
+            {
+                MessageBox.Show(AppErrors.Mongo.ReadError);
+            }
 
-            if (string.IsNullOrWhiteSpace(sketchName)) return;
+            var importWindow = new ImportSelectionWindow(allSketchNames.Value);
+            if (importWindow.ShowDialog() == true && !string.IsNullOrWhiteSpace(importWindow.SelectedSketch))
+            {
+                 selectedImport = importWindow.SelectedSketch;
+                
+            }
 
+            if (string.IsNullOrEmpty(selectedImport))
+            {
+                return;
+            }
             try
             {
-                var importedSketch = await communicationService.DownloadSketchAsync(sketchName);
+                var importedSketch = await communicationService.DownloadSketchAsync(selectedImport);
                 if (importedSketch == null) return;
 
                 Canvas.Children.Clear();
@@ -141,7 +155,7 @@ namespace Client.Views
 
                 foreach (var shape in currentSketch.Shapes)
                 {
-                    CanvasGeometryHelper.EnsureFitsCanvas(Canvas.ActualWidth, Canvas.ActualHeight,shape);
+                    CanvasGeometryHelper.EnsureFitsCanvas(Canvas.ActualWidth, Canvas.ActualHeight, shape);
 
                     shape.Color = shape.GetBrushFromName(shape.ColorName);
 
@@ -149,7 +163,9 @@ namespace Client.Views
                     Canvas.Children.Add(uiElement);
                 }
 
-                MessageBox.Show($"Sketch '{currentSketch.Name}' imported successfully with {currentSketch.Shapes.Count} shapes!", "Import Success");
+                MessageBox.Show(
+                    $"Sketch '{currentSketch.Name}' imported successfully with {currentSketch.Shapes.Count} shapes!",
+                    "Import Success");
             }
             catch (Exception ex)
             {
@@ -175,7 +191,8 @@ namespace Client.Views
             currentColor = optionsWindow.SelectedColor;
             currentStrokeThikness = optionsWindow.SelectedThickness;
 
-            MessageBox.Show($"Settings updated:\nColor: {GetColorName(currentColor)}\nStroke Thickness: {currentStrokeThikness}",
+            MessageBox.Show(
+                $"Settings updated:\nColor: {GetColorName(currentColor)}\nStroke Thickness: {currentStrokeThikness}",
                 "Settings Applied");
         }
 

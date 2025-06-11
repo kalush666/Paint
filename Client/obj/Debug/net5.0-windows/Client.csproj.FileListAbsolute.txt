@@ -26,3 +26,5 @@ C:\Users\jonat\Desktop\PROJECTS\PaintProject\Client\obj\Debug\net5.0-windows\Vie
 C:\Users\jonat\Desktop\PROJECTS\PaintProject\Client\obj\Debug\net5.0-windows\Views\ClientWindow.baml
 C:\Users\jonat\Desktop\PROJECTS\PaintProject\Client\bin\Debug\net5.0-windows\Common.dll
 C:\Users\jonat\Desktop\PROJECTS\PaintProject\Client\bin\Debug\net5.0-windows\Common.pdb
+C:\Users\jonat\Desktop\PROJECTS\PaintProject\Client\obj\Debug\net5.0-windows\Views\ImportSelectionWindow.baml
+C:\Users\jonat\Desktop\PROJECTS\PaintProject\Client\obj\Debug\net5.0-windows\Views\ImportSelectionWindow.g.cs

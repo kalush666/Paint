@@ -10,6 +10,9 @@
     <PackageReference Include="Microsoft.VisualBasic" Version="10.3.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <Page Include="App.xaml" />
+    <Page Update="Views\ImportSelectionWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
 
   <ItemGroup>

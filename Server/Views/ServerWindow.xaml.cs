@@ -30,16 +30,24 @@ namespace Server.Views
         private void RemoveFromSketchList(string sketchName)
         {
             var displayName = sketchName + ".json";
-            object toRemove = SketchList.FindName(displayName);
-            if (toRemove is StackPanel stackPanel)
+            StackPanel toRemove = null;
+
+            foreach (var child in SketchList.Children)
             {
-                SketchList.Children.Remove(stackPanel);
+                if (child is StackPanel panel && panel.Children.Count > 0 && panel.Children[0] is Button btn)
+                {
+                    if (btn.Content?.ToString() == displayName)
+                    {
+                        toRemove = panel;
+                        break;
+                    }
+                }
             }
-            else
+
+            if (toRemove != null)
             {
-                Console.WriteLine($"Sketch '{displayName}' not found in the list.");
+                SketchList.Children.Remove(toRemove);
             }
-            
         }
 
         private void AddToSketchList(string sketchName)
@@ -70,7 +78,6 @@ namespace Server.Views
             deleteButton.Click += async (s, e) => await DeleteSketch(sketchName);
             stackPanel.Children.Add(nameButton);
             stackPanel.Children.Add(deleteButton);
-            stackPanel.Name = displayName;
             SketchList.Children.Add(stackPanel);
         }
 
@@ -123,7 +130,6 @@ namespace Server.Views
 
                         stackPanel.Children.Add(nameButton);
                         stackPanel.Children.Add(deleteButton);
-                        stackPanel.Name = displayName;
                         SketchList.Children.Add(stackPanel);
                     }
                 });
@@ -144,7 +150,6 @@ namespace Server.Views
                 if (result == MessageBoxResult.Yes)
                 {
                     await _mongoStore.DeleteSketchAsync(sketchName);
-                    RemoveFromSketchList(sketchName);
                 }
             }
             catch (Exception ex)

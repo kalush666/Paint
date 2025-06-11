@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Common.Errors;
+using Common.Utils;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Server.Config;
@@ -54,7 +55,7 @@ namespace Server.Repositories
             if (result.DeletedCount > 0)
             {
                 Console.WriteLine($"sketch {name} deleted from db");
-                SketchStoreNotifier.NotifyInserted(name);
+                SketchStoreNotifier.NotifyDeleted(name);
             }
             else
             {
@@ -66,6 +67,23 @@ namespace Server.Repositories
         {
             var documents = await _collection.Find(new BsonDocument()).ToListAsync();
             return documents.Select(doc => doc.ToJson()).ToList();
+        }
+
+        public async Task<Result<List<string>>> GetAllSketchNamesAsync()
+        {
+            try
+            {
+                var documents = await _collection.Find(new BsonDocument()).ToListAsync();
+                var names = documents
+                    .Where(doc => doc.Contains("Name"))
+                    .Select(doc => doc["Name"].AsString)
+                    .ToList();
+                return Result<List<string>>.Success(names);
+            }
+            catch (Exception ex)
+            {
+                return Result<List<string>>.Failure(AppErrors.Mongo.ReadError);
+            }
         }
     }
 }

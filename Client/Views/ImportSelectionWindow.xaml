@@ -1,0 +1,27 @@
+﻿<Window x:Class="Client.Views.ImportSelectionWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="ClientWindow" Height="450" Width="800">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <TextBlock Text="Select sketch to import" 
+                   FontWeight="Bold"
+                   FontSize="16"
+                   HorizontalAlignment="Center"
+                   Margin="0,10,0,10"
+                   Grid.Row="0"/>
+        <ScrollViewer VerticalScrollBarVisibility="Auto"
+                      Margin="10"
+                   Grid.Row="1">
+            <StackPanel x:Name="SketchImportList"
+                        HorizontalAlignment="Stretch"></StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Window>
