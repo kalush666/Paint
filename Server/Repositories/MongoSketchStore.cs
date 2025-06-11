@@ -34,7 +34,7 @@ namespace Server.Repositories
         {
             var doc = BsonDocument.Parse(json);
             if (!doc.Contains("Name") || string.IsNullOrWhiteSpace(doc["Name"].AsString))
-                throw new ArgumentException("Invalid or missing 'Name' in sketch JSON");
+                throw new ArgumentException(AppErrors.Mongo.InvalidJson);
 
             var name = doc["Name"].AsString;
             var filter = Builders<BsonDocument>.Filter.Eq("Name", name);

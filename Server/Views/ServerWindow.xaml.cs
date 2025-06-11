@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using Common.Errors;
 using Server.Helpers;
 using Server.Repositories;
 using Server.Services;
@@ -136,7 +137,7 @@ namespace Server.Views
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error refreshing sketch list: {ex.Message}");
+                Console.WriteLine(AppErrors.Mongo.ReadError);
             }
         }
 
@@ -154,7 +155,7 @@ namespace Server.Views
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error deleting sketch: {ex.Message}", "Error",
+                MessageBox.Show(AppErrors.Mongo.DeleteError, "Error",
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }

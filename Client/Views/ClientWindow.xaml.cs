@@ -112,7 +112,7 @@ namespace Client.Views
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Upload failed: {ex.Message}", "Error");
+                MessageBox.Show($"Upload failed: {AppErrors.Mongo.UploadError}", "Error");
             }
         }
 
@@ -169,7 +169,7 @@ namespace Client.Views
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Import failed: {ex.Message}", "Error");
+                MessageBox.Show($"Import failed: {AppErrors.Mongo.ReadError}", "Error");
             }
         }
 

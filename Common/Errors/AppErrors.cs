@@ -22,6 +22,8 @@
             public const string ReadError = "Unable to read sketch from MongoDB.";
             public const string DeleteError = "Unable to delete sketch from MongoDB.";
             public const string AlreadyExists = "Sketch by this name already exist";
+            public const string InvalidJson = "Invalid JSON format for sketch.";
+            public const string UploadError = "Failed to upload sketch to MongoDB.";
         }
 
         public static class Response

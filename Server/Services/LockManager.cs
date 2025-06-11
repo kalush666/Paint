@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Threading;
+using Common.Errors;
 using Common.Events;
 
 namespace Server.Services
@@ -36,7 +37,7 @@ namespace Server.Services
             }
 
             token = CancellationToken.None;
-            Console.WriteLine($"Failed to lock (already locked): {name}");
+            Console.WriteLine(AppErrors.File.Locked);
             return false;
         }
 

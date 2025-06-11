@@ -61,7 +61,7 @@ namespace Client.Services
             }
             catch (Exception ex)
             {
-                throw new Exception($"Failed to upload sketch: {ex.Message}", ex);
+                throw new Exception($"Failed to upload sketch: {AppErrors.Mongo.UploadError}", ex);
             }
         }
 
@@ -91,7 +91,6 @@ namespace Client.Services
                     if (!stream.DataAvailable) break;
                 }
                 var response = Encoding.UTF8.GetString(responseStream.ToArray());
-                Console.WriteLine(response);
 
 
                 if (response.StartsWith("ERROR:"))
@@ -124,7 +123,7 @@ namespace Client.Services
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
-                throw new Exception($"Failed to download sketch: {ex.Message}", ex);
+                throw new Exception($"Failed to download sketch: {AppErrors.Mongo.ReadError}", ex);
             }
         }
 
