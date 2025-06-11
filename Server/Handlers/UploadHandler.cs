@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Common.Errors;using Server.Services;
+using Common.Errors;
 using Newtonsoft.Json.Linq;
 using Server.Repositories;
 
@@ -30,8 +29,8 @@ namespace Server.Handlers
 
             try
             {
-                var jsonObj = JObject.Parse(_jsonInput);
-                sketchName = jsonObj["Name"]?.ToString();
+                var jsonSketch = JObject.Parse(_jsonInput);
+                sketchName = jsonSketch["Name"]?.ToString();
 
                 if (string.IsNullOrWhiteSpace(sketchName))
                 {

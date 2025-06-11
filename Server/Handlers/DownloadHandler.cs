@@ -31,7 +31,7 @@ namespace Server.Handlers
             {
                 if (_request.Equals("GET:ALL", StringComparison.OrdinalIgnoreCase))
                 {
-                    Console.WriteLine("Download request for all sketches");
+                    Console.WriteLine("Download request for all sketches Names");
                     try
                     {
                         var allJson = await _mongoStore.GetAllJsonAsync();

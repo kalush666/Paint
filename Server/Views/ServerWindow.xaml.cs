@@ -1,24 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 using Server.Helpers;
 using Server.Repositories;
 using Server.Services;
 
-namespace Server
+namespace Server.Views
 {
     public partial class ServerWindow : Window
     {
         private TcpSketchServer _server = new();
         private CancellationTokenSource suspendToken = new CancellationTokenSource();
         private MongoSketchStore _mongoStore = new MongoSketchStore();
-        private Timer _refreshTimer;
         private bool _isSuspended = false;
 
         public ServerWindow()
@@ -28,8 +23,55 @@ namespace Server
             _server.StartListener();
             LoadSketchList();
 
-            SketchStoreNotifier.SketchInserted += name => Dispatcher.Invoke(async () => await RefreshSketchListAsync());
-            SketchStoreNotifier.SketchDeleted += name => Dispatcher.Invoke(async () => await RefreshSketchListAsync());
+            SketchStoreNotifier.SketchInserted += name => Dispatcher.Invoke( () =>  AddToSketchList(name));
+            SketchStoreNotifier.SketchDeleted += name => Dispatcher.Invoke( () =>  RemoveFromSketchList(name));
+        }
+
+        private void RemoveFromSketchList(string sketchName)
+        {
+            var displayName = sketchName + ".json";
+            object toRemove = SketchList.FindName(displayName);
+            if (toRemove is StackPanel stackPanel)
+            {
+                SketchList.Children.Remove(stackPanel);
+            }
+            else
+            {
+                Console.WriteLine($"Sketch '{displayName}' not found in the list.");
+            }
+            
+        }
+
+        private void AddToSketchList(string sketchName)
+        {
+            var displayName = sketchName + ".json";
+            var stackPanel = new StackPanel
+            {
+                Orientation = Orientation.Horizontal,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                Margin = new Thickness(0, 5, 0, 5)
+            };
+            var nameButton = new Button
+            {
+                Content = displayName,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                HorizontalContentAlignment = HorizontalAlignment.Center,
+                Padding = new Thickness(10, 5, 10, 5),
+                MinWidth = 150,
+                Margin = new Thickness(0, 0, 10, 0)
+            };
+            var deleteButton = new Button
+            {
+                Content = "Delete",
+                Background = System.Windows.Media.Brushes.LightCoral,
+                Padding = new Thickness(10, 5, 10, 5),
+                MinWidth = 80
+            };
+            deleteButton.Click += async (s, e) => await DeleteSketch(sketchName);
+            stackPanel.Children.Add(nameButton);
+            stackPanel.Children.Add(deleteButton);
+            stackPanel.Name = displayName;
+            SketchList.Children.Add(stackPanel);
         }
 
         private async void LoadSketchList()
@@ -81,6 +123,7 @@ namespace Server
 
                         stackPanel.Children.Add(nameButton);
                         stackPanel.Children.Add(deleteButton);
+                        stackPanel.Name = displayName;
                         SketchList.Children.Add(stackPanel);
                     }
                 });
@@ -101,7 +144,7 @@ namespace Server
                 if (result == MessageBoxResult.Yes)
                 {
                     await _mongoStore.DeleteSketchAsync(sketchName);
-                    await RefreshSketchListAsync();
+                    RemoveFromSketchList(sketchName);
                 }
             }
             catch (Exception ex)
@@ -118,20 +161,17 @@ namespace Server
                 _server.Suspend();
                 _isSuspended = true;
                 SuspendButton.Content = "Resume";
-                _refreshTimer?.Change(Timeout.Infinite, Timeout.Infinite);
             }
             else
             {
                 _server.Resume();
                 _isSuspended = false;
                 SuspendButton.Content = "Suspend";
-                _refreshTimer?.Change(TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(5));
             }
         }
 
         protected override void OnClosed(EventArgs e)
         {
-            _refreshTimer?.Dispose();
             _server.Suspend();
             base.OnClosed(e);
         }

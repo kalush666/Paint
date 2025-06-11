@@ -110,7 +110,6 @@ namespace Server.Services
                 var clientRequest = Encoding.UTF8.GetString(responseChunk, 0, bytesRead).Trim();
                 if (clientRequest.StartsWith("GET:"))
                 {
-                    var sketchName = clientRequest.Substring(4);
                     var handler = new DownloadHandler(_mongoStore, stream, token, clientRequest.Trim());
                     await handler.HandleAsync();
                 }
