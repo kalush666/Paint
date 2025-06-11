@@ -156,7 +156,7 @@ volumes:
 | --------- | --------------------------------------------------------------------------- |
 | `Client/` | WPF UI app for drawing shapes                                               |
 | `Server/` | Handles shape logic and Mongo integration +ui for managing files and access |
-
+| `Common/` | Contains Utilities and errors that are used in both client and server       |
 ---
 
 ## 📎 Notes
