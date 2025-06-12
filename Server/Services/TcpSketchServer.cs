@@ -130,9 +130,13 @@ namespace Server.Services
             }
             finally
             {
-                try { client.Close(); }
-                catch
+                try
                 {
+                    client.Close();
+                }
+                catch (Exception ex)
+                {
+                    Console.Write(AppErrors.Generic.OperationFailed);
                 }
             }
         }
