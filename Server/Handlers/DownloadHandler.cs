@@ -8,6 +8,7 @@ using Common.Errors;
 using MongoDB.Bson;
 using Newtonsoft.Json;
 using Server.Repositories;
+using Server.Services;
 
 namespace Server.Handlers
 {
@@ -17,13 +18,15 @@ namespace Server.Handlers
         private readonly NetworkStream _stream;
         private readonly CancellationToken _token;
         private readonly string _request;
+        private readonly LockManager _lockManager;
 
-        public DownloadHandler(MongoSketchStore mongo, NetworkStream stream, CancellationToken cancellationToken, string request)
+        public DownloadHandler(MongoSketchStore mongo, NetworkStream stream, CancellationToken cancellationToken, string request,LockManager lockManager)
         {
             _mongoStore = mongo;
             _stream = stream;
             _token = cancellationToken;
             _request = request;
+            _lockManager = lockManager;
         }
 
         public async Task HandleAsync()
@@ -84,6 +87,12 @@ namespace Server.Handlers
 
                 var sketchName = _request.Substring(4);
                 Console.WriteLine($"Download request for: {sketchName}");
+
+                if (!_lockManager.TryLock(sketchName,out _))
+                {
+                    await ResponseHelper.SendAsync(_stream, AppErrors.File.Locked, _token);
+                    return;
+                }
 
                 try
                 {

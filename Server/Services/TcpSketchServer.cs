@@ -20,6 +20,7 @@ namespace Server.Services
         private readonly MongoSketchStore _mongoStore = new();
         private bool _isSuspended = false;
         private readonly object _suspendLock = new object();
+        private LockManager _lockManager = new();
 
         public TcpSketchServer()
         {
@@ -110,7 +111,7 @@ namespace Server.Services
                 var clientRequest = Encoding.UTF8.GetString(responseStream.ToArray()).Trim();
                 if (clientRequest.StartsWith("GET:"))
                 {
-                    var handler = new DownloadHandler(_mongoStore, stream, token, clientRequest.Trim());
+                    var handler = new DownloadHandler(_mongoStore, stream, token, clientRequest.Trim(),_lockManager);
                     await handler.HandleAsync();
                 }
                 else

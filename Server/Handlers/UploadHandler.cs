@@ -37,6 +37,7 @@ namespace Server.Handlers
                     await ResponseHelper.SendAsync(_stream, AppErrors.Mongo.AlreadyExists, _token);
                     return;
                 }
+                
 
                 Console.WriteLine($"Upload request for: {sketchName}");
 
