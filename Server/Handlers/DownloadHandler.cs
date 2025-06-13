@@ -109,7 +109,7 @@ namespace Server.Handlers
                 }
                 catch (OperationCanceledException)
                 {
-                    await ResponseHelper.SendAsync(_stream, AppErrors.Generic.OperationFailed, _token);
+                    await ResponseHelper.SendAsync(_stream, AppErrors.Generic.OperationCancelled, _token);
                 }
             }
             catch (Exception ex)

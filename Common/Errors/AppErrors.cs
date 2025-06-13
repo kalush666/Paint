@@ -35,6 +35,7 @@
         {
             public const string Unknown = "An unknown error occurred.";
             public const string OperationFailed = "The operation failed.";
+            public const string OperationCancelled = "The operation was cancelled.";
         }
 
         public static class Shapes
