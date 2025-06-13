@@ -87,8 +87,9 @@ namespace Server.Handlers
 
                 var sketchName = _request.Substring(4);
                 Console.WriteLine($"Download request for: {sketchName}");
+                CancellationToken lockToken = _token;
 
-                if (!_lockManager.TryLock(sketchName,out _))
+                if (!_lockManager.TryLock(sketchName,out lockToken))
                 {
                     await ResponseHelper.SendAsync(_stream, AppErrors.File.Locked, _token);
                     return;
@@ -106,14 +107,13 @@ namespace Server.Handlers
                         await ResponseHelper.SendAsync(_stream, sketchJson, _token);
                     }
                 }
-                catch
+                catch (OperationCanceledException)
                 {
                     await ResponseHelper.SendAsync(_stream, AppErrors.Generic.OperationFailed, _token);
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine(AppErrors.Generic.OperationFailed);
                 await ResponseHelper.SendAsync(_stream, AppErrors.Generic.OperationFailed, _token);
             }
         }
