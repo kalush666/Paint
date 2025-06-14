@@ -11,15 +11,49 @@ namespace Client.Views
         public string? SelectedSketch { get; private set; }
         public ClientCommunicationService communicationService = new ClientCommunicationService();
 
-        public ImportSelectionWindow(List<string> sketchNames)
+        public ImportSelectionWindow()
         {
             InitializeComponent();
-            PopulateSketchNames(sketchNames);
+            LoadAllSketches();
         }
-        
-        private void PopulateSketchNames(List<string> sketchNames)
+
+        private void LoadAllSketches()
         {
-            foreach (var sketchName in sketchNames)
+            PopulateSketchNames();
+        }
+
+        private async Task PopulateSketchNames()
+        {
+            SketchImportList.Children.Add(new TextBlock
+            {
+                Text = "Loading sketches...",
+                HorizontalAlignment = HorizontalAlignment.Center,
+                Margin = new Thickness(10)
+            });
+            var sketchNames = await communicationService.GetAllSketchNames();
+            if (sketchNames.Value == null || sketchNames.Value.Count == 0)
+            {
+                SketchImportList.Children.Clear();
+                SketchImportList.Children.Add(new TextBlock
+                {
+                    Text = "No sketches available for import.",
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    Margin = new Thickness(10)
+                });
+                return;
+            }
+            else
+            {
+                SketchImportList.Children.Clear();
+                SketchImportList.Children.Add(new TextBlock
+                {
+                    Text = "Select a sketch to import:",
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    Margin = new Thickness(10)
+                });
+            }
+
+            foreach (var sketchName in sketchNames.Value)
             {
                 var selectImport = new Button
                 {
@@ -28,8 +62,7 @@ namespace Client.Views
                     HorizontalContentAlignment = HorizontalAlignment.Center,
                     Padding = new Thickness(10, 5, 10, 5),
                     MinWidth = 150,
-                    Margin = new Thickness(0,0,10,10),
-                    
+                    Margin = new Thickness(0, 0, 10, 10),
                 };
                 selectImport.Click += (sender, e) =>
                 {
@@ -40,6 +73,5 @@ namespace Client.Views
                 SketchImportList.Children.Add(selectImport);
             }
         }
-
     }
 }

@@ -125,13 +125,7 @@ namespace Client.Views
         private async void ImportButton_OnClick(object sender, RoutedEventArgs e)
         {
             var selectedImport ="";
-            var allSketchNames = await communicationService.GetAllSketchNames();
-            if (allSketchNames.Error != null)
-            {
-                MessageBox.Show(AppErrors.Mongo.ReadError);
-            }
-
-            var importWindow = new ImportSelectionWindow(allSketchNames.Value);
+            var importWindow = new ImportSelectionWindow();
             if (importWindow.ShowDialog() == true && !string.IsNullOrWhiteSpace(importWindow.SelectedSketch))
             {
                  selectedImport = importWindow.SelectedSketch;

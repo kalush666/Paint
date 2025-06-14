@@ -20,7 +20,8 @@ namespace Server.Handlers
         private readonly string _request;
         private readonly LockManager _lockManager;
 
-        public DownloadHandler(MongoSketchStore mongo, NetworkStream stream, CancellationToken cancellationToken, string request,LockManager lockManager)
+        public DownloadHandler(MongoSketchStore mongo, NetworkStream stream, CancellationToken cancellationToken,
+            string request, LockManager lockManager)
         {
             _mongoStore = mongo;
             _stream = stream;
