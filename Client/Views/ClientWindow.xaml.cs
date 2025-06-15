@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
@@ -16,29 +17,31 @@ namespace Client.Views
 {
     public partial class ClientWindow : Window
     {
-        private BasicShapeType currentShape = BasicShapeType.None;
-        private Position startPoint;
-        private Sketch currentSketch = new Sketch();
-        public event EventHandler<String>? shapeAdded;
-        private Brush currentColor = Brushes.Black;
-        private double currentStrokeThikness = 2;
-        private ClientCommunicationService communicationService;
+        private BasicShapeType _currentShape = BasicShapeType.None;
+        private Position _startPoint;
+        private Sketch _currentSketch = new Sketch();
+        public event EventHandler<String>? ShapeAdded;
+        private Brush _currentColor = Brushes.Black;
+        private double _currentStrokeThikness = 2;
+        private readonly ClientCommunicationService _communicationService;
+        private UIElement? _previewShape = null;
+        private bool isDrawing = false;
 
         public ClientWindow()
         {
             InitializeComponent();
-            shapeAdded += OnShapeAdded;
-            communicationService = new ClientCommunicationService();
-            currentSketch.Name = "Untitled Sketch";
+            ShapeAdded += OnShapeAdded;
+            _communicationService = new ClientCommunicationService();
+            _currentSketch.Name = "Untitled Sketch";
 
             this.Closing += OnClientWindowClosing;
         }
 
         private void OnClientWindowClosing(object sender, CancelEventArgs e)
         {
-            if (!string.IsNullOrWhiteSpace(currentSketch.Name))
+            if (!string.IsNullOrWhiteSpace(_currentSketch.Name))
             {
-                LockHub.TriggerUnlock(currentSketch.Name);
+                LockHub.TriggerUnlock(_currentSketch.Name);
             }
         }
 
@@ -46,68 +49,89 @@ namespace Client.Views
 
         private void Canvas_OnMouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (currentShape == BasicShapeType.None) return;
-
-            startPoint = new Position(e.GetPosition(Canvas));
+            if (_currentShape == BasicShapeType.None) return;
+            isDrawing = true;
+            _startPoint = new Position(e.GetPosition(Canvas));
+            _previewShape = ShapeToUiElementConvertor.ConvertToUiElement(
+                ShapeFactory.Create(_currentShape, _startPoint, _startPoint));
+            if (_previewShape != null)
+                Canvas.Children.Add(_previewShape);
         }
-
-        private void Canvas_OnMouseUp(object sender, MouseButtonEventArgs e)
+        
+        private void Canvas_OnMouseMove(object sender, MouseEventArgs e)
         {
-            if (currentShape == BasicShapeType.None) return;
-
-            var endPoint = new Position(e.GetPosition(Canvas));
-
-            var shape = ShapeFactory.Create(currentShape, startPoint, endPoint);
+            if (!isDrawing || _currentShape == BasicShapeType.None || _previewShape == null) return;
+            var currentPoint = new Position(e.GetPosition(Canvas));
+            var shape = ShapeFactory.Create(_currentShape, _startPoint, currentPoint);
             if (shape == null) return;
-
-            shape.SetColor(currentColor);
-            shape.StrokeThikness = currentStrokeThikness;
-
+            shape.SetColor(_currentColor);
+            shape.StrokeThikness = _currentStrokeThikness;
             CanvasGeometryHelper.EnsureFitsCanvas(Canvas.ActualWidth, Canvas.ActualHeight, shape);
 
-            currentSketch.addShape(shape);
-            shapeAdded?.Invoke(this, currentShape.ToString());
+            Canvas.Children.Remove(_previewShape);
+            _previewShape = ShapeToUiElementConvertor.ConvertToUiElement(shape);
+            if (_previewShape != null)
+                Canvas.Children.Add(_previewShape);
+        }
 
+        
+        private void Canvas_OnMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if (!isDrawing || _currentShape == BasicShapeType.None) return;
+            isDrawing = false;
+            var endPoint = new Position(e.GetPosition(Canvas));
+            var shape = ShapeFactory.Create(_currentShape, _startPoint, endPoint);
+            if (shape == null) return;
+            shape.SetColor(_currentColor);
+            shape.StrokeThikness = _currentStrokeThikness;
+            CanvasGeometryHelper.EnsureFitsCanvas(Canvas.ActualWidth, Canvas.ActualHeight, shape);
+
+            _currentSketch.addShape(shape);
+            ShapeAdded?.Invoke(this, _currentShape.ToString());
+
+            if (_previewShape != null)
+                Canvas.Children.Remove(_previewShape);
+            _previewShape = null;
             var uiElement = ShapeToUiElementConvertor.ConvertToUiElement(shape);
             Canvas.Children.Add(uiElement);
         }
 
         private void LineButton_OnClick(object sender, RoutedEventArgs e)
         {
-            currentShape = BasicShapeType.Line;
+            _currentShape = BasicShapeType.Line;
             UpdateButtonSelection("Line");
         }
 
         private void RectangleButton_OnClick(object sender, RoutedEventArgs e)
         {
-            currentShape = BasicShapeType.Rectangle;
+            _currentShape = BasicShapeType.Rectangle;
             UpdateButtonSelection("Rectangle");
         }
 
         private void CircleButton_OnClick(object sender, RoutedEventArgs e)
         {
-            currentShape = BasicShapeType.Circle;
+            _currentShape = BasicShapeType.Circle;
             UpdateButtonSelection("Circle");
         }
 
         private async void UploadButton_OnClick(object sender, RoutedEventArgs e)
         {
-            if (currentSketch.Shapes.Count == 0)
+            if (_currentSketch.Shapes.Count == 0)
             {
                 MessageBox.Show("No shapes to upload. Please draw something first.", "Nothing to Upload");
                 return;
             }
 
             var sketchName = Microsoft.VisualBasic.Interaction.InputBox(
-                "Enter sketch name:", "Upload Sketch", currentSketch.Name);
+                "Enter sketch name:", "Upload Sketch", _currentSketch.Name);
 
             if (string.IsNullOrWhiteSpace(sketchName)) return;
 
             try
             {
-                currentSketch.Name = sketchName;
+                _currentSketch.Name = sketchName;
 
-                var result = await communicationService.UploadSketchAsync(currentSketch);
+                var result = await _communicationService.UploadSketchAsync(_currentSketch);
                 MessageBox.Show(result, "Upload Result");
             }
             catch (Exception ex)
@@ -119,7 +143,7 @@ namespace Client.Views
         private void ClearButton_OnClick(object sender, RoutedEventArgs e)
         {
             Canvas.Children.Clear();
-            currentSketch.clear();
+            _currentSketch.clear();
         }
 
         private async void ImportButton_OnClick(object sender, RoutedEventArgs e)
@@ -138,16 +162,16 @@ namespace Client.Views
             }
             try
             {
-                var importedSketch = await communicationService.DownloadSketchAsync(selectedImport);
+                var importedSketch = await _communicationService.DownloadSketchAsync(selectedImport);
                 if (importedSketch == null) return;
 
                 Canvas.Children.Clear();
 
-                LockHub.TriggerUnlock(currentSketch.Name);
-                currentSketch = importedSketch;
-                LockHub.TriggerLock(currentSketch.Name);
+                LockHub.TriggerUnlock(_currentSketch.Name);
+                _currentSketch = importedSketch;
+                LockHub.TriggerLock(_currentSketch.Name);
 
-                foreach (var shape in currentSketch.Shapes)
+                foreach (var shape in _currentSketch.Shapes)
                 {
                     CanvasGeometryHelper.EnsureFitsCanvas(Canvas.ActualWidth, Canvas.ActualHeight, shape);
 
@@ -158,7 +182,7 @@ namespace Client.Views
                 }
 
                 MessageBox.Show(
-                    $"Sketch '{currentSketch.Name}' imported successfully with {currentSketch.Shapes.Count} shapes!",
+                    $"Sketch '{_currentSketch.Name}' imported successfully with {_currentSketch.Shapes.Count} shapes!",
                     "Import Success");
             }
             catch (Exception ex)
@@ -173,20 +197,20 @@ namespace Client.Views
             {
                 ColorPicker =
                 {
-                    SelectedIndex = GetColorIndex(currentColor)
+                    SelectedIndex = GetColorIndex(_currentColor)
                 },
                 StrokeSlider =
                 {
-                    Value = currentStrokeThikness
+                    Value = _currentStrokeThikness
                 }
             };
 
             if (optionsWindow.ShowDialog() != true) return;
-            currentColor = optionsWindow.SelectedColor;
-            currentStrokeThikness = optionsWindow.SelectedThickness;
+            _currentColor = optionsWindow.SelectedColor;
+            _currentStrokeThikness = optionsWindow.SelectedThickness;
 
             MessageBox.Show(
-                $"Settings updated:\nColor: {GetColorName(currentColor)}\nStroke Thickness: {currentStrokeThikness}",
+                $"Settings updated:\nColor: {GetColorName(_currentColor)}\nStroke Thickness: {_currentStrokeThikness}",
                 "Settings Applied");
         }
 

@@ -12,26 +12,48 @@
       <change beforePath="$PROJECT_DIR$/.idea/.idea.PaintProject/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.PaintProject/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.vs/PaintProject/DesignTimeBuild/.dtbcache.v2" beforeDir="false" afterPath="$PROJECT_DIR$/.vs/PaintProject/DesignTimeBuild/.dtbcache.v2" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.vs/PaintProject/v16/.suo" beforeDir="false" afterPath="$PROJECT_DIR$/.vs/PaintProject/v16/.suo" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Views/ClientWindow.xaml" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Views/ClientWindow.xaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Views/ClientWindow.xaml.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Views/ClientWindow.xaml.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/bin/Debug/net5.0-windows/Client.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Client/bin/Debug/net5.0-windows/Client.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/bin/Debug/net5.0-windows/Client.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/Client/bin/Debug/net5.0-windows/Client.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/bin/Debug/net5.0-windows/Common.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Client/bin/Debug/net5.0-windows/Common.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/bin/Debug/net5.0-windows/Common.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/Client/bin/Debug/net5.0-windows/Common.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/bin/Debug/net5.0-windows/ref/Client.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Client/bin/Debug/net5.0-windows/ref/Client.dll" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/obj/Client.csproj.nuget.dgspec.json" beforeDir="false" afterPath="$PROJECT_DIR$/Client/obj/Client.csproj.nuget.dgspec.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/obj/Client.csproj.nuget.g.props" beforeDir="false" afterPath="$PROJECT_DIR$/Client/obj/Client.csproj.nuget.g.props" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/obj/Client.csproj.nuget.g.targets" beforeDir="false" afterPath="$PROJECT_DIR$/Client/obj/Client.csproj.nuget.g.targets" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/obj/Debug/net5.0-windows/Client.csproj.AssemblyReference.cache" beforeDir="false" afterPath="$PROJECT_DIR$/Client/obj/Debug/net5.0-windows/Client.csproj.AssemblyReference.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/obj/Debug/net5.0-windows/Client.csproj.FileListAbsolute.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Client/obj/Debug/net5.0-windows/Client.csproj.FileListAbsolute.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/obj/Debug/net5.0-windows/Client.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Client/obj/Debug/net5.0-windows/Client.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/obj/Debug/net5.0-windows/Client.g.resources" beforeDir="false" afterPath="$PROJECT_DIR$/Client/obj/Debug/net5.0-windows/Client.g.resources" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/obj/Debug/net5.0-windows/Client.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/Client/obj/Debug/net5.0-windows/Client.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/obj/Debug/net5.0-windows/Client_MarkupCompile.i.cache" beforeDir="false" afterPath="$PROJECT_DIR$/Client/obj/Debug/net5.0-windows/Client_MarkupCompile.i.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/obj/Debug/net5.0-windows/Client_MarkupCompile.lref" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/obj/Debug/net5.0-windows/Views/ClientWindow.baml" beforeDir="false" afterPath="$PROJECT_DIR$/Client/obj/Debug/net5.0-windows/Views/ClientWindow.baml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/obj/Debug/net5.0-windows/Views/ClientWindow.g.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/obj/Debug/net5.0-windows/Views/ClientWindow.g.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/obj/Debug/net5.0-windows/ref/Client.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Client/obj/Debug/net5.0-windows/ref/Client.dll" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/obj/project.assets.json" beforeDir="false" afterPath="$PROJECT_DIR$/Client/obj/project.assets.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/obj/project.nuget.cache" beforeDir="false" afterPath="$PROJECT_DIR$/Client/obj/project.nuget.cache" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/obj/rider.project.model.nuget.info" beforeDir="false" afterPath="$PROJECT_DIR$/Client/obj/rider.project.model.nuget.info" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/obj/rider.project.restore.info" beforeDir="false" afterPath="$PROJECT_DIR$/Client/obj/rider.project.restore.info" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Common/bin/Debug/net5.0/Common.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Common/bin/Debug/net5.0/Common.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Common/bin/Debug/net5.0/Common.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/Common/bin/Debug/net5.0/Common.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Common/bin/Debug/net5.0/ref/Common.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Common/bin/Debug/net5.0/ref/Common.dll" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Common/obj/Common.csproj.nuget.g.props" beforeDir="false" afterPath="$PROJECT_DIR$/Common/obj/Common.csproj.nuget.g.props" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Common/obj/Common.csproj.nuget.g.targets" beforeDir="false" afterPath="$PROJECT_DIR$/Common/obj/Common.csproj.nuget.g.targets" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Common/obj/project.nuget.cache" beforeDir="false" afterPath="$PROJECT_DIR$/Common/obj/project.nuget.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Common/obj/Debug/net5.0/Common.csproj.AssemblyReference.cache" beforeDir="false" afterPath="$PROJECT_DIR$/Common/obj/Debug/net5.0/Common.csproj.AssemblyReference.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Common/obj/Debug/net5.0/Common.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Common/obj/Debug/net5.0/Common.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Common/obj/Debug/net5.0/Common.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/Common/obj/Debug/net5.0/Common.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Common/obj/Debug/net5.0/ref/Common.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Common/obj/Debug/net5.0/ref/Common.dll" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Common/obj/rider.project.model.nuget.info" beforeDir="false" afterPath="$PROJECT_DIR$/Common/obj/rider.project.model.nuget.info" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Common/obj/rider.project.restore.info" beforeDir="false" afterPath="$PROJECT_DIR$/Common/obj/rider.project.restore.info" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/Server.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/bin/Debug/net5.0-windows/Common.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Server/bin/Debug/net5.0-windows/Common.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/bin/Debug/net5.0-windows/Common.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/Server/bin/Debug/net5.0-windows/Common.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/bin/Debug/net5.0-windows/Server.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Server/bin/Debug/net5.0-windows/Server.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/bin/Debug/net5.0-windows/Server.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/Server/bin/Debug/net5.0-windows/Server.pdb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Server/obj/Debug/net5.0-windows/Server.csproj.AssemblyReference.cache" beforeDir="false" afterPath="$PROJECT_DIR$/Server/obj/Debug/net5.0-windows/Server.csproj.AssemblyReference.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/obj/Debug/net5.0-windows/Server_MarkupCompile.cache" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/obj/Debug/net5.0-windows/Server_MarkupCompile.i.cache" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/obj/Debug/net5.0-windows/Server.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Server/obj/Debug/net5.0-windows/Server.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/obj/Debug/net5.0-windows/Server.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/Server/obj/Debug/net5.0-windows/Server.pdb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Server/obj/Server.csproj.nuget.dgspec.json" beforeDir="false" afterPath="$PROJECT_DIR$/Server/obj/Server.csproj.nuget.dgspec.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Server/obj/Server.csproj.nuget.g.props" beforeDir="false" afterPath="$PROJECT_DIR$/Server/obj/Server.csproj.nuget.g.props" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/obj/Server.csproj.nuget.g.targets" beforeDir="false" afterPath="$PROJECT_DIR$/Server/obj/Server.csproj.nuget.g.targets" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Server/obj/project.assets.json" beforeDir="false" afterPath="$PROJECT_DIR$/Server/obj/project.assets.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Server/obj/project.nuget.cache" beforeDir="false" afterPath="$PROJECT_DIR$/Server/obj/project.nuget.cache" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Server/obj/rider.project.model.nuget.info" beforeDir="false" afterPath="$PROJECT_DIR$/Server/obj/rider.project.model.nuget.info" afterDir="false" />
@@ -63,27 +85,33 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;.NET Project.Client.executor&quot;: &quot;Run&quot;,
-    &quot;.NET Project.Server.executor&quot;: &quot;Debug&quot;,
-    &quot;Batch.run (1).executor&quot;: &quot;Run&quot;,
-    &quot;Batch.run.executor&quot;: &quot;Run&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;Shell Script.run.executor&quot;: &quot;Run&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    ".NET Project.Client.executor": "Run",
+    ".NET Project.Server.executor": "Debug",
+    "Batch.run (1).executor": "Run",
+    "Batch.run.executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "Shell Script.run.executor": "Run",
+    "git-widget-placeholder": "master",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "vue.rearranger.settings.migration": "true"
+  },
+  "keyToStringList": {
+    "com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File": [
+      "GitIgnore",
+      "AiIgnore"
+    ]
   }
-}</component>
+}]]></component>
   <component name="RunManager" selected="Batch.run (1)">
     <configuration name="run (1)" type="BatchConfigurationType" factoryName="Batch" temporary="true">
       <module name="rider.module" />
@@ -203,6 +231,7 @@
       <workItem from="1749976431914" duration="38000" />
       <workItem from="1749976705623" duration="366000" />
       <workItem from="1749977253547" duration="145000" />
+      <workItem from="1749992126707" duration="784000" />
     </task>
     <servers />
   </component>

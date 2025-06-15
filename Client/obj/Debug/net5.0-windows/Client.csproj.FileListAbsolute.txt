@@ -9,7 +9,6 @@ C:\Users\jonat\Desktop\PROJECTS\PaintProject\Client\bin\Debug\net5.0-windows\New
 C:\Users\jonat\Desktop\PROJECTS\PaintProject\Client\obj\Debug\net5.0-windows\Client.csproj.AssemblyReference.cache
 C:\Users\jonat\Desktop\PROJECTS\PaintProject\Client\obj\Debug\net5.0-windows\App.g.cs
 C:\Users\jonat\Desktop\PROJECTS\PaintProject\Client\obj\Debug\net5.0-windows\Client_MarkupCompile.cache
-C:\Users\jonat\Desktop\PROJECTS\PaintProject\Client\obj\Debug\net5.0-windows\Client_MarkupCompile.lref
 C:\Users\jonat\Desktop\PROJECTS\PaintProject\Client\obj\Debug\net5.0-windows\Client.g.resources
 C:\Users\jonat\Desktop\PROJECTS\PaintProject\Client\obj\Debug\net5.0-windows\Client.GeneratedMSBuildEditorConfig.editorconfig
 C:\Users\jonat\Desktop\PROJECTS\PaintProject\Client\obj\Debug\net5.0-windows\Client.AssemblyInfoInputs.cache
