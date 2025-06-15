@@ -1,4 +1,4 @@
-﻿# 🎨 Paint Project – Fullstack WPF + C# + MongoDB
+# 🎨 Paint Project – Fullstack WPF + C# + MongoDB
 
 This project is a fullstack paint application featuring a WPF client, a C# backend server, and MongoDB for persistent storage. It enables users to draw, save, and load shapes like lines, rectangles, and circles with real-time communication between the client and the server.
 
