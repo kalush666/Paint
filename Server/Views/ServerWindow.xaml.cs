@@ -19,13 +19,12 @@ namespace Server.Views
 
         public ServerWindow()
         {
-
             InitializeComponent();
             _server.StartListener();
             LoadSketchList();
 
-            SketchStoreNotifier.SketchInserted += name => Dispatcher.Invoke( () =>  AddToSketchList(name));
-            SketchStoreNotifier.SketchDeleted += name => Dispatcher.Invoke( () =>  RemoveFromSketchList(name));
+            SketchStoreNotifier.SketchInserted += name => Dispatcher.Invoke(() => AddToSketchList(name));
+            SketchStoreNotifier.SketchDeleted += name => Dispatcher.Invoke(() => RemoveFromSketchList(name));
         }
 
         private void RemoveFromSketchList(string sketchName)
@@ -87,67 +86,34 @@ namespace Server.Views
             await RefreshSketchListAsync();
         }
 
-       private async Task RefreshSketchListAsync()
-{
-    try
-    {
-        var sketchFilesResult = await _mongoStore.GetAllJsonAsync();
-        if (!sketchFilesResult.IsSuccess)
+        private async Task RefreshSketchListAsync()
         {
-            Console.WriteLine(AppErrors.Mongo.ReadError);
-            return;
-        }
-
-        var sketchFiles = sketchFilesResult.Value;
-
-        await Application.Current.Dispatcher.InvokeAsync(() =>
-        {
-            SketchList.Children.Clear();
-
-            foreach (var json in sketchFiles)
+            try
             {
-                var obj = Newtonsoft.Json.Linq.JObject.Parse(json);
-                var displayName = obj["Name"] + ".json";
-
-                var stackPanel = new StackPanel
+                var sketchNamesResult = await _mongoStore.GetAllSketchNamesAsync();
+                if (!sketchNamesResult.IsSuccess)
                 {
-                    Orientation = Orientation.Horizontal,
-                    HorizontalAlignment = HorizontalAlignment.Center,
-                    Margin = new Thickness(0, 5, 0, 5)
-                };
+                    MessageBox.Show(AppErrors.Mongo.ReadError, "Error",
+                        MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
 
-                var nameButton = new Button
+                await Dispatcher.InvokeAsync(() =>
                 {
-                    Content = displayName,
-                    HorizontalAlignment = HorizontalAlignment.Center,
-                    HorizontalContentAlignment = HorizontalAlignment.Center,
-                    Padding = new Thickness(10, 5, 10, 5),
-                    MinWidth = 150,
-                    Margin = new Thickness(0, 0, 10, 0)
-                };
-
-                var deleteButton = new Button
-                {
-                    Content = "Delete",
-                    Background = System.Windows.Media.Brushes.LightCoral,
-                    Padding = new Thickness(10, 5, 10, 5),
-                    MinWidth = 80
-                };
-
-                var sketchName = obj["Name"]?.ToString();
-                deleteButton.Click += async (s, e) => await DeleteSketch(sketchName);
-
-                stackPanel.Children.Add(nameButton);
-                stackPanel.Children.Add(deleteButton);
-                SketchList.Children.Add(stackPanel);
+                    SketchList.Children.Clear();
+                    if (sketchNamesResult.Value != null)
+                        foreach (var name in sketchNamesResult.Value)
+                        {
+                            AddToSketchList(name);
+                        }
+                });
             }
-        });
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine(AppErrors.Mongo.ReadError);
-    }
-}
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error refreshing sketches: {ex.Message}", "Error",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
 
         private async Task DeleteSketch(string sketchName)
         {

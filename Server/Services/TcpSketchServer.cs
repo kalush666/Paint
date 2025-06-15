@@ -14,7 +14,7 @@ namespace Server.Services
 {
     public class TcpSketchServer
     {
-        private const int SIZE_OF_CHUNK = 4096;
+        private const int SizeOfChunk = 4096;
 
         private readonly int _port;
         private TcpListener _listener;
@@ -108,9 +108,9 @@ namespace Server.Services
 
             try
             {
-                using var stream = client.GetStream();
+                await using var stream = client.GetStream();
                 using var requestStream = new MemoryStream();
-                var requestChunk = new byte[SIZE_OF_CHUNK];
+                var requestChunk = new byte[SizeOfChunk];
                 int bytesRead;
                 while ((bytesRead = await stream.ReadAsync(requestChunk, 0, requestChunk.Length, token)) > 0)
                 {
@@ -121,11 +121,9 @@ namespace Server.Services
                 var clientRequest = Encoding.UTF8.GetString(requestStream.ToArray());
                 var precessingResult = await _requestProcessor.ProcessAsync(clientRequest, stream, token);
 
-                if (precessingResult.Error != null)
-                {
-                    return Result<string>.Failure(precessingResult.Error);
-                }
-                return Result<string>.Success(Encoding.UTF8.GetString(requestStream.ToArray()));
+                return precessingResult.Error != null
+                    ? Result<string>.Failure(precessingResult.Error)
+                    : Result<string>.Success(Encoding.UTF8.GetString(requestStream.ToArray()));
             }
             catch (OperationCanceledException)
             {

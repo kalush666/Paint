@@ -42,7 +42,7 @@ namespace Server.Handlers
             catch (Exception e)
             {
                 await ResponseHelper.SendAsync(context.Stream, AppErrors.Mongo.ReadError, context.CancellationToken);
-                return Result<string>.Failure(AppErrors.Mongo.ReadError);
+                return Result<string>.Failure(AppErrors.File.Locked);
             }
         }
     }
