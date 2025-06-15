@@ -98,18 +98,21 @@ This file launches the whole stack in one command:
 
 ```bat
 @echo off
+echo Starting MongoDB container...
+docker-compose up -d
 
-REM Start MongoDB
-Docker-compose up -d
+echo Starting Server...
+start cmd /k "dotnet run --project Server"
 
-REM Start backend server
-start dotnet run --project Server
+timeout /t 2 >nul
 
-REM Wait for server to boot
-Timeout /t 2 >nul
+echo Starting Client 1...
+start cmd /k "dotnet run --project Client\Client.csproj"
 
-REM Start WPF client
-start dotnet run --project Client
+timeout /t 1 >nul
+
+echo Starting Client 2...
+start cmd /k "dotnet run --project Client\Client.csproj"
 ```
 
 ✅ **Usage:** Just double-click `run.bat` to start everything!
