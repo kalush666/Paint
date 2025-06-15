@@ -31,11 +31,21 @@
             public const string UnableToSend = "Unable to send message";
         }
 
+        public static class Request
+        {
+            public const string InvalidFormat = "Request format is invalid.";
+            public const string UnsupportedType = "Request type is not supported.";
+            public const string NotFound = "Requested resource was not found.";
+            public const string BadRequest = "Bad request.";
+            public const string Unauthorized = "Unauthorized request.";
+        }
+
         public static class Generic
         {
             public const string Unknown = "An unknown error occurred.";
             public const string OperationFailed = "The operation failed.";
             public const string OperationCancelled = "The operation was cancelled.";
+            public const string UnsupportedOperation = "This operation is not supported.";
         }
 
         public static class Shapes

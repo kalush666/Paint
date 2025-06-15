@@ -5,7 +5,6 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Documents;
 using Client.Convertors;
 using Newtonsoft.Json;
 using Client.Factories;
@@ -37,27 +36,32 @@ namespace Client.Services
                 client.ReceiveTimeout = _timeoutMs;
                 client.SendTimeout = _timeoutMs;
 
-                await client.ConnectAsync(_serverHost, _serverPort);
+                await client.ConnectAsync(_serverHost, _serverPort).ConfigureAwait(false);
 
-                await using var stream = client.GetStream();
+                using var stream = client.GetStream();
 
                 var json = JsonConvert.SerializeObject(sketch, Formatting.Indented);
-                var data = Encoding.UTF8.GetBytes(json);
+                var request = $"POST:{json}";
+                var data = Encoding.UTF8.GetBytes(request);
 
-                await stream.WriteAsync(data, 0, data.Length);
-                await stream.FlushAsync();
-
+                await stream.WriteAsync(data, 0, data.Length).ConfigureAwait(false);
+                await stream.FlushAsync().ConfigureAwait(false);
 
                 using var responseStream = new MemoryStream();
                 var responseChunk = new byte[4096];
                 int byteRead;
-                while ((byteRead = await stream.ReadAsync(responseChunk,0,responseChunk.Length)) > 0)
+                while ((byteRead = await stream.ReadAsync(responseChunk, 0, responseChunk.Length).ConfigureAwait(false)) > 0)
                 {
-                    responseStream.Write(responseChunk,0,byteRead);
-                    if(!stream.DataAvailable) break;
+                    responseStream.Write(responseChunk, 0, byteRead);
+                    if (!stream.DataAvailable) break;
                 }
 
-                return Encoding.UTF8.GetString(responseStream.ToArray());
+                var response = Encoding.UTF8.GetString(responseStream.ToArray());
+                if (response.StartsWith("ERROR:"))
+                {
+                    throw new Exception(response.Substring(6));
+                }
+                return response;
             }
             catch (Exception ex)
             {
@@ -73,25 +77,24 @@ namespace Client.Services
                 client.ReceiveTimeout = _timeoutMs;
                 client.SendTimeout = _timeoutMs;
 
-                await client.ConnectAsync(_serverHost, _serverPort);
+                await client.ConnectAsync(_serverHost, _serverPort).ConfigureAwait(false);
 
-                await using var stream = client.GetStream();
+                using var stream = client.GetStream();
 
-                var request = $"GET:{sketchName}";
+                var request = $"GET:SPECIFIC:{sketchName}";
                 var requestData = Encoding.UTF8.GetBytes(request);
-                await stream.WriteAsync(requestData, 0, requestData.Length);
-                await stream.FlushAsync();
+                await stream.WriteAsync(requestData, 0, requestData.Length).ConfigureAwait(false);
+                await stream.FlushAsync().ConfigureAwait(false);
 
                 using var responseStream = new MemoryStream();
                 var requestBuffer = new byte[4096];
                 int bytesRead;
-                while ((bytesRead = await stream.ReadAsync(requestBuffer, 0, requestBuffer.Length)) > 0)
+                while ((bytesRead = await stream.ReadAsync(requestBuffer, 0, requestBuffer.Length).ConfigureAwait(false)) > 0)
                 {
                     responseStream.Write(requestBuffer, 0, bytesRead);
                     if (!stream.DataAvailable) break;
                 }
                 var response = Encoding.UTF8.GetString(responseStream.ToArray());
-
 
                 if (response.StartsWith("ERROR:"))
                 {
@@ -105,7 +108,6 @@ namespace Client.Services
                 };
 
                 var shapesArray = json["Shapes"] as JArray;
-                Console.WriteLine(shapesArray);
                 if (shapesArray != null)
                 {
                     foreach (var shapeJson in shapesArray)
@@ -117,12 +119,10 @@ namespace Client.Services
                         }
                     }
                 }
-                Console.WriteLine(sketch.Shapes.Count);
                 return sketch;
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
                 throw new Exception($"Failed to download sketch: {AppErrors.Mongo.ReadError}", ex);
             }
         }
@@ -135,25 +135,25 @@ namespace Client.Services
                 client.ReceiveTimeout = _timeoutMs;
                 client.SendTimeout = _timeoutMs;
 
-                await client.ConnectAsync(_serverHost, _serverPort);
-                await using var stream = client.GetStream();
+                await client.ConnectAsync(_serverHost, _serverPort).ConfigureAwait(false);
+                using var stream = client.GetStream();
 
                 var request = "GET:ALL:NAMES";
                 var requestData = Encoding.UTF8.GetBytes(request);
-                await stream.WriteAsync(requestData, 0, requestData.Length);
-                await stream.FlushAsync();
+                await stream.WriteAsync(requestData, 0, requestData.Length).ConfigureAwait(false);
+                await stream.FlushAsync().ConfigureAwait(false);
 
                 using var responseStream = new MemoryStream();
                 var responseBuffer = new byte[4096];
                 int bytesRead;
-                while ((bytesRead = await stream.ReadAsync(responseBuffer, 0, responseBuffer.Length)) > 0)
+                while ((bytesRead = await stream.ReadAsync(responseBuffer, 0, responseBuffer.Length).ConfigureAwait(false)) > 0)
                 {
                     responseStream.Write(responseBuffer, 0, bytesRead);
                     if (!stream.DataAvailable) break;
                 }
 
                 var response = Encoding.UTF8.GetString(responseStream.ToArray());
-                if (response.Equals(AppErrors.Generic.OperationFailed))
+                if (response.StartsWith("ERROR:") || response.Equals(AppErrors.Generic.OperationFailed))
                     return Result<List<string>>.Failure(response);
 
                 var jsonArray = JArray.Parse(response);
@@ -161,11 +161,10 @@ namespace Client.Services
 
                 return Result<List<string>>.Success(names);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return Result<List<string>>.Failure(AppErrors.Generic.OperationFailed);
             }
         }
-
     }
 }

@@ -14,19 +14,26 @@ namespace Server.Services
 {
     public class TcpSketchServer
     {
+        private const int SIZE_OF_CHUNK = 4096;
+
         private readonly int _port;
         private TcpListener _listener;
         private CancellationTokenSource _cancellationTokenSource = new();
         private Task? _listenerTask;
+        private readonly IRequestProcessor _requestProcessor;
+        private readonly IHandlerFactory _handlerFactory;
         private readonly MongoSketchStore _mongoStore = new();
         private bool _isSuspended = false;
         private readonly object _suspendLock = new object();
         private LockManager _lockManager = new();
 
-        public TcpSketchServer()
+        public TcpSketchServer(IRequestProcessor? requestProcessor = null, IHandlerFactory? handlerFactory = null)
         {
             _port = int.TryParse(Environment.GetEnvironmentVariable("PORT"), out var envPort) ? envPort : 5000;
             _listener = new TcpListener(IPAddress.Any, _port);
+
+            _handlerFactory = handlerFactory ?? new HandlerFactory();
+            _requestProcessor = requestProcessor ?? new RequestProcessor(_handlerFactory, _mongoStore, _lockManager);
         }
 
 
@@ -85,61 +92,50 @@ namespace Server.Services
             }
         }
 
-        private async Task HandleClient(TcpClient client, CancellationToken token)
+        private async Task<Result<string>> HandleClient(TcpClient client, CancellationToken token)
         {
+            bool isSuspended;
+            lock (_suspendLock)
+            {
+                isSuspended = _isSuspended;
+            }
+
+            if (isSuspended)
+            {
+                await ResponseHelper.SendAsync(client.GetStream(), AppErrors.Server.Suspended, token);
+                return Result<string>.Failure(AppErrors.Server.Suspended);
+            }
+
             try
             {
-                lock (_suspendLock)
-                {
-                    if (_isSuspended)
-                    {
-                        _ = ResponseHelper.SendAsync(client.GetStream(), AppErrors.Server.Suspended, token);
-                        return;
-                    }
-                }
-
-                await using var stream = client.GetStream();
-
-                using var responseStream = new MemoryStream();
-                var responseChunk = new byte[4096];
+                using var stream = client.GetStream();
+                using var requestStream = new MemoryStream();
+                var requestChunk = new byte[SIZE_OF_CHUNK];
                 int bytesRead;
-                while ((bytesRead = await stream.ReadAsync(responseChunk, 0, responseChunk.Length)) > 0)
+                while ((bytesRead = await stream.ReadAsync(requestChunk, 0, requestChunk.Length, token)) > 0)
                 {
-                    responseStream.Write(responseChunk, 0, bytesRead);
+                    requestStream.Write(requestChunk, 0, bytesRead);
                     if (!stream.DataAvailable) break;
                 }
 
-                var clientRequest = Encoding.UTF8.GetString(responseStream.ToArray()).Trim();
-                if (clientRequest.StartsWith("GET:"))
+                var clientRequest = Encoding.UTF8.GetString(requestStream.ToArray());
+                var precessingResult = await _requestProcessor.ProcessAsync(clientRequest, stream, token);
+
+                if (precessingResult.Error != null)
                 {
-                    var handler = new DownloadHandler(_mongoStore, stream, token, clientRequest.Trim(),_lockManager);
-                    await handler.HandleAsync();
+                    return Result<string>.Failure(precessingResult.Error);
                 }
-                else
-                {
-                    var handler = new UploadHandler(_mongoStore, stream, token, clientRequest);
-                    await handler.HandleAsync();
-                }
+                return Result<string>.Success(Encoding.UTF8.GetString(requestStream.ToArray()));
             }
             catch (OperationCanceledException)
             {
-                Console.WriteLine(AppErrors.Server.ClientHandlingCancelled);
+                await ResponseHelper.SendAsync(client.GetStream(), AppErrors.Server.Suspended, token);
+                return Result<string>.Failure(AppErrors.Server.Suspended);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                Console.WriteLine(AppErrors.Generic.OperationFailed);
                 await ResponseHelper.SendAsync(client.GetStream(), AppErrors.Generic.OperationFailed, token);
-            }
-            finally
-            {
-                try
-                {
-                    client.Close();
-                }
-                catch (Exception ex)
-                {
-                    Console.Write(AppErrors.Generic.OperationFailed);
-                }
+                return Result<string>.Failure(AppErrors.Generic.OperationFailed);
             }
         }
     }
