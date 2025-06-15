@@ -1,4 +1,4 @@
-﻿# 🎨 Paint Project – Fullstack WPF + C# + MongoDB
+# 🎨 Paint Project – Fullstack WPF + C# + MongoDB
 
 This project is a fullstack paint application featuring a WPF client, a C# backend server, and MongoDB for persistent storage. It enables users to draw, save, and load shapes like lines, rectangles, and circles with real-time communication between the client and the server.
 
@@ -98,18 +98,21 @@ This file launches the whole stack in one command:
 
 ```bat
 @echo off
+echo Starting MongoDB container...
+docker-compose up -d
 
-REM Start MongoDB
-Docker-compose up -d
+echo Starting Server...
+start cmd /k "dotnet run --project Server"
 
-REM Start backend server
-start dotnet run --project Server
+timeout /t 2 >nul
 
-REM Wait for server to boot
-Timeout /t 2 >nul
+echo Starting Client 1...
+start cmd /k "dotnet run --project Client\Client.csproj"
 
-REM Start WPF client
-start dotnet run --project Client
+timeout /t 1 >nul
+
+echo Starting Client 2...
+start cmd /k "dotnet run --project Client\Client.csproj"
 ```
 
 ✅ **Usage:** Just double-click `run.bat` to start everything!
