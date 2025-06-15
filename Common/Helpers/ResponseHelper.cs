@@ -1,12 +1,11 @@
-﻿using System;
-using System.Net.Sockets;
+﻿using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Common.Errors;
 using Common.Utils;
 
-namespace Server.Handlers
+namespace Common.Helpers
 {
     public static class ResponseHelper
     {
