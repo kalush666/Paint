@@ -1,0 +1,14 @@
+.idea/
+/.idea/
+*.sln.iml
+*.DotSettings
+*.DotSettings.user
+
+*.sln.ide
+*.userprefs
+
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+

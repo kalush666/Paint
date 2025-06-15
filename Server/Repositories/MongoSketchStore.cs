@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Common.Constants;
 using Common.Errors;
 using Common.Helpers;
 using MongoDB.Bson;
@@ -25,7 +26,7 @@ namespace Server.Repositories
 
         public async Task<string?> GetJsonByNameAsync(string name)
         {
-            var filter = Builders<BsonDocument>.Filter.Eq("Name", name);
+            var filter = Builders<BsonDocument>.Filter.Eq(SketchFields.Name, name);
             var document = await _collection.Find(filter).FirstOrDefaultAsync();
             return document?.ToJson();
         }
@@ -33,11 +34,11 @@ namespace Server.Repositories
         public async Task InsertJsonAsync(string json)
         {
             var doc = BsonDocument.Parse(json);
-            if (!doc.Contains("Name") || string.IsNullOrWhiteSpace(doc["Name"].AsString))
+            if (!doc.Contains("Name") || string.IsNullOrWhiteSpace(doc[SketchFields.Name].AsString))
                 throw new ArgumentException(AppErrors.Mongo.InvalidJson);
 
-            var name = doc["Name"].AsString;
-            var filter = Builders<BsonDocument>.Filter.Eq("Name", name);
+            var name = doc[SketchFields.Name].AsString;
+            var filter = Builders<BsonDocument>.Filter.Eq(SketchFields.Name, name);
             var exists = await _collection.Find(filter).AnyAsync();
             if (exists)
                 throw new InvalidOperationException(AppErrors.Mongo.AlreadyExists);
@@ -49,7 +50,7 @@ namespace Server.Repositories
 
         public async Task DeleteSketchAsync(string name)
         {
-            var filter = Builders<BsonDocument>.Filter.Eq("Name", name);
+            var filter = Builders<BsonDocument>.Filter.Eq(SketchFields.Name, name);
             var result = await _collection.DeleteOneAsync(filter);
 
             if (result.DeletedCount > 0)
@@ -69,20 +70,20 @@ namespace Server.Repositories
             return documents.Select(doc => doc.ToJson()).ToList();
         }
 
-        public async Task<Result<List<string>>> GetAllSketchNamesAsync()
+        public Task<Result<List<string>>> GetAllSketchNamesAsync()
         {
             try
             {
-                var documents = await _collection.Find(new BsonDocument()).ToListAsync();
-                var names = documents
-                    .Where(doc => doc.Contains("Name"))
-                    .Select(doc => doc["Name"].AsString)
+                var names = _collection.Find(new BsonDocument())
+                    .ToEnumerable()
+                    .Where(doc => doc.Contains(SketchFields.Name))
+                    .Select(doc => doc[SketchFields.Name].AsString)
                     .ToList();
-                return Result<List<string>>.Success(names);
+                return Task.FromResult(Result<List<string>>.Success(names));
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return Result<List<string>>.Failure(AppErrors.Mongo.ReadError);
+                return Task.FromResult(Result<List<string>>.Failure(AppErrors.Mongo.ReadError));
             }
         }
     }
