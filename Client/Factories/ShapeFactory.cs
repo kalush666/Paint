@@ -3,7 +3,6 @@ using System.Windows;
 using Client.Enums;
 using Client.Models;
 using Common.Errors;
-using Common.Utils;
 using Newtonsoft.Json.Linq;
 
 namespace Client.Factories

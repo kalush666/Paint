@@ -1,6 +1,7 @@
-﻿namespace Common.Utils
+﻿#nullable enable
+namespace Common.Helpers
 {
-    public class Result<T>
+    public struct Result<T>
     {
         public bool IsSuccess { get; }
         public string? Error { get; }

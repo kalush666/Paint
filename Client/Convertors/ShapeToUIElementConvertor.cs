@@ -4,7 +4,6 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using Client.Models;
 using Common.Errors;
-using Common.Utils;
 
 namespace Client.Convertors
 {

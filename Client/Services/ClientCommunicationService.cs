@@ -11,7 +11,7 @@ using Newtonsoft.Json;
 using Client.Factories;
 using Client.Models;
 using Common.Errors;
-using Common.Utils;
+using Common.Helpers;
 using Newtonsoft.Json.Linq;
 
 namespace Client.Services
