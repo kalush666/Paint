@@ -13,7 +13,7 @@ using Server.Services;
 
 namespace Server.Handlers
 {
-    class DownloadHandler
+    class DownloadHandler : ISketchHandler
     {
         private readonly MongoSketchStore _mongoStore;
         private readonly NetworkStream _stream;

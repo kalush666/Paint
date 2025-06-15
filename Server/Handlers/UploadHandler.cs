@@ -9,7 +9,7 @@ using Server.Repositories;
 
 namespace Server.Handlers
 {
-    public class UploadHandler
+    public class UploadHandler : ISketchHandler
     {
         private readonly MongoSketchStore _mongoStore;
         private readonly NetworkStream _stream;
