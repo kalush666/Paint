@@ -3,9 +3,9 @@ using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Common.Helpers;
 using Server.Enums;
 using Server.Events;
-using Server.Helpers;
 using Server.Repositories;
 
 namespace Server.ViewModel

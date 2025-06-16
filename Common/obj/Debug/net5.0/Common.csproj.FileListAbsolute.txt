@@ -2,7 +2,6 @@ C:\Users\jonat\Desktop\PROJECTS\PaintProject\Common\bin\Debug\net5.0\Common.deps
 C:\Users\jonat\Desktop\PROJECTS\PaintProject\Common\bin\Debug\net5.0\Common.dll
 C:\Users\jonat\Desktop\PROJECTS\PaintProject\Common\bin\Debug\net5.0\ref\Common.dll
 C:\Users\jonat\Desktop\PROJECTS\PaintProject\Common\bin\Debug\net5.0\Common.pdb
-C:\Users\jonat\Desktop\PROJECTS\PaintProject\Common\obj\Debug\net5.0\Common.csproj.AssemblyReference.cache
 C:\Users\jonat\Desktop\PROJECTS\PaintProject\Common\obj\Debug\net5.0\Common.GeneratedMSBuildEditorConfig.editorconfig
 C:\Users\jonat\Desktop\PROJECTS\PaintProject\Common\obj\Debug\net5.0\Common.AssemblyInfoInputs.cache
 C:\Users\jonat\Desktop\PROJECTS\PaintProject\Common\obj\Debug\net5.0\Common.AssemblyInfo.cs
@@ -10,3 +9,4 @@ C:\Users\jonat\Desktop\PROJECTS\PaintProject\Common\obj\Debug\net5.0\Common.cspr
 C:\Users\jonat\Desktop\PROJECTS\PaintProject\Common\obj\Debug\net5.0\Common.dll
 C:\Users\jonat\Desktop\PROJECTS\PaintProject\Common\obj\Debug\net5.0\ref\Common.dll
 C:\Users\jonat\Desktop\PROJECTS\PaintProject\Common\obj\Debug\net5.0\Common.pdb
+C:\Users\jonat\Desktop\PROJECTS\PaintProject\Common\obj\Debug\net5.0\Common.csproj.AssemblyReference.cache
