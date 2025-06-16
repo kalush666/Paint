@@ -203,7 +203,7 @@ namespace Client.Views
         {
             var optionsWindow = new OptionsWindow
             {
-                ColorPicker = { SelectedIndex = GetColorIndex(_currentColor) },
+                ColorPicker = { SelectedIndex = BrushMappingHelper.GetIndex(_currentColor) },
                 StrokeSlider = { Value = _currentStrokeThikness }
             };
 
@@ -212,7 +212,7 @@ namespace Client.Views
             _currentStrokeThikness = optionsWindow.SelectedThickness;
 
             MessageBox.Show(
-                $"Settings updated:\nColor: {GetColorName(_currentColor)}\nStroke Thickness: {_currentStrokeThikness}",
+                $"Settings updated:\nColor: {BrushMappingHelper.GetName(_currentColor)}\nStroke Thickness: {_currentStrokeThikness}",
                 "Settings Applied");
         }
 
@@ -229,23 +229,5 @@ namespace Client.Views
                 case "Circle": CircleButton.FontWeight = FontWeights.Bold; break;
             }
         }
-
-        private int GetColorIndex(Brush color) => color switch
-        {
-            var c when c == Brushes.Black => 0,
-            var c when c == Brushes.Red => 1,
-            var c when c == Brushes.Green => 2,
-            var c when c == Brushes.Blue => 3,
-            _ => 0
-        };
-
-        private string GetColorName(Brush color) => color switch
-        {
-            var c when c == Brushes.Black => "Black",
-            var c when c == Brushes.Red => "Red",
-            var c when c == Brushes.Green => "Green",
-            var c when c == Brushes.Blue => "Blue",
-            _ => "Black"
-        };
     }
 }
