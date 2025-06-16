@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
-using Client.Convertors;
 using Client.Enums;
 using Client.Factories;
 using Client.Helpers;
@@ -24,8 +23,9 @@ namespace Client.Views
         private Brush _currentColor = Brushes.Black;
         private double _currentStrokeThikness = 2;
         private readonly ClientCommunicationService _communicationService;
+        private readonly UIShapeFactory _uiShapeFactory = new();
         private UIElement? _previewShape = null;
-        private bool isDrawing = false;
+        private bool _isDrawing = false;
 
         public ClientWindow()
         {
@@ -33,7 +33,6 @@ namespace Client.Views
             ShapeAdded += OnShapeAdded;
             _communicationService = new ClientCommunicationService();
             _currentSketch.Name = "Untitled Sketch";
-
             this.Closing += OnClientWindowClosing;
         }
 
@@ -50,40 +49,45 @@ namespace Client.Views
         private void Canvas_OnMouseDown(object sender, MouseButtonEventArgs e)
         {
             if (_currentShape == BasicShapeType.None) return;
-            isDrawing = true;
+            _isDrawing = true;
             _startPoint = new Position(e.GetPosition(Canvas));
-            _previewShape = ShapeToUiElementConvertor.ConvertToUiElement(
-                ShapeFactory.Create(_currentShape, _startPoint, _startPoint));
-            if (_previewShape != null)
+            var shape = ShapeFactory.Create(_currentShape, _startPoint, _startPoint);
+            var uiShape = _uiShapeFactory.Create(shape);
+            if (uiShape != null)
+            {
+                uiShape.StrokeColor = _currentColor;
+                uiShape.StrokeThickness = _currentStrokeThikness;
+                _previewShape = uiShape.Render();
                 Canvas.Children.Add(_previewShape);
+            }
         }
-        
+
         private void Canvas_OnMouseMove(object sender, MouseEventArgs e)
         {
-            if (!isDrawing || _currentShape == BasicShapeType.None || _previewShape == null) return;
+            if (!_isDrawing || _currentShape == BasicShapeType.None || _previewShape == null) return;
             var currentPoint = new Position(e.GetPosition(Canvas));
             var shape = ShapeFactory.Create(_currentShape, _startPoint, currentPoint);
+
             if (shape == null) return;
-            shape.SetColor(_currentColor);
-            shape.StrokeThikness = _currentStrokeThikness;
             CanvasGeometryHelper.EnsureFitsCanvas(Canvas.ActualWidth, Canvas.ActualHeight, shape);
 
             Canvas.Children.Remove(_previewShape);
-            _previewShape = ShapeToUiElementConvertor.ConvertToUiElement(shape);
-            if (_previewShape != null)
-                Canvas.Children.Add(_previewShape);
+            var uiShape = _uiShapeFactory.Create(shape);
+            if (uiShape == null) return;
+
+            uiShape.StrokeColor = _currentColor;
+            uiShape.StrokeThickness = _currentStrokeThikness;
+            _previewShape = uiShape.Render();
+            Canvas.Children.Add(_previewShape);
         }
 
-        
         private void Canvas_OnMouseUp(object sender, MouseButtonEventArgs e)
         {
-            if (!isDrawing || _currentShape == BasicShapeType.None) return;
-            isDrawing = false;
+            if (!_isDrawing || _currentShape == BasicShapeType.None) return;
+            _isDrawing = false;
             var endPoint = new Position(e.GetPosition(Canvas));
             var shape = ShapeFactory.Create(_currentShape, _startPoint, endPoint);
             if (shape == null) return;
-            shape.SetColor(_currentColor);
-            shape.StrokeThikness = _currentStrokeThikness;
             CanvasGeometryHelper.EnsureFitsCanvas(Canvas.ActualWidth, Canvas.ActualHeight, shape);
 
             _currentSketch.addShape(shape);
@@ -92,8 +96,15 @@ namespace Client.Views
             if (_previewShape != null)
                 Canvas.Children.Remove(_previewShape);
             _previewShape = null;
-            var uiElement = ShapeToUiElementConvertor.ConvertToUiElement(shape);
-            Canvas.Children.Add(uiElement);
+
+            var uiShape = _uiShapeFactory.Create(shape);
+            if (uiShape == null) return;
+
+            uiShape.StrokeColor = _currentColor;
+            uiShape.StrokeThickness = _currentStrokeThikness;
+            var uiElement = uiShape.Render();
+            if (uiElement != null)
+                Canvas.Children.Add(uiElement);
         }
 
         private void LineButton_OnClick(object sender, RoutedEventArgs e)
@@ -130,11 +141,10 @@ namespace Client.Views
             try
             {
                 _currentSketch.Name = sketchName;
-
                 var result = await _communicationService.UploadSketchAsync(_currentSketch);
                 MessageBox.Show(result, "Upload Result");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 MessageBox.Show($"Upload failed: {AppErrors.Mongo.UploadError}", "Error");
             }
@@ -148,18 +158,12 @@ namespace Client.Views
 
         private async void ImportButton_OnClick(object sender, RoutedEventArgs e)
         {
-            var selectedImport ="";
             var importWindow = new ImportSelectionWindow();
-            if (importWindow.ShowDialog() == true && !string.IsNullOrWhiteSpace(importWindow.SelectedSketch))
-            {
-                 selectedImport = importWindow.SelectedSketch;
-                
-            }
-
-            if (string.IsNullOrEmpty(selectedImport))
-            {
+            if (importWindow.ShowDialog() != true || string.IsNullOrWhiteSpace(importWindow.SelectedSketch))
                 return;
-            }
+
+            var selectedImport = importWindow.SelectedSketch;
+
             try
             {
                 var importedSketch = await _communicationService.DownloadSketchAsync(selectedImport);
@@ -174,18 +178,22 @@ namespace Client.Views
                 foreach (var shape in _currentSketch.Shapes)
                 {
                     CanvasGeometryHelper.EnsureFitsCanvas(Canvas.ActualWidth, Canvas.ActualHeight, shape);
-
-                    shape.Color = shape.GetBrushFromName(shape.ColorName);
-
-                    var uiElement = ShapeToUiElementConvertor.ConvertToUiElement(shape);
-                    Canvas.Children.Add(uiElement);
+                    var uiShape = _uiShapeFactory.Create(shape);
+                    if (uiShape != null)
+                    {
+                        uiShape.StrokeColor = _currentColor;
+                        uiShape.StrokeThickness = _currentStrokeThikness;
+                        var uiElement = uiShape.Render();
+                        if (uiElement != null)
+                            Canvas.Children.Add(uiElement);
+                    }
                 }
 
                 MessageBox.Show(
                     $"Sketch '{_currentSketch.Name}' imported successfully with {_currentSketch.Shapes.Count} shapes!",
                     "Import Success");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 MessageBox.Show($"Import failed: {AppErrors.Mongo.ReadError}", "Error");
             }
@@ -195,14 +203,8 @@ namespace Client.Views
         {
             var optionsWindow = new OptionsWindow
             {
-                ColorPicker =
-                {
-                    SelectedIndex = GetColorIndex(_currentColor)
-                },
-                StrokeSlider =
-                {
-                    Value = _currentStrokeThikness
-                }
+                ColorPicker = { SelectedIndex = GetColorIndex(_currentColor) },
+                StrokeSlider = { Value = _currentStrokeThikness }
             };
 
             if (optionsWindow.ShowDialog() != true) return;
@@ -222,40 +224,28 @@ namespace Client.Views
 
             switch (selectedShape)
             {
-                case "Line":
-                    LineButton.FontWeight = FontWeights.Bold;
-                    break;
-                case "Rectangle":
-                    RectangleButton.FontWeight = FontWeights.Bold;
-                    break;
-                case "Circle":
-                    CircleButton.FontWeight = FontWeights.Bold;
-                    break;
+                case "Line": LineButton.FontWeight = FontWeights.Bold; break;
+                case "Rectangle": RectangleButton.FontWeight = FontWeights.Bold; break;
+                case "Circle": CircleButton.FontWeight = FontWeights.Bold; break;
             }
         }
 
-        private int GetColorIndex(Brush color)
+        private int GetColorIndex(Brush color) => color switch
         {
-            return color switch
-            {
-                var c when c == Brushes.Black => 0,
-                var c when c == Brushes.Red => 1,
-                var c when c == Brushes.Green => 2,
-                var c when c == Brushes.Blue => 3,
-                _ => 0
-            };
-        }
+            var c when c == Brushes.Black => 0,
+            var c when c == Brushes.Red => 1,
+            var c when c == Brushes.Green => 2,
+            var c when c == Brushes.Blue => 3,
+            _ => 0
+        };
 
-        private string GetColorName(Brush color)
+        private string GetColorName(Brush color) => color switch
         {
-            return color switch
-            {
-                var c when c == Brushes.Black => "Black",
-                var c when c == Brushes.Red => "Red",
-                var c when c == Brushes.Green => "Green",
-                var c when c == Brushes.Blue => "Blue",
-                _ => "Black"
-            };
-        }
+            var c when c == Brushes.Black => "Black",
+            var c when c == Brushes.Red => "Red",
+            var c when c == Brushes.Green => "Green",
+            var c when c == Brushes.Blue => "Blue",
+            _ => "Black"
+        };
     }
 }
