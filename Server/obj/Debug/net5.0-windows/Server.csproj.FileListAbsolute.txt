@@ -30,3 +30,4 @@ C:\Users\jonat\Desktop\PROJECTS\PaintProject\Server\obj\Debug\net5.0-windows\Vie
 C:\Users\jonat\Desktop\PROJECTS\PaintProject\Server\obj\Debug\net5.0-windows\Views\ServerWindow.g.cs
 C:\Users\jonat\Desktop\PROJECTS\PaintProject\Server\bin\Debug\net5.0-windows\Common.dll
 C:\Users\jonat\Desktop\PROJECTS\PaintProject\Server\bin\Debug\net5.0-windows\Common.pdb
+C:\Users\jonat\Desktop\PROJECTS\PaintProject\Server\bin\Debug\net5.0-windows\System.Reactive.dll

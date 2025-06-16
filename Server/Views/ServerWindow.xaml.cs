@@ -2,84 +2,42 @@
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using Common.Errors;
-using Server.Helpers;
+using Server.Events;
 using Server.Repositories;
 using Server.Services;
+using Server.ViewModel;
 
 namespace Server.Views
 {
     public partial class ServerWindow : Window
     {
-        private TcpSketchServer _server = new();
-        private CancellationTokenSource suspendToken = new CancellationTokenSource();
-        private MongoSketchStore _mongoStore = new MongoSketchStore();
+        private readonly TcpSketchServer _server;
+        private readonly CancellationTokenSource suspendToken = new CancellationTokenSource();
+        private readonly MongoSketchStore _mongoStore;
         private bool _isSuspended = false;
+        private readonly SketchListViewModel _viewModel;
+        private readonly SketchEventBus<SketchEvent> _eventBus;
 
         public ServerWindow()
         {
             InitializeComponent();
+            _eventBus = new SketchEventBus<SketchEvent>();
+            _mongoStore = new MongoSketchStore(_eventBus);
+            _viewModel = new SketchListViewModel(_mongoStore);
+            DataContext = _viewModel;
+            _server = new TcpSketchServer(_mongoStore);
+
             _server.StartListener();
             LoadSketchList();
-
-            SketchStoreNotifier.SketchInserted += name => Dispatcher.Invoke(() => AddToSketchList(name));
-            SketchStoreNotifier.SketchDeleted += name => Dispatcher.Invoke(() => RemoveFromSketchList(name));
         }
 
-        private void RemoveFromSketchList(string sketchName)
+        protected override async void OnContentRendered(EventArgs eventArgs)
         {
-            var displayName = sketchName + ".json";
-            StackPanel toRemove = null;
-
-            foreach (var child in SketchList.Children)
-            {
-                if (child is StackPanel panel && panel.Children.Count > 0 && panel.Children[0] is Button btn)
-                {
-                    if (btn.Content?.ToString() == displayName)
-                    {
-                        toRemove = panel;
-                        break;
-                    }
-                }
-            }
-
-            if (toRemove != null)
-            {
-                SketchList.Children.Remove(toRemove);
-            }
+            base.OnContentRendered(eventArgs);
+            await _viewModel.ListenAsync(_eventBus, suspendToken.Token);
         }
 
-        private void AddToSketchList(string sketchName)
-        {
-            var displayName = sketchName + ".json";
-            var stackPanel = new StackPanel
-            {
-                Orientation = Orientation.Horizontal,
-                HorizontalAlignment = HorizontalAlignment.Center,
-                Margin = new Thickness(0, 5, 0, 5)
-            };
-            var nameButton = new Button
-            {
-                Content = displayName,
-                HorizontalAlignment = HorizontalAlignment.Center,
-                HorizontalContentAlignment = HorizontalAlignment.Center,
-                Padding = new Thickness(10, 5, 10, 5),
-                MinWidth = 150,
-                Margin = new Thickness(0, 0, 10, 0)
-            };
-            var deleteButton = new Button
-            {
-                Content = "Delete",
-                Background = System.Windows.Media.Brushes.LightCoral,
-                Padding = new Thickness(10, 5, 10, 5),
-                MinWidth = 80
-            };
-            deleteButton.Click += async (s, e) => await DeleteSketch(sketchName);
-            stackPanel.Children.Add(nameButton);
-            stackPanel.Children.Add(deleteButton);
-            SketchList.Children.Add(stackPanel);
-        }
 
         private async void LoadSketchList()
         {
@@ -98,15 +56,10 @@ namespace Server.Views
                     return;
                 }
 
-                await Dispatcher.InvokeAsync(() =>
+                foreach (var name in sketchNamesResult.Value)
                 {
-                    SketchList.Children.Clear();
-                    if (sketchNamesResult.Value != null)
-                        foreach (var name in sketchNamesResult.Value)
-                        {
-                            AddToSketchList(name);
-                        }
-                });
+                    if (!_viewModel.Sketches.Contains(name)) _viewModel.Sketches.Add(name);
+                }
             }
             catch (Exception ex)
             {

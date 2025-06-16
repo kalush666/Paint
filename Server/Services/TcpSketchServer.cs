@@ -22,16 +22,16 @@ namespace Server.Services
         private Task? _listenerTask;
         private readonly IRequestProcessor _requestProcessor;
         private readonly IHandlerFactory _handlerFactory;
-        private readonly MongoSketchStore _mongoStore = new();
+        private readonly MongoSketchStore _mongoStore;
         private bool _isSuspended = false;
         private readonly object _suspendLock = new object();
         private LockManager _lockManager = new();
 
-        public TcpSketchServer(IRequestProcessor? requestProcessor = null, IHandlerFactory? handlerFactory = null)
+        public TcpSketchServer(MongoSketchStore sketchStore,IRequestProcessor? requestProcessor = null, IHandlerFactory? handlerFactory = null)
         {
             _port = int.TryParse(Environment.GetEnvironmentVariable("PORT"), out var envPort) ? envPort : 5000;
             _listener = new TcpListener(IPAddress.Any, _port);
-
+            _mongoStore = sketchStore;
             _handlerFactory = handlerFactory ?? new HandlerFactory();
             _requestProcessor = requestProcessor ?? new RequestProcessor(_handlerFactory, _mongoStore, _lockManager);
         }

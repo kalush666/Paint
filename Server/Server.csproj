@@ -10,6 +10,7 @@
 	<ItemGroup>
 		<PackageReference Include="MongoDB.Driver" Version="3.4.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+		<PackageReference Include="System.Reactive" Version="6.0.1" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -31,10 +32,6 @@
 	  <Compile Update="App.xaml.cs">
 	    <SubType>Code</SubType>
 	  </Compile>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Helpers\" />
 	</ItemGroup>
 
 </Project>

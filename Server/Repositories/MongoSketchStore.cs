@@ -9,20 +9,24 @@ using Common.Helpers;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Server.Config;
-using Server.Helpers;
+using Server.Events;
+using Server.Enums;
 
 namespace Server.Repositories
 {
     public class MongoSketchStore
     {
         private readonly IMongoCollection<BsonDocument> _collection;
+        private readonly SketchEventBus<SketchEvent> _eventBus;
 
-        public MongoSketchStore()
+        public MongoSketchStore(SketchEventBus<SketchEvent> eventBus)
         {
+            this._eventBus = eventBus;
             var client = new MongoClient(MongoConfig.ConnectionString);
             var database = client.GetDatabase(MongoConfig.DatabaseName);
             _collection = database.GetCollection<BsonDocument>(MongoConfig.CollectionName);
         }
+
 
         public async Task<Result<string>> GetJsonByNameAsync(string name)
         {
@@ -32,40 +36,38 @@ namespace Server.Repositories
             {
                 return Result<string>.Failure(AppErrors.Mongo.SketchNotFound);
             }
+
             return Result<string>.Success(document.ToJson());
         }
 
-        public async Task InsertJsonAsync(string json)
+        public async Task<Result<string>> InsertJsonAsync(string json)
         {
             var doc = BsonDocument.Parse(json);
-            if (!doc.Contains("Name") || string.IsNullOrWhiteSpace(doc[SketchFields.Name].AsString))
-                throw new ArgumentException(AppErrors.Mongo.InvalidJson);
+            if (!doc.Contains(SketchFields.Name) || string.IsNullOrWhiteSpace(doc[SketchFields.Name].AsString))
+                return Result<string>.Failure(AppErrors.Mongo.InvalidJson);
 
             var name = doc[SketchFields.Name].AsString;
             var filter = Builders<BsonDocument>.Filter.Eq(SketchFields.Name, name);
             var exists = await _collection.Find(filter).AnyAsync();
             if (exists)
-                throw new InvalidOperationException(AppErrors.Mongo.AlreadyExists);
+                return Result<string>.Success(AppErrors.Mongo.AlreadyExists);
 
             await _collection.InsertOneAsync(doc);
-            Console.WriteLine($"Sketch {name} inserted to MongoDB");
-            SketchStoreNotifier.NotifyInserted(name);
+            await _eventBus.PublishAsync(new SketchEvent(SketchEventType.Inserted, name));
+            return Result<string>.Success(doc.ToJson());
         }
 
-        public async Task DeleteSketchAsync(string name)
+        public async Task<Result<string>> DeleteSketchAsync(string name)
         {
             var filter = Builders<BsonDocument>.Filter.Eq(SketchFields.Name, name);
             var result = await _collection.DeleteOneAsync(filter);
 
-            if (result.DeletedCount > 0)
+            if (result.DeletedCount == 0)
             {
-                Console.WriteLine($"sketch {name} deleted from db");
-                SketchStoreNotifier.NotifyDeleted(name);
+                return Result<string>.Failure(AppErrors.Mongo.DeleteError);
             }
-            else
-            {
-                Console.WriteLine(AppErrors.Mongo.DeleteError);
-            }
+            await _eventBus.PublishAsync(new SketchEvent(SketchEventType.Deleted, name));
+            return Result<string>.Success($"{name} deleted successfully.");
         }
 
         public async Task<Result<List<string>>> GetAllJsonAsync()
