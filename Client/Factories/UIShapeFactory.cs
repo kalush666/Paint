@@ -7,11 +7,11 @@ using Client.UIModels;
 
 namespace Client.Factories
 {
-    public class UIShapeFactory
+    public class UiShapeFactory
     {
         private readonly List<IUiShapeConvertor> _convertors;
 
-        public UIShapeFactory()
+        public UiShapeFactory()
         {
             _convertors = typeof(IUiShapeConvertor).Assembly
                 .GetTypes()

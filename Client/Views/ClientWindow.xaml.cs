@@ -23,7 +23,7 @@ namespace Client.Views
         private Brush _currentColor = Brushes.Black;
         private double _currentStrokeThikness = 2;
         private readonly ClientCommunicationService _communicationService;
-        private readonly UIShapeFactory _uiShapeFactory = new();
+        private readonly UiShapeFactory _uiShapeFactory = new();
         private UIElement? _previewShape = null;
         private bool _isDrawing = false;
 
@@ -33,7 +33,7 @@ namespace Client.Views
             ShapeAdded += OnShapeAdded;
             _communicationService = new ClientCommunicationService();
             _currentSketch.Name = "Untitled Sketch";
-            this.Closing += OnClientWindowClosing;
+            Closing += OnClientWindowClosing;
         }
 
         private void OnClientWindowClosing(object sender, CancelEventArgs e)
@@ -53,13 +53,12 @@ namespace Client.Views
             _startPoint = new Position(e.GetPosition(Canvas));
             var shape = ShapeFactory.Create(_currentShape, _startPoint, _startPoint);
             var uiShape = _uiShapeFactory.Create(shape);
-            if (uiShape != null)
-            {
-                uiShape.StrokeColor = _currentColor;
-                uiShape.StrokeThickness = _currentStrokeThikness;
-                _previewShape = uiShape.Render();
-                Canvas.Children.Add(_previewShape);
-            }
+            if (uiShape == null) return;
+
+            uiShape.StrokeColor = _currentColor;
+            uiShape.StrokeThickness = _currentStrokeThikness;
+            _previewShape = uiShape.Render();
+            Canvas.Children.Add(_previewShape);
         }
 
         private void Canvas_OnMouseMove(object sender, MouseEventArgs e)
@@ -87,6 +86,7 @@ namespace Client.Views
             _isDrawing = false;
             var endPoint = new Position(e.GetPosition(Canvas));
             var shape = ShapeFactory.Create(_currentShape, _startPoint, endPoint);
+
             if (shape == null) return;
             CanvasGeometryHelper.EnsureFitsCanvas(Canvas.ActualWidth, Canvas.ActualHeight, shape);
 
@@ -142,7 +142,7 @@ namespace Client.Views
             {
                 _currentSketch.Name = sketchName;
                 var result = await _communicationService.UploadSketchAsync(_currentSketch);
-                MessageBox.Show(result, "Upload Result");
+                MessageBox.Show(result.Value, "Upload Result");
             }
             catch (Exception)
             {
@@ -167,26 +167,25 @@ namespace Client.Views
             try
             {
                 var importedSketch = await _communicationService.DownloadSketchAsync(selectedImport);
-                if (importedSketch == null) return;
+                if (importedSketch?.Error != null) return;
 
                 Canvas.Children.Clear();
 
                 LockHub.TriggerUnlock(_currentSketch.Name);
-                _currentSketch = importedSketch;
+                _currentSketch = importedSketch.Value.Value;
                 LockHub.TriggerLock(_currentSketch.Name);
 
                 foreach (var shape in _currentSketch.Shapes)
                 {
                     CanvasGeometryHelper.EnsureFitsCanvas(Canvas.ActualWidth, Canvas.ActualHeight, shape);
                     var uiShape = _uiShapeFactory.Create(shape);
-                    if (uiShape != null)
-                    {
-                        uiShape.StrokeColor = _currentColor;
-                        uiShape.StrokeThickness = _currentStrokeThikness;
-                        var uiElement = uiShape.Render();
-                        if (uiElement != null)
-                            Canvas.Children.Add(uiElement);
-                    }
+                    if (uiShape == null) continue;
+
+                    uiShape.StrokeColor = _currentColor;
+                    uiShape.StrokeThickness = _currentStrokeThikness;
+                    var uiElement = uiShape.Render();
+                    if (uiElement != null)
+                        Canvas.Children.Add(uiElement);
                 }
 
                 MessageBox.Show(

@@ -38,6 +38,7 @@
             public const string NotFound = "Requested resource was not found.";
             public const string BadRequest = "Bad request.";
             public const string Unauthorized = "Unauthorized request.";
+            public const string EmptyRequest = "Request cannot be empty.";
         }
 
         public static class Generic
@@ -46,6 +47,11 @@
             public const string OperationFailed = "The operation failed.";
             public const string OperationCancelled = "The operation was cancelled.";
             public const string UnsupportedOperation = "This operation is not supported.";
+        }
+
+        public static class Sketch
+        {
+            public const string EmptySketch = "Sketch cannot be empty.";
         }
 
         public static class Shapes
