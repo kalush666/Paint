@@ -18,6 +18,8 @@ namespace Client.Commands
 
         public override bool CanExecute() => _handler.CurrentSketch.Shapes.Count > 0;
 
+        public override string Key => "Upload";
+
         public override void Execute()
         {
             if (!CanExecute())

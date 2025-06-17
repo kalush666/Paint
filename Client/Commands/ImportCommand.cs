@@ -18,6 +18,8 @@ namespace Client.Commands
             _service = service;
         }
 
+        public override string Key => "Import";
+
         public override async void Execute()
         {
             var importWindow = new ImportSelectionWindow();

@@ -10,6 +10,8 @@ namespace Client.Commands
 
         public OptionsCommand(DrawingHandler handler) => _handler = handler;
 
+        public override string Key => "Options";
+
         public override void Execute()
         {
             var optionsWindow = new OptionsWindow

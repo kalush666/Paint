@@ -17,7 +17,9 @@ namespace Client.Commands
             _shapeType = shapeType;
             _updateUI = updateUi;
         }
-        
+
+        public override string Key => $"shapeSelection:{_shapeType}";
+
         public override void Execute()
         {
             _handler.SetCurrentShape(_shapeType);
