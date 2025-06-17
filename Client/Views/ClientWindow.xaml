@@ -21,9 +21,6 @@
         <Canvas x:Name="Canvas"
                 Background="LightSlateGray"
                 Margin="10"
-                MouseDown="Canvas_OnMouseDown"
-                MouseUp="Canvas_OnMouseUp"
-                MouseMove="Canvas_OnMouseMove"
                 Grid.Row="1"/>
 
         <StackPanel Orientation="Vertical" Grid.Row="2" HorizontalAlignment="Left">

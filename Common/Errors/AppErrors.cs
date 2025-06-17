@@ -57,6 +57,7 @@
         public static class Shapes
         {
             public const string NotAShape = "Given shape type is not a base shape";
+            public const string NoShapes = "No shapes available to process.";
         }
 
         public static class Server
