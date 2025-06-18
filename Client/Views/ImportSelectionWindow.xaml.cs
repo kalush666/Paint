@@ -14,22 +14,20 @@ namespace Client.Views
         public ImportSelectionWindow()
         {
             InitializeComponent();
-            LoadAllSketches();
+            Loaded += async (_, _) => await PopulateSketchNames();
         }
-
-        private void LoadAllSketches()
-        {
-            PopulateSketchNames();
-        }
-
+        
         private async Task PopulateSketchNames()
         {
-            SketchImportList.Children.Add(new TextBlock
+            var loadingSpinner = new ProgressBar
             {
-                Text = "Loading sketches...",
-                HorizontalAlignment = HorizontalAlignment.Center,
-                Margin = new Thickness(10)
-            });
+                IsIndeterminate = true,
+                Width = 150,
+                Height = 20,
+                Margin = new Thickness(10),
+                HorizontalAlignment = HorizontalAlignment.Center
+            };
+            SketchImportList.Children.Add(loadingSpinner);
             var sketchNames = await communicationService.GetAllSketchNames();
             if (sketchNames.Value == null || sketchNames.Value.Count == 0)
             {
