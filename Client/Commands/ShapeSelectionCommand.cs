@@ -20,7 +20,6 @@ namespace Client.Commands
         public void Execute()
         {
             _handler.SetCurrentShape(_shapeType);
-            _handler.HighlightShape(_shapeType);
         }
     }
 }

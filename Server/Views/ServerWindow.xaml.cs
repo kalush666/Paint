@@ -68,24 +68,7 @@ namespace Server.Views
             }
         }
 
-        private async Task DeleteSketch(string sketchName)
-        {
-            try
-            {
-                var result = MessageBox.Show($"Are you sure you want to delete '{sketchName}'?",
-                    "Confirm Delete", MessageBoxButton.YesNo, MessageBoxImage.Question);
-
-                if (result == MessageBoxResult.Yes)
-                {
-                    await _mongoStore.DeleteSketchAsync(sketchName);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(AppErrors.Mongo.DeleteError, "Error",
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
+       
 
         private void SuspendButton_OnClick(object sender, RoutedEventArgs e)
         {
