@@ -25,12 +25,23 @@ PaintProject/
 │   ├── App.xaml
 │   ├── App.xaml.cs
 │   ├── Client.csproj
+│   ├── Commands/
+│   │   ├── ClearCommand.cs
+│   │   ├── IDrawingCommand.cs
+│   │   ├── ImportCommand.cs
+│   │   ├── OptionsCommand.cs
+│   │   ├── ShapeSelectionCommand.cs
+│   │   └── UploadCommand.cs
 │   ├── Convertors/
 │   │   └── JsonToShapeConvertor.cs
 │   ├── Enums/
 │   │   └── BasicShapeType.cs
 │   ├── Factories/
-│   │   └── ShapeFactory.cs
+│   │   ├── DrawingCommandFactory.cs
+│   │   ├── ShapeFactory.cs
+│   │   └── UIShapeFactory.cs
+│   ├── Handlers/
+│   │   └── DrawingHandler.cs
 │   ├── Helpers/
 │   │   └── CanvasGeometryHelper.cs
 │   ├── Models/
@@ -42,6 +53,8 @@ PaintProject/
 │   │   └── Sketch.cs
 │   ├── Services/
 │   │   └── ClientCommunicationService.cs
+│   ├── UIModels/
+│   ├── ViewModels/
 │   └── Views/
 │       ├── ClientWindow.xaml
 │       ├── ClientWindow.xaml.cs
@@ -78,7 +91,7 @@ PaintProject/
 1. The **Client** is a WPF app where users can draw and manipulate shapes.
 2. The **Server** handles communication, shape logic, and data storage.
 3. Shapes are saved and retrieved from **MongoDB**, running in a Docker container.
-4. Shared models are reused across the client and server using a shared library.
+4. Shared models and logic are reused across the client and server using the Common project.
 
 ---
 
@@ -155,11 +168,12 @@ volumes:
 
 ## 🧠 Key Folders
 
-| Folder    | Purpose                                                                     |
-| --------- | --------------------------------------------------------------------------- |
-| `Client/` | WPF UI app for drawing shapes                                               |
-| `Server/` | Handles shape logic and Mongo integration +ui for managing files and access |
-| `Common/` | Contains Utilities and errors that are used in both client and server       |
+| Folder    | Purpose                                                                      |
+|-----------|------------------------------------------------------------------------------|
+| `Client/` | WPF UI app for drawing shapes                                                |
+| `Server/` | Handles shape logic and Mongo integration + UI for managing files/access     |
+| `Common/` | Contains utilities, events, and shared errors used by both client and server |
+
 ---
 
 ## 📎 Notes
@@ -172,5 +186,3 @@ volumes:
 ## 👨‍💻 Author
 
 Built by Jonathan Kalush – [GitHub](https://github.com/kalush666)
-
----

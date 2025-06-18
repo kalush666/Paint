@@ -23,13 +23,13 @@
                 Margin="10"
                 Grid.Row="1"/>
 
-        <StackPanel Orientation="Vertical" Grid.Row="2" HorizontalAlignment="Left">
+        <StackPanel x:Name="ShapesPanel" Orientation="Vertical" Grid.Row="2" HorizontalAlignment="Left">
             <TextBlock Text="shapes:"
                        FontSize="14" FontWeight="Bold"/>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,11,0,-1">
-                <Button x:Name="LineButton" Content="Line" Margin="5"  Click="LineButton_OnClick"/>
-                <Button x:Name="RectangleButton" Content="Rectangle" Margin="5" Click="RectangleButton_OnClick"/>
-                <Button x:Name="CircleButton" Content="Circle" Margin="5" Click="CircleButton_OnClick"/>
+                <Button Tag="Line" x:Name="LineButton" Content="Line" Margin="5"  Click="LineButton_OnClick"/>
+                <Button Tag="Rectangle" x:Name="RectangleButton" Content="Rectangle" Margin="5" Click="RectangleButton_OnClick"/>
+                <Button Tag="Circle" x:Name="CircleButton" Content="Circle" Margin="5" Click="CircleButton_OnClick"/>
             </StackPanel>
         </StackPanel>
 

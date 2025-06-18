@@ -144,5 +144,17 @@ namespace Client.Handlers
                     _canvas.Children.Add(element);
             }
         }
+        private ShapeSelectionHighlighter? _shapeHighlighter;
+
+        public void RegisterHighlighter(ShapeSelectionHighlighter highlighter)
+        {
+            _shapeHighlighter = highlighter;
+        }
+
+        public void HighlightShape(BasicShapeType shapeType)
+        {
+            _shapeHighlighter?.Highlight(shapeType);
+        }
+
     }
 }

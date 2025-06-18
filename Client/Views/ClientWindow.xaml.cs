@@ -6,6 +6,7 @@ using Client.Factories;
 using Client.Handlers;
 using Client.Models;
 using Client.Services;
+using Client.Helpers;
 using Common.Events;
 
 namespace Client.Views
@@ -16,6 +17,7 @@ namespace Client.Views
 
         private readonly DrawingHandler _drawingHandler;
         private readonly IDrawingCommandFactory _commandFactory;
+        private readonly ShapeSelectionHighlighter _shapeHighlighter;
 
         public ClientWindow()
         {
@@ -27,9 +29,11 @@ namespace Client.Views
             _drawingHandler = new DrawingHandler(Canvas, sketch);
             _drawingHandler.ShapeAdded += (_, type) => Console.WriteLine($"Shape added: {type}");
 
+            _shapeHighlighter = new ShapeSelectionHighlighter(ShapesPanel);
+
             var serviceProvider = new CommandServiceProvider();
             serviceProvider.RegisterService(_drawingHandler);
-            serviceProvider.RegisterService<Action<string>>(UpdateButtonSelection);
+            serviceProvider.RegisterService(_shapeHighlighter);
             serviceProvider.RegisterService(communicationService);
 
             _commandFactory = new DrawingCommandFactory(serviceProvider);
@@ -45,26 +49,27 @@ namespace Client.Views
             }
         }
 
-        private void LineButton_OnClick(object sender, RoutedEventArgs e) => _commandFactory.Create(BasicShapeType.Line)?.Execute();
-        private void RectangleButton_OnClick(object sender, RoutedEventArgs e) => _commandFactory.Create(BasicShapeType.Rectangle)?.Execute();
-        private void CircleButton_OnClick(object sender, RoutedEventArgs e) => _commandFactory.Create(BasicShapeType.Circle)?.Execute();
+        private void LineButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            _shapeHighlighter.Highlight(BasicShapeType.Line);
+            _commandFactory.Create(BasicShapeType.Line)?.Execute();
+        }
+
+        private void RectangleButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            _shapeHighlighter.Highlight(BasicShapeType.Rectangle);
+            _commandFactory.Create(BasicShapeType.Rectangle)?.Execute();
+        }
+
+        private void CircleButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            _shapeHighlighter.Highlight(BasicShapeType.Circle);
+            _commandFactory.Create(BasicShapeType.Circle)?.Execute();
+        }
+
         private void UploadButton_OnClick(object sender, RoutedEventArgs e) => _commandFactory.Create(CommandTypes.Upload)?.Execute();
         private void ClearButton_OnClick(object sender, RoutedEventArgs e) => _commandFactory.Create(CommandTypes.Clear)?.Execute();
         private void ImportButton_OnClick(object sender, RoutedEventArgs e) => _commandFactory.Create(CommandTypes.Import)?.Execute();
         private void OptionsButton_OnClick(object sender, RoutedEventArgs e) => _commandFactory.Create(CommandTypes.Options)?.Execute();
-
-        private void UpdateButtonSelection(string selectedShape)
-        {
-            LineButton.FontWeight = FontWeights.Normal;
-            RectangleButton.FontWeight = FontWeights.Normal;
-            CircleButton.FontWeight = FontWeights.Normal;
-
-            switch (selectedShape)
-            {
-                case "Line": LineButton.FontWeight = FontWeights.Bold; break;
-                case "Rectangle": RectangleButton.FontWeight = FontWeights.Bold; break;
-                case "Circle": CircleButton.FontWeight = FontWeights.Bold; break;
-            }
-        }
     }
 }

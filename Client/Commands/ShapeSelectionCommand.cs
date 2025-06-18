@@ -1,5 +1,4 @@
 using System;
-using System.Windows.Input;
 using Client.Enums;
 using Client.Handlers;
 
@@ -9,13 +8,11 @@ namespace Client.Commands
     {
         private readonly DrawingHandler _handler;
         private readonly BasicShapeType _shapeType;
-        private readonly Action<string> _updateUI;
 
-        public ShapeSelectionCommand(DrawingHandler handler, BasicShapeType shapeType, Action<string> updateUi)
+        public ShapeSelectionCommand(DrawingHandler handler, BasicShapeType shapeType)
         {
             _handler = handler;
             _shapeType = shapeType;
-            _updateUI = updateUi;
         }
 
         public Enum Key => _shapeType;
@@ -23,7 +20,7 @@ namespace Client.Commands
         public void Execute()
         {
             _handler.SetCurrentShape(_shapeType);
-            _updateUI.Invoke(_shapeType.ToString());
+            _handler.HighlightShape(_shapeType);
         }
     }
 }

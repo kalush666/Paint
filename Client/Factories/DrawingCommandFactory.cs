@@ -4,6 +4,7 @@ using System.Linq;
 using Client.Commands;
 using Client.Enums;
 using Client.Handlers;
+using Client.Helpers;
 using Client.Services;
 
 namespace Client.Factories
@@ -72,11 +73,11 @@ namespace Client.Factories
         private void RegisterShapeCommands()
         {
             var handler = _serviceProvider.GetService<DrawingHandler>();
-            var updateAction = _serviceProvider.GetService<Action<string>>();
 
-            _commands.Add(new ShapeSelectionCommand(handler, BasicShapeType.Line, updateAction));
-            _commands.Add(new ShapeSelectionCommand(handler, BasicShapeType.Rectangle, updateAction));
-            _commands.Add(new ShapeSelectionCommand(handler, BasicShapeType.Circle, updateAction));
+            _commands.Add(new ShapeSelectionCommand(handler, BasicShapeType.Line));
+            _commands.Add(new ShapeSelectionCommand(handler, BasicShapeType.Rectangle));
+            _commands.Add(new ShapeSelectionCommand(handler, BasicShapeType.Circle));
+
         }
 
         public IDrawingCommand? Create(Enum commandEnum)
