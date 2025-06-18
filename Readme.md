@@ -9,14 +9,11 @@ This project is a fullstack paint application featuring a WPF client, a C# backe
 ```
 PaintProject/
 ├── PaintProject.sln
-├── PaintProject.sln.DotSettings.user
 ├── run.bat
 ├── docker-compose.yml
 │
 ├── Client/
 │   ├── Client.csproj
-│   ├── Client - Backup.csproj
-│   ├── Client.csproj.user
 │   ├── App.xaml
 │   ├── App.xaml.cs
 │   ├── AssemblyInfo.cs
