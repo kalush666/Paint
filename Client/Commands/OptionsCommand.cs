@@ -1,18 +1,20 @@
+using System;
 using System.Windows;
+using Client.Enums;
 using Client.Handlers;
 using Client.Helpers;
 
 namespace Client.Commands
 {
-    public class OptionsCommand : DrawingCommand
+    public class OptionsCommand : IDrawingCommand
     {
         private readonly DrawingHandler _handler;
 
         public OptionsCommand(DrawingHandler handler) => _handler = handler;
 
-        public override string Key => "Options";
+        public Enum Key => CommandTypes.Options;
 
-        public override void Execute()
+        public void Execute()
         {
             var optionsWindow = new OptionsWindow
             {

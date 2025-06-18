@@ -26,7 +26,7 @@ namespace Server.Services
         private readonly MongoSketchStore _mongoStore;
         private bool _isSuspended = false;
         private readonly object _suspendLock = new object();
-        private LockManager _lockManager = new();
+        private readonly LockManager _lockManager = new();
 
         public TcpSketchServer(MongoSketchStore sketchStore,IRequestProcessor? requestProcessor = null, IHandlerFactory? handlerFactory = null)
         {

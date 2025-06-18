@@ -31,7 +31,7 @@ namespace Client.Convertors
 
             public UIBaseShape Convert(ShapeBase shape)
             {
-                return new UICircle((Circle)shape);
+                return new UiCircle((Circle)shape);
             }
         }
 

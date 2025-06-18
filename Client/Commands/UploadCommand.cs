@@ -1,11 +1,13 @@
+using System;
 using System.Windows;
+using Client.Enums;
 using Client.Handlers;
 using Client.Services;
 using Common.Errors;
 
 namespace Client.Commands
 {
-    public class UploadCommand : DrawingCommand
+    public class UploadCommand : IDrawingCommand
     {
         private readonly DrawingHandler _handler;
         private readonly ClientCommunicationService _service;
@@ -16,18 +18,12 @@ namespace Client.Commands
             _service = service;
         }
 
-        public override bool CanExecute() => _handler.CurrentSketch.Shapes.Count > 0;
+        public bool CanExecute(string key) => _handler.CurrentSketch.Shapes.Count > 0 && key.Equals(Key);
 
-        public override string Key => "Upload";
+        public Enum Key => CommandTypes.Upload;
 
-        public override void Execute()
+        public void Execute()
         {
-            if (!CanExecute())
-            {
-                MessageBox.Show(AppErrors.Shapes.NoShapes, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
             var sketchName =
                 Microsoft.VisualBasic.Interaction.InputBox("Enter sketch name:", "Upload Sketch", "My Sketch");
 

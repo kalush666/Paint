@@ -2,23 +2,84 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Client.Commands;
+using Client.Enums;
+using Client.Handlers;
+using Client.Services;
 
 namespace Client.Factories
 {
-    public class DrawingCommandFactory
+    public interface IDrawingCommandFactory
     {
-        private readonly List<DrawingCommand> _commands;
+        IDrawingCommand? Create(Enum key);
+    }
 
-        public DrawingCommandFactory()
+    public class DrawingCommandFactory : IDrawingCommandFactory
+    {
+        private readonly List<IDrawingCommand> _commands = new();
+        private readonly ICommandServiceProvider _serviceProvider;
+
+        public DrawingCommandFactory(ICommandServiceProvider serviceProvider)
         {
-            _commands = typeof(DrawingCommand).Assembly
-                .GetTypes()
-                .Where(t => typeof(DrawingCommand).IsAssignableFrom(t) && !t.IsAbstract)
-                .Select(t => (DrawingCommand)Activator.CreateInstance(t)!)
-                .ToList();
+            _serviceProvider = serviceProvider;
+            AutoRegisterCommands();
         }
 
-        public DrawingCommand? Get(string key) =>
-            _commands.FirstOrDefault(c => c.Key == key);
+        private void AutoRegisterCommands()
+        {
+            var commandTypes = typeof(IDrawingCommand).Assembly
+                .GetTypes()
+                .Where(t => typeof(IDrawingCommand).IsAssignableFrom(t) &&
+                            !t.IsInterface &&
+                            !t.IsAbstract &&
+                            t != typeof(ShapeSelectionCommand))
+                .ToList();
+
+            foreach (var constructors in commandTypes.Select(type => type.GetConstructors()
+                         .OrderByDescending(c => c.GetParameters().Length)))
+            {
+                foreach (var constructor in constructors)
+                {
+                    var parameters = constructor.GetParameters();
+                    var args = new object[parameters.Length];
+                    bool canCreate = true;
+
+                    for (int i = 0; i < parameters.Length; i++)
+                    {
+                        try
+                        {
+                            var service = _serviceProvider.GetService(parameters[i].ParameterType);
+                            args[i] = service;
+                        }
+                        catch
+                        {
+                            canCreate = false;
+                            break;
+                        }
+                    }
+
+                    if (canCreate)
+                    {
+                        var command = (IDrawingCommand)constructor.Invoke(args);
+                        _commands.Add(command);
+                        break;
+                    }
+                }
+            }
+
+            RegisterShapeCommands();
+        }
+
+        private void RegisterShapeCommands()
+        {
+            var handler = _serviceProvider.GetService<DrawingHandler>();
+            var updateAction = _serviceProvider.GetService<Action<string>>();
+
+            _commands.Add(new ShapeSelectionCommand(handler, BasicShapeType.Line, updateAction));
+            _commands.Add(new ShapeSelectionCommand(handler, BasicShapeType.Rectangle, updateAction));
+            _commands.Add(new ShapeSelectionCommand(handler, BasicShapeType.Circle, updateAction));
+        }
+
+        public IDrawingCommand? Create(Enum commandEnum)
+            => _commands.FirstOrDefault(c => c.CanExecute(commandEnum));
     }
 }

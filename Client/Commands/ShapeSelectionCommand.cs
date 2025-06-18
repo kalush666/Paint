@@ -5,7 +5,7 @@ using Client.Handlers;
 
 namespace Client.Commands
 {
-    public class ShapeSelectionCommand : DrawingCommand
+    public class ShapeSelectionCommand : IDrawingCommand
     {
         private readonly DrawingHandler _handler;
         private readonly BasicShapeType _shapeType;
@@ -18,9 +18,9 @@ namespace Client.Commands
             _updateUI = updateUi;
         }
 
-        public override string Key => $"shapeSelection:{_shapeType}";
+        public Enum Key => _shapeType;
 
-        public override void Execute()
+        public void Execute()
         {
             _handler.SetCurrentShape(_shapeType);
             _updateUI.Invoke(_shapeType.ToString());

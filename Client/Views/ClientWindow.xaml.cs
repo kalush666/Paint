@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
-using Client.Commands;
+using Client.Enums;
+using Client.Factories;
 using Client.Handlers;
 using Client.Models;
 using Client.Services;
@@ -12,29 +12,27 @@ namespace Client.Views
 {
     public partial class ClientWindow : Window
     {
+        private const string DefaultSketchName = "Untitled Sketch";
+
         private readonly DrawingHandler _drawingHandler;
-        private readonly Dictionary<string, DrawingCommand> _commands;
+        private readonly IDrawingCommandFactory _commandFactory;
 
         public ClientWindow()
         {
             InitializeComponent();
-            
-            var sketch = new Sketch { Name = "Untitled Sketch" };
+
+            var sketch = new Sketch { Name = DefaultSketchName };
             var communicationService = new ClientCommunicationService();
-            
+
             _drawingHandler = new DrawingHandler(Canvas, sketch);
             _drawingHandler.ShapeAdded += (_, type) => Console.WriteLine($"Shape added: {type}");
-            
-            _commands = new Dictionary<string, DrawingCommand>
-            {
-                ["Line"] = new ShapeSelectionCommand(_drawingHandler, Enums.BasicShapeType.Line, UpdateButtonSelection),
-                ["Rectangle"] = new ShapeSelectionCommand(_drawingHandler, Enums.BasicShapeType.Rectangle, UpdateButtonSelection),
-                ["Circle"] = new ShapeSelectionCommand(_drawingHandler, Enums.BasicShapeType.Circle, UpdateButtonSelection),
-                ["Upload"] = new UploadCommand(_drawingHandler, communicationService),
-                ["Clear"] = new ClearCommand(_drawingHandler),
-                ["Import"] = new ImportCommand(_drawingHandler, communicationService),
-                ["Options"] = new OptionsCommand(_drawingHandler)
-            };
+
+            var serviceProvider = new CommandServiceProvider();
+            serviceProvider.RegisterService(_drawingHandler);
+            serviceProvider.RegisterService<Action<string>>(UpdateButtonSelection);
+            serviceProvider.RegisterService(communicationService);
+
+            _commandFactory = new DrawingCommandFactory(serviceProvider);
 
             Closing += OnClosing;
         }
@@ -47,13 +45,13 @@ namespace Client.Views
             }
         }
 
-        private void LineButton_OnClick(object sender, RoutedEventArgs e) => _commands["Line"].Execute();
-        private void RectangleButton_OnClick(object sender, RoutedEventArgs e) => _commands["Rectangle"].Execute();
-        private void CircleButton_OnClick(object sender, RoutedEventArgs e) => _commands["Circle"].Execute();
-        private void UploadButton_OnClick(object sender, RoutedEventArgs e) => _commands["Upload"].Execute();
-        private void ClearButton_OnClick(object sender, RoutedEventArgs e) => _commands["Clear"].Execute();
-        private void ImportButton_OnClick(object sender, RoutedEventArgs e) => _commands["Import"].Execute();
-        private void OptionsButton_OnClick(object sender, RoutedEventArgs e) => _commands["Options"].Execute();
+        private void LineButton_OnClick(object sender, RoutedEventArgs e) => _commandFactory.Create(BasicShapeType.Line)?.Execute();
+        private void RectangleButton_OnClick(object sender, RoutedEventArgs e) => _commandFactory.Create(BasicShapeType.Rectangle)?.Execute();
+        private void CircleButton_OnClick(object sender, RoutedEventArgs e) => _commandFactory.Create(BasicShapeType.Circle)?.Execute();
+        private void UploadButton_OnClick(object sender, RoutedEventArgs e) => _commandFactory.Create(CommandTypes.Upload)?.Execute();
+        private void ClearButton_OnClick(object sender, RoutedEventArgs e) => _commandFactory.Create(CommandTypes.Clear)?.Execute();
+        private void ImportButton_OnClick(object sender, RoutedEventArgs e) => _commandFactory.Create(CommandTypes.Import)?.Execute();
+        private void OptionsButton_OnClick(object sender, RoutedEventArgs e) => _commandFactory.Create(CommandTypes.Options)?.Execute();
 
         private void UpdateButtonSelection(string selectedShape)
         {
