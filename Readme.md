@@ -9,22 +9,17 @@ This project is a fullstack paint application featuring a WPF client, a C# backe
 ```
 PaintProject/
 ├── PaintProject.sln
+├── PaintProject.sln.DotSettings.user
 ├── run.bat
 ├── docker-compose.yml
 │
-├── Common/
-│   ├── Errors/
-│   │   └── AppErrors.cs
-│   ├── Events/
-│   │   └── LockHub.cs
-│   ├── Helpers/
-│   │   └── ResponseHelper.cs
-│   └── Common.csproj
-│
 ├── Client/
+│   ├── Client.csproj
+│   ├── Client - Backup.csproj
+│   ├── Client.csproj.user
 │   ├── App.xaml
 │   ├── App.xaml.cs
-│   ├── Client.csproj
+│   ├── AssemblyInfo.cs
 │   ├── Commands/
 │   │   ├── ClearCommand.cs
 │   │   ├── IDrawingCommand.cs
@@ -33,9 +28,12 @@ PaintProject/
 │   │   ├── ShapeSelectionCommand.cs
 │   │   └── UploadCommand.cs
 │   ├── Convertors/
-│   │   └── JsonToShapeConvertor.cs
+│   │   ├── IUIShapeConvertor.cs
+│   │   ├── JsonToShapeConvertor.cs
+│   │   └── ShapeToUIConvertors.cs
 │   ├── Enums/
-│   │   └── BasicShapeType.cs
+│   │   ├── BasicShapeType.cs
+│   │   └── CommandTypes.cs
 │   ├── Factories/
 │   │   ├── DrawingCommandFactory.cs
 │   │   ├── ShapeFactory.cs
@@ -43,7 +41,9 @@ PaintProject/
 │   ├── Handlers/
 │   │   └── DrawingHandler.cs
 │   ├── Helpers/
-│   │   └── CanvasGeometryHelper.cs
+│   │   ├── BrushMappingHelper.cs
+│   │   ├── CanvasGeometryHelper.cs
+│   │   └── ShapeSelectionHighlighter.cs
 │   ├── Models/
 │   │   ├── Circle.cs
 │   │   ├── Line.cs
@@ -52,23 +52,45 @@ PaintProject/
 │   │   ├── ShapeBase.cs
 │   │   └── Sketch.cs
 │   ├── Services/
-│   │   └── ClientCommunicationService.cs
+│   │   ├── ClientCommunicationService.cs
+│   │   ├── CommandServiceProvider.cs
+│   │   └── ICommandServiceProvider.cs
 │   ├── UIModels/
-│   ├── ViewModels/
-│   └── Views/
-│       ├── ClientWindow.xaml
-│       ├── ClientWindow.xaml.cs
-│       ├── ImportSelectionWindow.xaml
-│       ├── ImportSelectionWindow.xaml.cs
-│       ├── OptionsWindow.xaml
-│       └── OptionsWindow.xaml.cs
+│   │   ├── UIBaseShape.cs
+│   │   ├── UICircle.cs
+│   │   ├── UILine.cs
+│   │   └── UIRectangle.cs
+│   ├── Views/
+│   │   ├── ClientWindow.xaml
+│   │   ├── ClientWindow.xaml.cs
+│   │   ├── ImportSelectionWindow.xaml
+│   │   ├── ImportSelectionWindow.xaml.cs
+│   │   ├── OptionsWindow.xaml
+│   │   └── OptionsWindow.xaml.cs
+│
+├── Common/
+│   ├── Common.csproj
+│   ├── Constants/
+│   │   └── SketchFields.cs
+│   ├── Errors/
+│   │   └── AppErrors.cs
+│   ├── Events/
+│   │   └── LockHub.cs
+│   └── Helpers/
+│       ├── RelayCommand.cs
+│       ├── ResponseHelper.cs
+│       └── Result.cs
 │
 ├── Server/
+│   ├── Server.csproj
 │   ├── App.xaml
 │   ├── App.xaml.cs
-│   ├── Server.csproj
 │   ├── Config/
 │   │   └── MongoConfig.cs
+│   ├── Enums/
+│   │   └── SketchEventType.cs
+│   ├── Events/
+│   │   └── SketchEvent.cs
 │   ├── Handlers/
 │   │   ├── DownloadHandler.cs
 │   │   └── UploadHandler.cs
