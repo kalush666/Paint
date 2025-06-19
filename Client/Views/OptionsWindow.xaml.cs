@@ -2,7 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Media;
 
-namespace Client
+namespace Client.Views.Service_Windows
 {
     public partial class OptionsWindow : Window
     {

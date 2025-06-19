@@ -8,7 +8,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Page Update="Views\ClientWindow.xaml">
+    <Page Update="Views\MainClientWindow\ClientWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\OptionsWindow.xaml">

@@ -19,7 +19,7 @@ namespace Server.Handlers
         {
             try
             {
-                var allSketches = await context.MongoStore.GetAllJsonAsync();
+                var allSketches = await context.MongoStore.GetAllSketchesAsync();
                 var resultJson = JsonConvert.SerializeObject(allSketches.Value ?? new List<string>(), Formatting.None);
                 await ResponseHelper.SendAsync(context.Stream, resultJson, context.CancellationToken);
                 return Result<string>.Success(resultJson);

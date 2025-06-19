@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Windows;
-using System.Windows.Media;
-using Client.Enums;
-using Newtonsoft.Json;
+using Common.Enums;
 
-namespace Client.Models
+namespace Common.Models
 {
     public abstract class ShapeBase
     {
@@ -12,6 +9,5 @@ namespace Client.Models
         
         public abstract BasicShapeType shapeType { get; }
         
-
     }
 }

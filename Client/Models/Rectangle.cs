@@ -3,6 +3,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using Client.Enums;
+using Common.Enums;
+using Common.Models;
 using Newtonsoft.Json;
 
 namespace Client.Models

@@ -12,6 +12,7 @@ using Client.Models;
 using Common.Constants;
 using Common.Errors;
 using Common.Helpers;
+using Common.Models;
 using Newtonsoft.Json.Linq;
 
 namespace Client.Services

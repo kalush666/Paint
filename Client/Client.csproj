@@ -21,4 +21,9 @@
     <ProjectReference Include="..\Server\Server.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Mappers\" />
+    <Folder Include="Views\Service Windows\" />
+  </ItemGroup>
+
 </Project>

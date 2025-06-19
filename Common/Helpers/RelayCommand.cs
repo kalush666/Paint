@@ -5,6 +5,8 @@ namespace Common.Helpers
 {
     public class RelayCommand<T> : ICommand
     {
+        public event EventHandler CanExecuteChanged;
+
         private readonly Func<T?, bool>? _canExecute;
         private readonly Action<T?> _execute;
 
@@ -24,11 +26,5 @@ namespace Common.Helpers
             _execute((T?)parameter);
         }
 
-        public event EventHandler? CanExecuteChanged;
-
-        public void RaiseCanExecuteChanged()
-        {
-            CanExecuteChanged?.Invoke(this, EventArgs.Empty);
-        }
     }
 }

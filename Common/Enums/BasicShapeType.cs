@@ -1,4 +1,4 @@
-﻿namespace Client.Enums
+﻿namespace Common.Enums
 {
     public enum BasicShapeType
     {

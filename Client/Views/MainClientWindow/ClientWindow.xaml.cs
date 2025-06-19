@@ -4,12 +4,14 @@ using System.Windows;
 using Client.Enums;
 using Client.Factories;
 using Client.Handlers;
+using Client.Helpers;
 using Client.Models;
 using Client.Services;
-using Client.Helpers;
+using Common.Enums;
 using Common.Events;
+using Common.Models;
 
-namespace Client.Views
+namespace Client.Views.Main_Window
 {
     public partial class ClientWindow : Window
     {

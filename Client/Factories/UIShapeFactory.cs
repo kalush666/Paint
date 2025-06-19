@@ -4,6 +4,7 @@ using System.Linq;
 using Client.Convertors;
 using Client.Models;
 using Client.UIModels;
+using Common.Models;
 
 namespace Client.Factories
 {

@@ -8,7 +8,9 @@ using Client.Factories;
 using Client.Helpers;
 using Client.Models;
 using Client.UIModels;
+using Common.Enums;
 using Common.Events;
+using Common.Models;
 
 namespace Client.Handlers
 {
@@ -98,7 +100,7 @@ namespace Client.Handlers
             var shape = ShapeFactory.Create(_currentShape, start, end);
             CanvasGeometryHelper.EnsureFitsCanvas(_canvas.ActualWidth, _canvas.ActualHeight, shape);
 
-            _currentSketch.addShape(shape);
+            _currentSketch.AddShape(shape);
             ShapeAdded?.Invoke(this, _currentShape.ToString());
 
             if (_previewElement != null)
@@ -125,7 +127,7 @@ namespace Client.Handlers
         public void Clear()
         {
             _canvas.Children.Clear();
-            _currentSketch.clear();
+            _currentSketch.Clear();
         }
 
         public void ImportSketch(Sketch importedSketch)

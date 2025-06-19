@@ -23,12 +23,6 @@ C:\Users\jonat\Desktop\PROJECTS\PaintProject\Client\bin\Debug\net5.0-windows\Ser
 C:\Users\jonat\Desktop\PROJECTS\PaintProject\Client\bin\Debug\net5.0-windows\Common.pdb
 C:\Users\jonat\Desktop\PROJECTS\PaintProject\Client\bin\Debug\net5.0-windows\Server.pdb
 C:\Users\jonat\Desktop\PROJECTS\PaintProject\Client\obj\Debug\net5.0-windows\Client.csproj.AssemblyReference.cache
-C:\Users\jonat\Desktop\PROJECTS\PaintProject\Client\obj\Debug\net5.0-windows\Views\ClientWindow.baml
-C:\Users\jonat\Desktop\PROJECTS\PaintProject\Client\obj\Debug\net5.0-windows\Views\ImportSelectionWindow.baml
-C:\Users\jonat\Desktop\PROJECTS\PaintProject\Client\obj\Debug\net5.0-windows\Views\OptionsWindow.baml
-C:\Users\jonat\Desktop\PROJECTS\PaintProject\Client\obj\Debug\net5.0-windows\Views\ClientWindow.g.cs
-C:\Users\jonat\Desktop\PROJECTS\PaintProject\Client\obj\Debug\net5.0-windows\Views\ImportSelectionWindow.g.cs
-C:\Users\jonat\Desktop\PROJECTS\PaintProject\Client\obj\Debug\net5.0-windows\Views\OptionsWindow.g.cs
 C:\Users\jonat\Desktop\PROJECTS\PaintProject\Client\obj\Debug\net5.0-windows\App.g.cs
 C:\Users\jonat\Desktop\PROJECTS\PaintProject\Client\obj\Debug\net5.0-windows\Client_MarkupCompile.cache
 C:\Users\jonat\Desktop\PROJECTS\PaintProject\Client\obj\Debug\net5.0-windows\Client.g.resources
@@ -43,3 +37,9 @@ C:\Users\jonat\Desktop\PROJECTS\PaintProject\Client\obj\Debug\net5.0-windows\Cli
 C:\Users\jonat\Desktop\PROJECTS\PaintProject\Client\obj\Debug\net5.0-windows\Client.genruntimeconfig.cache
 C:\Users\jonat\Desktop\PROJECTS\PaintProject\Client\bin\Debug\net5.0-windows\CommunityToolkit.Mvvm.dll
 C:\Users\jonat\Desktop\PROJECTS\PaintProject\Client\bin\Debug\net5.0-windows\System.Runtime.CompilerServices.Unsafe.dll
+C:\Users\jonat\Desktop\PROJECTS\PaintProject\Client\obj\Debug\net5.0-windows\Views\ImportSelectionWindow.baml
+C:\Users\jonat\Desktop\PROJECTS\PaintProject\Client\obj\Debug\net5.0-windows\Views\OptionsWindow.baml
+C:\Users\jonat\Desktop\PROJECTS\PaintProject\Client\obj\Debug\net5.0-windows\Views\ImportSelectionWindow.g.cs
+C:\Users\jonat\Desktop\PROJECTS\PaintProject\Client\obj\Debug\net5.0-windows\Views\OptionsWindow.g.cs
+C:\Users\jonat\Desktop\PROJECTS\PaintProject\Client\obj\Debug\net5.0-windows\Views\MainClientWindow\ClientWindow.baml
+C:\Users\jonat\Desktop\PROJECTS\PaintProject\Client\obj\Debug\net5.0-windows\Views\MainClientWindow\ClientWindow.g.cs

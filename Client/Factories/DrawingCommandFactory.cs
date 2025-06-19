@@ -6,6 +6,7 @@ using Client.Enums;
 using Client.Handlers;
 using Client.Helpers;
 using Client.Services;
+using Common.Enums;
 
 namespace Client.Factories
 {

@@ -1,7 +1,6 @@
-﻿using System.Windows;
-using System.Windows.Media;
-using Client.Enums;
-using Newtonsoft.Json;
+﻿using Client.Enums;
+using Common.Enums;
+using Common.Models;
 
 namespace Client.Models
 {

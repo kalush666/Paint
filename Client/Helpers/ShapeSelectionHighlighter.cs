@@ -1,6 +1,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using Client.Enums;
+using Common.Enums;
 
 namespace Client.Helpers
 {

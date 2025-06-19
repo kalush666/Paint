@@ -2,6 +2,8 @@
 using Client.Models;
 using Newtonsoft.Json.Linq;
 using Client.Enums;
+using Common.Enums;
+using Common.Models;
 
 namespace Client.Convertors
 {

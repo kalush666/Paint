@@ -5,6 +5,7 @@ using Client.Enums;
 using Client.Handlers;
 using Client.Services;
 using Client.Views;
+using Client.Views.Service_Windows;
 using Common.Errors;
 using Common.Events;
 

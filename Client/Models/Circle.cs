@@ -1,5 +1,7 @@
 ﻿using System;
 using Client.Enums;
+using Common.Enums;
+using Common.Models;
 
 namespace Client.Models
 {
