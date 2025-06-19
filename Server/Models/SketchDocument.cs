@@ -1,8 +1,9 @@
 using System.Collections.Generic;
+using Common.Models;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace Common.Models
+namespace Server.Models
 {
     public class SketchDocument
     {

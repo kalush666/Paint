@@ -1,13 +1,7 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
-using Common.Constants;
 using Common.Errors;
 using Common.Helpers;
-using MongoDB.Bson;
-using Newtonsoft.Json;
 
 namespace Server.Handlers
 {
@@ -20,9 +14,8 @@ namespace Server.Handlers
             try
             {
                 var allSketches = await context.MongoStore.GetAllSketchesAsync();
-                var resultJson = JsonConvert.SerializeObject(allSketches.Value ?? new List<string>(), Formatting.None);
-                await ResponseHelper.SendAsync(context.Stream, resultJson, context.CancellationToken);
-                return Result<string>.Success(resultJson);
+                await ResponseHelper.SendAsync(context.Stream, allSketches, context.CancellationToken);
+                return Result<string>.Success("All sketches retrieved successfully");
             }
             catch (Exception e)
             {

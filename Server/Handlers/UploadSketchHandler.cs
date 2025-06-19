@@ -3,6 +3,8 @@ using System.Threading.Tasks;
 using Common.Constants;
 using Common.Errors;
 using Common.Helpers;
+using Common.Models;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Server.Handlers
@@ -18,24 +20,29 @@ namespace Server.Handlers
         public async Task<Result<string>> HandleAsync(RequestContext context)
         {
             var sketchJson = context.Request.Substring(LengthOfRequestPrefix);
-            string? sketchName = JObject.Parse(sketchJson)
-                [SketchFields.Name]?.ToString();
-            if (string.IsNullOrWhiteSpace(sketchName))
-            {
-                await ResponseHelper.SendAsync(context.Stream, AppErrors.Mongo.InvalidJson,
-                    context.CancellationToken);
-                return Result<string>.Failure(AppErrors.Mongo.InvalidJson);
-            }
-
+            Sketch? sketch;
             try
             {
-                await context.MongoStore.InsertJsonAsync(sketchJson);
-                await ResponseHelper.SendAsync(context.Stream,$"{sketchName} uploaded successfully", context.CancellationToken);
-                return Result<string>.Success($"{sketchName} uploaded successfully.");
+                sketch = JsonConvert.DeserializeObject<Sketch>(sketchJson);
+                if (sketch == null || string.IsNullOrWhiteSpace(sketch.Name))
+                {
+                    return Result<string>.Failure(AppErrors.Mongo.InvalidJson);
+                }
             }
             catch (Exception e)
             {
-                await ResponseHelper.SendAsync(context.Stream, sketchName, context.CancellationToken);
+                Console.WriteLine(e);
+                throw;
+            }
+            try
+            {
+                await context.MongoStore.InsertSketchAsync(sketch);
+                await ResponseHelper.SendAsync(context.Stream,$"{sketch.Name} uploaded successfully", context.CancellationToken);
+                return Result<string>.Success($"{sketch.Name} uploaded successfully.");
+            }
+            catch (Exception e)
+            {
+                await ResponseHelper.SendAsync(context.Stream, sketch.Name, context.CancellationToken);
                 return Result<string>.Failure(AppErrors.Mongo.UploadError);
             }
         }

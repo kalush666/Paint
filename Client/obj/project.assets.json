@@ -297,7 +297,8 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v5.0",
         "dependencies": {
-          "MongoDB.Bson": "3.4.0"
+          "MongoDB.Bson": "3.4.0",
+          "Newtonsoft.Json": "13.0.3"
         },
         "compile": {
           "bin/placeholder/Common.dll": {}

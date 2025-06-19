@@ -14,6 +14,7 @@ using MongoDB.Driver;
 using Server.Config;
 using Server.Events;
 using Server.Enums;
+using Server.Models;
 
 namespace Server.Repositories
 {
@@ -41,8 +42,8 @@ namespace Server.Repositories
             var sketch = new Sketch(document.SketchName,document.Shapes);
             return Result<Sketch>.Success(sketch!);
         }
-
-        public async Task<Result<string>> InsertJsonAsync(Sketch sketch)
+        
+        public async Task<Result<string>> InsertSketchAsync(Sketch sketch)
         {
             if (string.IsNullOrWhiteSpace(sketch.Name))
                 return Result<string>.Failure(AppErrors.Mongo.InvalidJson);
@@ -59,6 +60,7 @@ namespace Server.Repositories
             };
             
             await _collection.InsertOneAsync(doc);
+            sketch.Id = doc.Id;
             await _eventBus.PublishAsync(new SketchEvent(SketchEventType.Inserted, sketch.Name));
 
             return Result<string>.Success("Sketch inserted successfully.");

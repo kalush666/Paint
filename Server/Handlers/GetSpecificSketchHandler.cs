@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Common.Errors;
 using Common.Helpers;
+using Common.Models;
 
 namespace Server.Handlers
 {
@@ -23,16 +24,16 @@ namespace Server.Handlers
 
             try
             {
-                var sketchJson = await context.MongoStore.GetJsonByNameAsync(sketchName);
-                if (sketchJson.Error != null)
+                var sketch = await context.MongoStore.GetByNameAsync(sketchName);
+                if (sketch.Error != null)
                 {
                     await ResponseHelper.SendAsync(context.Stream, AppErrors.Mongo.SketchNotFound,
                         context.CancellationToken);
                     return Result<string>.Failure(AppErrors.Mongo.SketchNotFound);
                 }
 
-                await ResponseHelper.SendAsync(context.Stream, sketchJson.Value, context.CancellationToken);
-                return Result<string>.Success(sketchJson.Value);
+                await ResponseHelper.SendAsync(context.Stream, sketch, context.CancellationToken);
+                return Result<string>.Success(sketch.Value.ToString());
             }
             catch (OperationCanceledException)
             {
