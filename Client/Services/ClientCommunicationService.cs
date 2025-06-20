@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using Client.Convertors;
 using Newtonsoft.Json;
 using Client.Factories;
-using Client.Models;
 using Common.Constants;
 using Common.Errors;
 using Common.Helpers;
@@ -35,41 +34,75 @@ namespace Client.Services
             using var client = new TcpClient();
             client.ReceiveTimeout = _timeoutMs;
             client.SendTimeout = _timeoutMs;
+
             var json = JsonConvert.SerializeObject(sketch, Formatting.Indented);
             var request = $"POST:{json}";
             var data = Encoding.UTF8.GetBytes(request);
+
+            Console.WriteLine("▶ UploadSketchAsync started...");
+            Console.WriteLine($"📤 Serialized Sketch JSON:\n{json}");
+            Console.WriteLine($"📨 Full Request:\n{request}");
+
             using var responseStream = new MemoryStream();
             var responseChunk = new byte[4096];
 
             try
             {
                 await client.ConnectAsync(_serverHost, _serverPort).ConfigureAwait(false);
+                Console.WriteLine("✅ Connected to server.");
+
                 await using var stream = client.GetStream();
 
                 await stream.WriteAsync(data, 0, data.Length).ConfigureAwait(false);
                 await stream.FlushAsync().ConfigureAwait(false);
+                Console.WriteLine("📨 Request sent and flushed.");
 
                 int byteRead;
                 while ((byteRead =
                            await stream.ReadAsync(responseChunk, 0, responseChunk.Length).ConfigureAwait(false)) > 0)
                 {
+                    Console.WriteLine($"📦 Received {byteRead} bytes...");
                     responseStream.Write(responseChunk, 0, byteRead);
                     if (!stream.DataAvailable) break;
                 }
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"❌ Upload failed: {ex.Message}");
                 return Result<string>.Failure(AppErrors.Mongo.UploadError);
             }
 
             var response = Encoding.UTF8.GetString(responseStream.ToArray());
+            Console.WriteLine($"📥 Raw server response:\n{response}");
+
             if (response.StartsWith("ERROR:"))
             {
+                Console.WriteLine("❌ Server returned error.");
                 return Result<string>.Failure(AppErrors.Generic.OperationFailed);
             }
 
-            return Result<string>.Success(response);
+            try
+            {
+                var result = JsonConvert.DeserializeObject<Result<string>>(response);
+                Console.WriteLine(
+                    $"🔍 Deserialized Result: IsSuccess={result?.IsSuccess}, Value={result?.Value}, Error={result?.Error}");
+
+                if (result == null || !result.IsSuccess || string.IsNullOrWhiteSpace(result.Value))
+                {
+                    Console.WriteLine("❌ Deserialization failed or result not successful.");
+                    return Result<string>.Failure(result?.Error ?? "Unknown error");
+                }
+
+                Console.WriteLine($"✅ Upload successful. Message: {result.Value}");
+                return Result<string>.Success(result.Value);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Failed to deserialize response: {ex.Message}");
+                return Result<string>.Failure("Failed to deserialize server response.");
+            }
         }
+
 
         public async Task<Result<Sketch>?> DownloadSketchAsync(string sketchName)
         {
@@ -152,20 +185,30 @@ namespace Client.Services
                            await stream.ReadAsync(responseBuffer, 0, responseBuffer.Length).ConfigureAwait(false)) > 0)
                 {
                     responseStream.Write(responseBuffer, 0, bytesRead);
+                    Console.WriteLine(responseBuffer);
                     if (!stream.DataAvailable) break;
                 }
 
                 var response = Encoding.UTF8.GetString(responseStream.ToArray());
+                Console.WriteLine($"Response: {response}");
                 if (response.StartsWith("ERROR:") || response.Equals(AppErrors.Generic.OperationFailed))
                     return Result<List<string>>.Failure(response);
 
-                var jsonArray = JArray.Parse(response);
-                var names = jsonArray.Select(j => j.ToString()).ToList();
+                var result = JsonConvert.DeserializeObject<Result<List<string>>>(response);
+                if (result == null)
+                {
+                    Console.WriteLine("Failed to deserialize response");
+                    return Result<List<string>>.Failure(AppErrors.Generic.OperationFailed);
+                }
 
-                return Result<List<string>>.Success(names);
+                if (result.IsSuccess == false || result.Value == null)
+                    return Result<List<string>>.Failure(AppErrors.Generic.OperationFailed);
+                Console.WriteLine(string.Join(", ", result.Value));
+                return Result<List<string>>.Success(result.Value);
             }
             catch (Exception)
             {
+                Console.WriteLine("Error while fetching sketch names");
                 return Result<List<string>>.Failure(AppErrors.Generic.OperationFailed);
             }
         }

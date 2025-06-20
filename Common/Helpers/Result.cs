@@ -1,11 +1,18 @@
 ﻿#nullable enable
+using Newtonsoft.Json;
+
 namespace Common.Helpers
 {
-    public struct Result<T>
+    public class Result<T>
     {
-        public bool IsSuccess { get; }
-        public string? Error { get; }
-        public T? Value { get; }
+        public bool IsSuccess { get; set; }
+        public string? Error { get; set; }
+        public T? Value { get; set; }
+
+        [JsonConstructor]
+        public Result()
+        {
+        }
 
         private Result(bool isSuccess, T? value, string? error)
         {

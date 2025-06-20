@@ -39,7 +39,7 @@ namespace Client.Commands
                     return;
                 }
 
-                if (response.Value.Value == null)
+                if (response.Value == null)
                 {
                     MessageBox.Show(AppErrors.File.AccessDenied, "Import Error",
                         MessageBoxButton.OK, MessageBoxImage.Error);
@@ -47,7 +47,7 @@ namespace Client.Commands
                 }
 
                 LockHub.TriggerUnlock(_handler.CurrentSketch?.Name ?? string.Empty);
-                _handler.ImportSketch(response.Value.Value);
+                _handler.ImportSketch(response.Value);
                 LockHub.TriggerLock(_handler.CurrentSketch?.Name ?? string.Empty);
 
                 MessageBox.Show("Import Success", "Import Success",

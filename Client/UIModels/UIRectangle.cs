@@ -1,6 +1,6 @@
 using System;
 using System.Windows;
-using Client.Models;
+using Common.Models;
 
 namespace Client.UIModels
 {

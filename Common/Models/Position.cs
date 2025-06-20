@@ -1,23 +1,16 @@
 ﻿using System;
-using System.Windows;
-using System.Windows.Input.Manipulations;
 
-namespace Client.Models
+namespace Common.Models
 {
     public struct Position
     {
         public double X { get; set; }
         public double Y { get; set; }
 
-        public Position(double x, double y) {
+        public Position(double x, double y)
+        {
             this.X = x;
             this.Y = y;
-        }
-
-        public Position(Point point)
-        {
-            this.X = point.X;
-            this.Y = point.Y;
         }
 
         public override string ToString()

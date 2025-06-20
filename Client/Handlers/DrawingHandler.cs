@@ -3,13 +3,10 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using Client.Enums;
 using Client.Factories;
 using Client.Helpers;
-using Client.Models;
 using Client.UIModels;
 using Common.Enums;
-using Common.Events;
 using Common.Models;
 
 namespace Client.Handlers
@@ -52,15 +49,16 @@ namespace Client.Handlers
             if (_currentShape == BasicShapeType.None) return;
 
             _isDrawing = true;
-            _startPosition = new Position(e.GetPosition(_canvas));
+            Point mousePoint = e.GetPosition(_canvas);
+            _startPosition = new  Position(mousePoint.X, mousePoint.Y);
             CreatePreview(_startPosition, _startPosition);
         }
 
         private void OnMouseMove(object sender, MouseEventArgs e)
         {
             if (!_isDrawing) return;
-
-            var currentPosition = new Position(e.GetPosition(_canvas));
+            Point mousePoint = e.GetPosition(_canvas);
+            var currentPosition = new Position(mousePoint.X, mousePoint.Y);
             UpdatePreview(_startPosition, currentPosition);
         }
 
@@ -69,7 +67,8 @@ namespace Client.Handlers
             if (!_isDrawing) return;
 
             _isDrawing = false;
-            var endPosition = new Position(e.GetPosition(_canvas));
+            Point mousePoint = e.GetPosition(_canvas);
+            var endPosition = new Position(mousePoint.X, mousePoint.Y);
             FinalizeShape(_startPosition, endPosition);
         }
 

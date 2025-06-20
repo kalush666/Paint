@@ -17,17 +17,16 @@ namespace Server.Handlers
             try
             {
                 var allSketchNames = await context.MongoStore.GetAllSketchNamesAsync();
-                if (allSketchNames.Error != null)
+                /*
+                if (allSketchNames != null)
                 {
                     await ResponseHelper.SendAsync(context.Stream, AppErrors.Mongo.ReadError,
                         context.CancellationToken);
                     return Result<string>.Failure(AppErrors.Mongo.ReadError);
                 }
-
-                var resultJson =
-                    JsonConvert.SerializeObject(allSketchNames.Value ?? new List<string>(), Formatting.None);
-                await ResponseHelper.SendAsync(context.Stream, resultJson, context.CancellationToken);
-                return Result<string>.Success(resultJson);
+                */
+                await ResponseHelper.SendAsync(context.Stream, allSketchNames, context.CancellationToken);
+                return Result<string>.Success("Names retrieved successfully");
             }
             catch (Exception e)
             {

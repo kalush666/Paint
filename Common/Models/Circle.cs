@@ -1,9 +1,6 @@
-﻿using System;
-using Client.Enums;
-using Common.Enums;
-using Common.Models;
+﻿using Common.Enums;
 
-namespace Client.Models
+namespace Common.Models
 {
     public class Circle : ShapeBase
     {

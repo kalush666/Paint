@@ -5,7 +5,6 @@ using Client.Enums;
 using Client.Factories;
 using Client.Handlers;
 using Client.Helpers;
-using Client.Models;
 using Client.Services;
 using Common.Enums;
 using Common.Events;

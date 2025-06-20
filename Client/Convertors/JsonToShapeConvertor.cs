@@ -1,5 +1,4 @@
 ﻿using System;
-using Client.Models;
 using Newtonsoft.Json.Linq;
 using Client.Enums;
 using Common.Enums;

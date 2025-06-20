@@ -1,7 +1,6 @@
 
 using System.Windows;
 using System.Windows.Media;
-using Client.Models;
 using Common.Models;
 
 namespace Client.UIModels

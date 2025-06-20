@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Client.Convertors;
-using Client.Models;
 using Client.UIModels;
 using Common.Models;
 
