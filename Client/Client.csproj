@@ -11,7 +11,10 @@
     <PackageReference Include="Microsoft.VisualBasic" Version="10.3.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <Page Include="App.xaml" />
-    <Page Update="Views\ImportSelectionWindow.xaml">
+    <Page Update="Views\Service Windows\Import Selection Window\ImportSelectionWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\Service Windows\Options Window\OptionsWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
@@ -22,7 +25,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Views\Service Windows\" />
+    <Compile Update="Views\Service Windows\Options Window\OptionsWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
 
 </Project>

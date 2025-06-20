@@ -18,10 +18,12 @@ namespace Server.Handlers
         public async Task<Result<string>> HandleAsync(RequestContext context)
         {
             var sketchJson = context.Request.Substring(LengthOfRequestPrefix);
+            Console.WriteLine($"[UploadSketchHandler] Received JSON: {sketchJson}");
             SketchDto? sketchDto;
             try
             {
                 sketchDto = JsonConvert.DeserializeObject<SketchDto>(sketchJson);
+                Console.WriteLine($"[UploadSketchHandler] Deserialized SketchDto - Name: {sketchDto?.Name}, Shapes count: {sketchDto?.Shapes?.Count}");
                 if (sketchDto == null || string.IsNullOrWhiteSpace(sketchDto.Name))
                 {
                     return Result<string>.Failure(AppErrors.Mongo.InvalidJson);

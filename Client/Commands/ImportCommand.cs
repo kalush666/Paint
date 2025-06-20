@@ -3,11 +3,14 @@ using System.Data;
 using System.Windows;
 using Client.Enums;
 using Client.Handlers;
+using Client.Models;
 using Client.Services;
 using Client.Views;
 using Client.Views.Service_Windows;
+using Client.Views.Service_Windows.Import_Selection_Window;
 using Common.Errors;
 using Common.Events;
+using Common.Helpers;
 
 namespace Client.Commands
 {
@@ -30,11 +33,11 @@ namespace Client.Commands
             if (importWindow.ShowDialog() != true || string.IsNullOrWhiteSpace(importWindow.SelectedSketch)) return;
             try
             {
-                var response = await _service.DownloadSketchAsync(importWindow.SelectedSketch);
+                Result<Sketch> response = await _service.DownloadSketchAsync(importWindow.SelectedSketch);
 
                 if (response is not { Error: null })
                 {
-                    MessageBox.Show(AppErrors.Mongo.ReadError, "Import Error", 
+                    MessageBox.Show(AppErrors.Mongo.ReadError, "Import Error",
                         MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
@@ -52,6 +55,11 @@ namespace Client.Commands
 
                 MessageBox.Show("Import Success", "Import Success",
                     MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (OperationCanceledException ex)
+            {
+                MessageBox.Show(AppErrors.Server.Suspended, "Import Error",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
             }
             catch (Exception ex)
             {

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 
 namespace Client.Models
@@ -6,7 +7,7 @@ namespace Client.Models
     public class Sketch
     {
         [JsonProperty("_id", NullValueHandling = NullValueHandling.Ignore)]
-        public string? Id { get; set; }
+        public Guid Id { get; set; }
         
         [JsonProperty("Name")]
         public string Name { get; set; } = string.Empty;
@@ -22,7 +23,7 @@ namespace Client.Models
             Shapes = shapes ?? new List<ShapeBase>();
         }
 
-        public Sketch(string id, string name, List<ShapeBase> shapes) 
+        public Sketch(Guid id, string name, List<ShapeBase> shapes) 
         {
             Id = id;
             Name = name;

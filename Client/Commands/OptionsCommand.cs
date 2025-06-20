@@ -4,6 +4,8 @@ using Client.Enums;
 using Client.Handlers;
 using Client.Helpers;
 using Client.Views.Service_Windows;
+using Client.Views.Service_Windows.Import_Selection_Window;
+using Client.Views.Service_Windows.Options_Window;
 
 namespace Client.Commands
 {

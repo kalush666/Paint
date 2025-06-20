@@ -7,6 +7,9 @@ using Common.Constants;
 using Common.DTO;
 using Common.Errors;
 using Common.Helpers;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
 using Server.Config;
 using Server.Events;
@@ -22,6 +25,7 @@ namespace Server.Repositories
         public MongoSketchStore(SketchEventBus<SketchEvent> eventBus)
         {
             _eventBus = eventBus;
+            BsonSerializer.RegisterSerializer(new GuidSerializer(GuidRepresentation.Standard));
             var client = new MongoClient(MongoConfig.ConnectionString);
             var database = client.GetDatabase(MongoConfig.DatabaseName);
             _collection = database.GetCollection<SketchDto>(MongoConfig.CollectionName);
@@ -33,17 +37,19 @@ namespace Server.Repositories
             var document = await _collection.Find(filter).FirstOrDefaultAsync();
             if (document == null)
                 return Result<SketchDto>.Failure(AppErrors.Mongo.SketchNotFound);
-
+            Console.WriteLine($"[MongoSketchStore.Get] Retrieved - Name: {document.Name}, Shapes: {document.Shapes?.Count}");
+            
             return Result<SketchDto>.Success(document);
         }
 
         public async Task<Result<string>> InsertSketchAsync(SketchDto sketchDto)
         {
+            Console.WriteLine($"[MongoSketchStore.Insert] About to insert - Name: {sketchDto.Name}, Shapes: {sketchDto.Shapes?.Count}");
             if (string.IsNullOrWhiteSpace(sketchDto.Name))
                 return Result<string>.Failure(AppErrors.Mongo.InvalidJson);
 
             var filter = Builders<SketchDto>.Filter.Eq(d => d.Name, sketchDto.Name);
-    
+
             var exists = await _collection.Find(filter).AnyAsync();
             if (exists)
             {
@@ -53,6 +59,7 @@ namespace Server.Repositories
             try
             {
                 await _collection.InsertOneAsync(sketchDto);
+                Console.WriteLine($"[MongoSketchStore.Insert] Successfully inserted: {sketchDto.Name}");
 
                 await _eventBus.PublishAsync(new SketchEvent(SketchEventType.Inserted, sketchDto.Name));
                 return Result<string>.Success($"{sketchDto.Name} inserted successfully.");
@@ -63,7 +70,6 @@ namespace Server.Repositories
                 return Result<string>.Failure("Exception during MongoDB insert: " + ex.Message);
             }
         }
-
 
 
         public async Task<Result<string>> DeleteSketchAsync(string name)

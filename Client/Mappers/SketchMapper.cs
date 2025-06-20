@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using Client.Models;
 using Common.DTO;
@@ -11,6 +12,7 @@ namespace Client.Mappers
         {
             return new Sketch
             {
+                Id = dto.Id == Guid.Empty ? Guid.NewGuid() : dto.Id,
                 Name = dto.Name,
                 Shapes = dto.Shapes.Select(s => s.ToDomain()).Where(s => s != null).ToList()!
             };
@@ -20,6 +22,7 @@ namespace Client.Mappers
         {
             return new SketchDto
             {
+                Id = sketch.Id,
                 Name = sketch.Name,
                 Shapes = sketch.Shapes.Select(s => s.ToDto()).Where(s => s != null).ToList()!
             };

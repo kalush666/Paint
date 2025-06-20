@@ -37,9 +37,9 @@ C:\Users\jonat\Desktop\PROJECTS\PaintProject\Client\obj\Debug\net5.0-windows\Cli
 C:\Users\jonat\Desktop\PROJECTS\PaintProject\Client\obj\Debug\net5.0-windows\Client.genruntimeconfig.cache
 C:\Users\jonat\Desktop\PROJECTS\PaintProject\Client\bin\Debug\net5.0-windows\CommunityToolkit.Mvvm.dll
 C:\Users\jonat\Desktop\PROJECTS\PaintProject\Client\bin\Debug\net5.0-windows\System.Runtime.CompilerServices.Unsafe.dll
-C:\Users\jonat\Desktop\PROJECTS\PaintProject\Client\obj\Debug\net5.0-windows\Views\ImportSelectionWindow.baml
-C:\Users\jonat\Desktop\PROJECTS\PaintProject\Client\obj\Debug\net5.0-windows\Views\OptionsWindow.baml
-C:\Users\jonat\Desktop\PROJECTS\PaintProject\Client\obj\Debug\net5.0-windows\Views\ImportSelectionWindow.g.cs
-C:\Users\jonat\Desktop\PROJECTS\PaintProject\Client\obj\Debug\net5.0-windows\Views\OptionsWindow.g.cs
 C:\Users\jonat\Desktop\PROJECTS\PaintProject\Client\obj\Debug\net5.0-windows\Views\MainClientWindow\ClientWindow.baml
 C:\Users\jonat\Desktop\PROJECTS\PaintProject\Client\obj\Debug\net5.0-windows\Views\MainClientWindow\ClientWindow.g.cs
+C:\Users\jonat\Desktop\PROJECTS\PaintProject\Client\obj\Debug\net5.0-windows\Views\Service Windows\Import Selection Window\ImportSelectionWindow.baml
+C:\Users\jonat\Desktop\PROJECTS\PaintProject\Client\obj\Debug\net5.0-windows\Views\Service Windows\Options Window\OptionsWindow.baml
+C:\Users\jonat\Desktop\PROJECTS\PaintProject\Client\obj\Debug\net5.0-windows\Views\Service Windows\Import Selection Window\ImportSelectionWindow.g.cs
+C:\Users\jonat\Desktop\PROJECTS\PaintProject\Client\obj\Debug\net5.0-windows\Views\Service Windows\Options Window\OptionsWindow.g.cs
