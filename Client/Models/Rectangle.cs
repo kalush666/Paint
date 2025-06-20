@@ -1,7 +1,7 @@
 ﻿using System;
 using Common.Enums;
 
-namespace Common.Models
+namespace Client.Models
 {
     public class Rectangle : ShapeBase
     {

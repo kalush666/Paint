@@ -1,6 +1,6 @@
 using System.Drawing;
 
-namespace Server.Models
+namespace Common.DTO
 {
     public class ShapeDto
     {

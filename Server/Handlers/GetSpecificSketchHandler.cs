@@ -2,7 +2,6 @@ using System;
 using System.Threading.Tasks;
 using Common.Errors;
 using Common.Helpers;
-using Common.Models;
 
 namespace Server.Handlers
 {

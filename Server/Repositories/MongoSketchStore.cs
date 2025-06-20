@@ -1,26 +1,22 @@
 ﻿#nullable enable
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows;
 using Common.Constants;
+using Common.DTO;
 using Common.Errors;
 using Common.Helpers;
-using Common.Models;
-using MongoDB.Bson;
 using MongoDB.Driver;
 using Server.Config;
 using Server.Events;
 using Server.Enums;
-using Server.Models;
 
 namespace Server.Repositories
 {
     public class MongoSketchStore
     {
-        private readonly IMongoCollection<SketchDocument> _collection;
+        private readonly IMongoCollection<SketchDto> _collection;
         private readonly SketchEventBus<SketchEvent> _eventBus;
 
         public MongoSketchStore(SketchEventBus<SketchEvent> eventBus)
@@ -28,47 +24,38 @@ namespace Server.Repositories
             _eventBus = eventBus;
             var client = new MongoClient(MongoConfig.ConnectionString);
             var database = client.GetDatabase(MongoConfig.DatabaseName);
-            _collection = database.GetCollection<SketchDocument>(MongoConfig.CollectionName);
+            _collection = database.GetCollection<SketchDto>(MongoConfig.CollectionName);
         }
 
-
-        public async Task<Result<Sketch>> GetByNameAsync(string name)
+        public async Task<Result<SketchDto>> GetByNameAsync(string name)
         {
-            var filter = Builders<SketchDocument>.Filter.Eq(d => d.SketchName,name);
+            var filter = Builders<SketchDto>.Filter.Eq(d => d.Name, name);
             var document = await _collection.Find(filter).FirstOrDefaultAsync();
             if (document == null)
-                return Result<Sketch>.Failure(AppErrors.Mongo.SketchNotFound);
+                return Result<SketchDto>.Failure(AppErrors.Mongo.SketchNotFound);
 
-            var sketch = new Sketch(document.SketchName,document.Shapes);
-            return Result<Sketch>.Success(sketch!);
+            return Result<SketchDto>.Success(document);
         }
-        
-        public async Task<Result<string>> InsertSketchAsync(Sketch sketch)
+
+        public async Task<Result<string>> InsertSketchAsync(SketchDto sketchDto)
         {
-            if (string.IsNullOrWhiteSpace(sketch.Name))
+            if (string.IsNullOrWhiteSpace(sketchDto.Name))
                 return Result<string>.Failure(AppErrors.Mongo.InvalidJson);
 
-            var filter = Builders<SketchDocument>.Filter.Eq(d => d.SketchName, sketch.Name);
+            var filter = Builders<SketchDto>.Filter.Eq(d => d.Name, sketchDto.Name);
             var exists = await _collection.Find(filter).AnyAsync();
             if (exists)
                 return Result<string>.Failure(AppErrors.Mongo.AlreadyExists);
 
-            var doc = new SketchDocument
-            {
-                SketchName = sketch.Name,
-                Shapes = sketch.Shapes
-            };
-            
-            await _collection.InsertOneAsync(doc);
-            sketch.Id = doc.Id;
-            await _eventBus.PublishAsync(new SketchEvent(SketchEventType.Inserted, sketch.Name));
+            await _collection.InsertOneAsync(sketchDto);
+            await _eventBus.PublishAsync(new SketchEvent(SketchEventType.Inserted, sketchDto.Name));
 
             return Result<string>.Success("Sketch inserted successfully.");
         }
 
         public async Task<Result<string>> DeleteSketchAsync(string name)
         {
-            var filter = Builders<SketchDocument>.Filter.Eq(d => d.SketchName,name);
+            var filter = Builders<SketchDto>.Filter.Eq(d => d.Name, name);
             var result = await _collection.DeleteOneAsync(filter);
 
             if (result.DeletedCount == 0)
@@ -80,17 +67,16 @@ namespace Server.Repositories
             return Result<string>.Success($"{name} deleted successfully.");
         }
 
-        public async Task<Result<List<Sketch>>> GetAllSketchesAsync()
+        public async Task<Result<List<SketchDto>>> GetAllSketchesAsync()
         {
             try
             {
                 var documents = await _collection.Find(_ => true).ToListAsync();
-                var sketches = documents.Select(doc => new Sketch(doc.SketchName, doc.Shapes)).ToList();
-                return Result<List<Sketch>>.Success(sketches);
+                return Result<List<SketchDto>>.Success(documents);
             }
             catch (Exception)
             {
-                return Result<List<Sketch>>.Failure(AppErrors.Mongo.ReadError);
+                return Result<List<SketchDto>>.Failure(AppErrors.Mongo.ReadError);
             }
         }
 
@@ -98,7 +84,7 @@ namespace Server.Repositories
         {
             try
             {
-                var projection = Builders<SketchDocument>.Projection.Include(d => d.SketchName);
+                var projection = Builders<SketchDto>.Projection.Include(d => d.Name);
 
                 var namesCursor = await _collection
                     .Find(_ => true)
@@ -107,7 +93,7 @@ namespace Server.Repositories
 
                 var result = namesCursor
                     .ToEnumerable()
-                    .Select(doc => doc.GetValue(SketchFields.Name,"").AsString)
+                    .Select(doc => doc.GetValue(nameof(SketchDto.Name), "").AsString)
                     .Where(name => !string.IsNullOrWhiteSpace(name))
                     .ToList();
 

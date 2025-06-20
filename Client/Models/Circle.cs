@@ -1,6 +1,6 @@
 ﻿using Common.Enums;
 
-namespace Common.Models
+namespace Client.Models
 {
     public class Circle : ShapeBase
     {

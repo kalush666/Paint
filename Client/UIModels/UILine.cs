@@ -1,5 +1,5 @@
 using System.Windows;
-using Common.Models;
+using Client.Models;
 
 namespace Client.UIModels
 {

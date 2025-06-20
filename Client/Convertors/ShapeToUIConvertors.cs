@@ -1,5 +1,5 @@
+using Client.Models;
 using Client.UIModels;
-using Common.Models;
 
 namespace Client.Convertors
 {

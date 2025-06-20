@@ -1,6 +1,6 @@
 ﻿using System;
+using Client.Models;
 using Common.Errors;
-using Common.Models;
 
 namespace Client.Helpers
 {

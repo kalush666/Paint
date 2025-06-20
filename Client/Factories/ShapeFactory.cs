@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Windows;
 using Client.Enums;
+using Client.Models;
 using Common.Enums;
 using Common.Errors;
-using Common.Models;
 using Newtonsoft.Json.Linq;
 
 namespace Client.Factories

@@ -1,11 +1,9 @@
 using System;
 using System.Threading.Tasks;
-using Common.Constants;
+using Common.DTO;
 using Common.Errors;
 using Common.Helpers;
-using Common.Models;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace Server.Handlers
 {
@@ -20,11 +18,11 @@ namespace Server.Handlers
         public async Task<Result<string>> HandleAsync(RequestContext context)
         {
             var sketchJson = context.Request.Substring(LengthOfRequestPrefix);
-            Sketch? sketch;
+            SketchDto? sketchDto;
             try
             {
-                sketch = JsonConvert.DeserializeObject<Sketch>(sketchJson);
-                if (sketch == null || string.IsNullOrWhiteSpace(sketch.Name))
+                sketchDto = JsonConvert.DeserializeObject<SketchDto>(sketchJson);
+                if (sketchDto == null || string.IsNullOrWhiteSpace(sketchDto.Name))
                 {
                     return Result<string>.Failure(AppErrors.Mongo.InvalidJson);
                 }
@@ -34,15 +32,17 @@ namespace Server.Handlers
                 Console.WriteLine(e);
                 throw;
             }
+
             try
             {
-                await context.MongoStore.InsertSketchAsync(sketch);
-                await ResponseHelper.SendAsync(context.Stream,$"{sketch.Name} uploaded successfully", context.CancellationToken);
-                return Result<string>.Success($"{sketch.Name} uploaded successfully.");
+                await context.MongoStore.InsertSketchAsync(sketchDto);
+                await ResponseHelper.SendAsync(context.Stream, $"{sketchDto.Name} uploaded successfully",
+                    context.CancellationToken);
+                return Result<string>.Success($"{sketchDto.Name} uploaded successfully.");
             }
             catch (Exception e)
             {
-                await ResponseHelper.SendAsync(context.Stream, sketch.Name, context.CancellationToken);
+                await ResponseHelper.SendAsync(context.Stream, sketchDto.Name, context.CancellationToken);
                 return Result<string>.Failure(AppErrors.Mongo.UploadError);
             }
         }

@@ -1,8 +1,8 @@
 ﻿using System;
 using Newtonsoft.Json.Linq;
 using Client.Enums;
+using Client.Models;
 using Common.Enums;
-using Common.Models;
 
 namespace Client.Convertors
 {

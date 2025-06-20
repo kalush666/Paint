@@ -1,7 +1,7 @@
 using System;
 using System.Windows;
 using System.Windows.Shapes;
-using Common.Models;
+using Client.Models;
 
 namespace Client.UIModels
 {
