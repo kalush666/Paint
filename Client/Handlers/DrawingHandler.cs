@@ -5,12 +5,11 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using Client.Factories;
-using Client.Helpers;
 using Client.Models;
 using Client.UIModels;
 using Common.Enums;
 using Common.Models;
-using Line = Client.Models.Line;
+using WpfRectangle = System.Windows.Shapes.Rectangle;
 
 namespace Client.Handlers
 {
@@ -28,6 +27,7 @@ namespace Client.Handlers
         private Position _startPosition;
         private Position _lastMousePosition;
         private Sketch _currentSketch = new Sketch();
+        private UIBaseShape? _previewShape;
         private UIElement? _previewElement;
         private bool _isDrawing;
         private DateTime _lastUpdateTime = DateTime.MinValue;
@@ -59,17 +59,15 @@ namespace Client.Handlers
 
         private void OnMouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (_currentShape == BasicShapeType.None || e.ChangedButton != MouseButton.Left) 
-                return;
+            if (_currentShape == BasicShapeType.None || e.ChangedButton != MouseButton.Left) return;
 
             _isDrawing = true;
             Point mousePoint = e.GetPosition(_canvas);
             _startPosition = new Position(mousePoint.X, mousePoint.Y);
             _lastMousePosition = _startPosition;
-            
             _canvas.CaptureMouse();
-            
-            CreateOptimizedPreview(_startPosition, _startPosition);
+
+            CreatePreview(_startPosition, _startPosition);
         }
 
         private void OnMouseMove(object sender, MouseEventArgs e)
@@ -90,21 +88,18 @@ namespace Client.Handlers
             _lastMousePosition = currentPosition;
 
             currentPosition = ClampToCanvas(currentPosition);
-            
-            UpdateOptimizedPreview(_startPosition, currentPosition);
+            UpdatePreview(_startPosition, currentPosition);
         }
 
         private void OnMouseUp(object sender, MouseButtonEventArgs e)
         {
             if (!_isDrawing || e.ChangedButton != MouseButton.Left) return;
-
             CompleteDrawing(e);
         }
 
         private void OnMouseLeave(object sender, MouseEventArgs e)
         {
             if (!_isDrawing) return;
-            
             CompleteDrawing(null);
         }
 
@@ -115,7 +110,6 @@ namespace Client.Handlers
 
             Point mousePoint = e?.GetPosition(_canvas) ?? new Point(_lastMousePosition.X, _lastMousePosition.Y);
             var endPosition = ClampToCanvas(new Position(mousePoint.X, mousePoint.Y));
-            
             FinalizeShape(_startPosition, endPosition);
         }
 
@@ -126,122 +120,26 @@ namespace Client.Handlers
             return new Position(clampedX, clampedY);
         }
 
-        private void CreateOptimizedPreview(Position start, Position end)
+        private void CreatePreview(Position start, Position end)
         {
             RemovePreview();
+            var logicShape = ShapeFactory.Create(_currentShape, start, end);
+            if (logicShape == null) return;
 
-            var shape = ShapeFactory.Create(_currentShape, start, end);
-            if (shape == null) return;
+            _previewShape = _uiShapeFactory.Create(logicShape);
+            if (_previewShape == null) return;
 
-            CanvasGeometryHelper.EnsureFitsCanvas(_canvas.ActualWidth, _canvas.ActualHeight, shape);
+            _previewShape.EnsureFitsCanvas(_canvas.ActualWidth, _canvas.ActualHeight);
+            ApplyStyle(_previewShape);
+            _previewElement = _previewShape.Render();
 
-            _previewElement = CreatePreviewElement(shape);
             if (_previewElement != null)
-            {
-                _previewElement.Opacity = 0.7;
                 _canvas.Children.Add(_previewElement);
-            }
         }
 
-        private void UpdateOptimizedPreview(Position start, Position end)
+        private void UpdatePreview(Position start, Position end)
         {
-            if (_previewElement == null) return;
-
-            switch (_currentShape)
-            {
-                case BasicShapeType.Line when _previewElement is System.Windows.Shapes.Line line:
-                    line.X1 = start.X;
-                    line.Y1 = start.Y;
-                    line.X2 = end.X;
-                    line.Y2 = end.Y;
-                    break;
-
-                case BasicShapeType.Rectangle when _previewElement is System.Windows.Shapes.Rectangle rect:
-                    UpdateRectanglePreview(rect, start, end);
-                    break;
-
-                case BasicShapeType.Circle when _previewElement is Ellipse ellipse:
-                    UpdateCirclePreview(ellipse, start, end);
-                    break;
-
-                default:
-                    CreateOptimizedPreview(start, end);
-                    break;
-            }
-        }
-
-        private void UpdateRectanglePreview(System.Windows.Shapes.Rectangle rect, Position start, Position end)
-        {
-            var x = Math.Min(start.X, end.X);
-            var y = Math.Min(start.Y, end.Y);
-            var width = Math.Abs(end.X - start.X);
-            var height = Math.Abs(end.Y - start.Y);
-
-            Canvas.SetLeft(rect, x);
-            Canvas.SetTop(rect, y);
-            rect.Width = width;
-            rect.Height = height;
-        }
-
-        private void UpdateCirclePreview(Ellipse ellipse, Position start, Position end)
-        {
-            var width = Math.Abs(end.X - start.X);
-            var height = Math.Abs(end.Y - start.Y);
-            var size = Math.Min(width, height);
-
-            var x = Math.Min(start.X, end.X);
-            var y = Math.Min(start.Y, end.Y);
-
-            var centerX = x + width / 2;
-            var centerY = y + height / 2;
-
-            Canvas.SetLeft(ellipse, centerX - size / 2);
-            Canvas.SetTop(ellipse, centerY - size / 2);
-            ellipse.Width = size;
-            ellipse.Height = size;
-        }
-
-
-
-        private UIElement? CreatePreviewElement(ShapeBase shape)
-        {
-            return shape switch
-            {
-                Line line => new System.Windows.Shapes.Line
-                {
-                    X1 = line.Start.X,
-                    Y1 = line.Start.Y,
-                    X2 = line.End.X,
-                    Y2 = line.End.Y,
-                    Stroke = CurrentColor,
-                },
-
-                Models.Rectangle rectangle => new System.Windows.Shapes.Rectangle
-                {
-                    Width = rectangle.Width,
-                    Height = rectangle.Height,
-                    Stroke = CurrentColor,
-                    Fill = Brushes.Transparent
-                }.Apply(r => {
-                    var x = Math.Min(rectangle.StartPosition.X, rectangle.EndPosition.X);
-                    var y = Math.Min(rectangle.StartPosition.Y, rectangle.EndPosition.Y);
-                    Canvas.SetLeft(r, x);
-                    Canvas.SetTop(r, y);
-                }),
-
-                Circle circle => new Ellipse
-                {
-                    Width = circle.Radius * 2,
-                    Height = circle.Radius * 2,
-                    Stroke = CurrentColor,
-                    Fill = Brushes.Transparent
-                }.Apply(e => {
-                    Canvas.SetLeft(e, circle.Center.X - circle.Radius);
-                    Canvas.SetTop(e, circle.Center.Y - circle.Radius);
-                }),
-
-                _ => null
-            };
+            CreatePreview(start, end);
         }
 
         private void RemovePreview()
@@ -250,6 +148,7 @@ namespace Client.Handlers
             {
                 _canvas.Children.Remove(_previewElement);
                 _previewElement = null;
+                _previewShape = null;
             }
         }
 
@@ -262,27 +161,25 @@ namespace Client.Handlers
                 return;
             }
 
-            CanvasGeometryHelper.EnsureFitsCanvas(_canvas.ActualWidth, _canvas.ActualHeight, shape);
+            var uiShape = _uiShapeFactory.Create(shape);
+            if (uiShape == null) return;
+
+            uiShape.EnsureFitsCanvas(_canvas.ActualWidth, _canvas.ActualHeight);
+            ApplyStyle(uiShape);
+
             _currentSketch.AddShape(shape);
             ShapeAdded?.Invoke(this, _currentShape.ToString());
 
             RemovePreview();
-            AddFinalShape(shape);
+
+            var element = uiShape.Render();
+            if (element != null)
+                _canvas.Children.Add(element);
         }
 
-        private void AddFinalShape(ShapeBase shape)
+        private void ApplyStyle(UIBaseShape? uiShape)
         {
-            var uiShape = _uiShapeFactory.Create(shape);
             if (uiShape == null) return;
-
-            ApplyStyle(uiShape);
-            var finalElement = uiShape.Render();
-            if (finalElement != null)
-                _canvas.Children.Add(finalElement);
-        }
-
-        private void ApplyStyle(UIBaseShape uiShape)
-        {
             uiShape.StrokeColor = CurrentColor;
             uiShape.StrokeThickness = CurrentStrokeThickness;
         }
@@ -298,43 +195,19 @@ namespace Client.Handlers
         {
             Clear();
             _currentSketch = importedSketch;
-            
+
             foreach (var shape in _currentSketch.Shapes)
             {
-                CanvasGeometryHelper.EnsureFitsCanvas(_canvas.ActualWidth, _canvas.ActualHeight, shape);
-                AddFinalShape(shape);
+                var uiShape = _uiShapeFactory.Create(shape);
+                if (uiShape == null) continue;
+
+                uiShape.EnsureFitsCanvas(_canvas.ActualWidth, _canvas.ActualHeight);
+                ApplyStyle(uiShape);
+
+                var finalElement = uiShape.Render();
+                if (finalElement != null)
+                    _canvas.Children.Add(finalElement);
             }
         }
-
-        private ShapeSelectionHighlighter? _shapeHighlighter;
-
-        public void RegisterHighlighter(ShapeSelectionHighlighter highlighter)
-        {
-            _shapeHighlighter = highlighter;
-        }
-
-        public void HighlightShape(BasicShapeType shapeType)
-        {
-            _shapeHighlighter?.Highlight(shapeType);
-        }
-
-        public void Dispose()
-        {
-            _canvas.MouseDown -= OnMouseDown;
-            _canvas.MouseMove -= OnMouseMove;
-            _canvas.MouseUp -= OnMouseUp;
-            _canvas.MouseLeave -= OnMouseLeave;
-            
-            RemovePreview();
-        }
-    }
-}
-
-public static class UIElementExtensions
-{
-    public static T Apply<T>(this T element, Action<T> action) where T : UIElement
-    {
-        action(element);
-        return element;
     }
 }

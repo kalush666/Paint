@@ -23,5 +23,13 @@ namespace Client.UIModels
                 Margin = new Thickness(x, y, 0, 0)
             };
         }
+
+        public override void EnsureFitsCanvas(double canvasWidth, double canvasHeight)
+        {
+            var rect = (Rectangle)LogicShape;
+            rect.StartPosition = Clamp(rect.StartPosition, canvasWidth, canvasHeight);
+            rect.EndPosition = Clamp(rect.EndPosition, canvasWidth, canvasHeight);
+        }
+
     }
 }

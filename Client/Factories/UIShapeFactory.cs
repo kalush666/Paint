@@ -1,26 +1,36 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Client.Convertors;
 using Client.Models;
 using Client.UIModels;
+using Common.Enums;
+using Common.Models;
 
 namespace Client.Factories
 {
     public class UiShapeFactory
     {
-        private readonly List<IUiShapeConvertor> _convertors;
-
-        public UiShapeFactory()
+        public UIBaseShape? Create(ShapeBase shape)
         {
-            _convertors = typeof(IUiShapeConvertor).Assembly
-                .GetTypes()
-                .Where(t => typeof(IUiShapeConvertor).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract)
-                .Select(t => (IUiShapeConvertor)Activator.CreateInstance(t)!)
-                .ToList();
+            return shape switch
+            {
+                Line line => new UILine(line),
+                Rectangle rect => new UIRectangle(rect),
+                Circle circle => new UiCircle(circle),
+                _ => null
+            };
         }
 
-        public UIBaseShape? Create(ShapeBase shape) =>
-            _convertors.FirstOrDefault(c => c.CanConvert(shape))?.Convert(shape);
+        public UIBaseShape? Create(BasicShapeType type, Position start, Position end)
+        {
+            return type switch
+            {
+                BasicShapeType.Line => new UILine(new Line(start, end)),
+                BasicShapeType.Rectangle => new UIRectangle(new Rectangle(start, end)),
+                BasicShapeType.Circle => new UiCircle(new Circle
+                {
+                    StartPosition = start,
+                    EndPosition = end
+                }),
+                _ => null
+            };
+        }
     }
 }

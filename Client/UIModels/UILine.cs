@@ -21,5 +21,12 @@ namespace Client.UIModels
                 StrokeThickness = StrokeThickness
             };
         }
+        public override void EnsureFitsCanvas(double canvasWidth, double canvasHeight)
+        {
+            var line = (Line)LogicShape;
+            line.Start = Clamp(line.Start, canvasWidth, canvasHeight);
+            line.End = Clamp(line.End, canvasWidth, canvasHeight);
+        }
+
     }
 }
