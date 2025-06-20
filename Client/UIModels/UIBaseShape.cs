@@ -7,10 +7,10 @@ namespace Client.UIModels
 {
     public abstract class UIBaseShape
     {
-        public ShapeBase LogicShape { get; }
         public bool IsSelected { get; set; }
         public Brush StrokeColor { get; set; } = Brushes.Black;
         public double StrokeThickness { get; set; } = 2;
+        protected ShapeBase LogicShape { get; }
 
         protected UIBaseShape(ShapeBase logicShape)
         {
@@ -18,5 +18,6 @@ namespace Client.UIModels
         }
 
         public abstract UIElement Render();
+        //public abstract void EnsureFitsCanvas(double canvasWidth, double canvasHeight, ShapeBase shape);
     }
 }

@@ -68,10 +68,11 @@ namespace Client.Mappers
 
         private static Circle CreateCircle(ShapeDto dto) => new Circle
         {
-            Center = dto.StartPosition,
-            Radius = dto.Width,
+            StartPosition = dto.StartPosition,
+            EndPosition = dto.EndPosition,
             Id = dto.Id
         };
+
 
         private static ShapeDto ConvertLine(Line line) => new ShapeDto
         {
@@ -93,8 +94,8 @@ namespace Client.Mappers
 
         private static ShapeDto ConvertCircle(Circle circle) => new ShapeDto
         {
-            StartPosition = circle.Center,
-            Width = circle.Radius,
+            StartPosition = circle.StartPosition,
+            EndPosition = circle.EndPosition,
             ShapeType = (int)circle.shapeType,
             Id = circle.Id
         };

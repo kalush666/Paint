@@ -26,11 +26,15 @@ namespace Client.Factories
         {
             return type switch
             {
-                BasicShapeType.Line => new Line(startPoint,endPoint),
-                BasicShapeType.Rectangle => new Rectangle(startPoint,endPoint),
-                BasicShapeType.Circle => new Circle(startPoint.MidPosition(endPoint),startPoint.Distance(endPoint)),
+                BasicShapeType.Line => new Line(startPoint, endPoint),
+                BasicShapeType.Rectangle => new Rectangle(startPoint, endPoint),
+                BasicShapeType.Circle => new Circle
+                {
+                    StartPosition = startPoint,
+                    EndPosition = endPoint
+                },
                 _ => throw new NotSupportedException(AppErrors.Shapes.NotAShape)
             };
-    }
+        }
     }
 }
