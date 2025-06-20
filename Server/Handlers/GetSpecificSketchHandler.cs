@@ -18,11 +18,9 @@ namespace Server.Handlers
             var sketchName = context.Request.Substring(LengthOfRequestPrefix);
             if (!context.LockManager.TryLock(sketchName, out var lockToken))
             {
-                Console.WriteLine($"[GetSpecificSketchHandler] Failed to acquire lock for sketch: {sketchName}");
                 await ResponseHelper.SendAsync(context.Stream, AppErrors.File.Locked, context.CancellationToken);
                 return Result<string>.Failure(AppErrors.File.Locked);
             }
-            Console.WriteLine($"[GetSpecificSketchHandler] Successfully acquired lock for sketch: {sketchName}");
 
             try
             {
@@ -44,8 +42,6 @@ namespace Server.Handlers
             }
             catch (Exception e)
             {
-                Console.WriteLine($"[GetSpecificSketchHandler] Exception: {e.Message}");
-                Console.WriteLine($"[GetSpecificSketchHandler] Stack trace: {e.StackTrace}");
                 await ResponseHelper.SendAsync(context.Stream, AppErrors.Mongo.ReadError, context.CancellationToken);
                 return Result<string>.Failure(AppErrors.Mongo.ReadError);
             }

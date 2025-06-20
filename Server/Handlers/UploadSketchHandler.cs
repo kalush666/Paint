@@ -14,25 +14,23 @@ namespace Server.Handlers
         public bool CanHandle(string request)
             => request.StartsWith("POST:", StringComparison.OrdinalIgnoreCase);
 
-
         public async Task<Result<string>> HandleAsync(RequestContext context)
         {
             var sketchJson = context.Request.Substring(LengthOfRequestPrefix);
-            Console.WriteLine($"[UploadSketchHandler] Received JSON: {sketchJson}");
             SketchDto? sketchDto;
             try
             {
                 sketchDto = JsonConvert.DeserializeObject<SketchDto>(sketchJson);
-                Console.WriteLine($"[UploadSketchHandler] Deserialized SketchDto - Name: {sketchDto?.Name}, Shapes count: {sketchDto?.Shapes?.Count}");
                 if (sketchDto == null || string.IsNullOrWhiteSpace(sketchDto.Name))
                 {
                     return Result<string>.Failure(AppErrors.Mongo.InvalidJson);
                 }
+
+                sketchDto.Id = Guid.NewGuid();
             }
-            catch (Exception e)
+            catch
             {
-                Console.WriteLine(e);
-                throw;
+                return Result<string>.Failure(AppErrors.Mongo.InvalidJson);
             }
 
             try
@@ -43,7 +41,7 @@ namespace Server.Handlers
                 await ResponseHelper.SendAsync(context.Stream, json, context.CancellationToken);
                 return result;
             }
-            catch (Exception e)
+            catch
             {
                 var errorResult = Result<string>.Failure(AppErrors.Mongo.UploadError);
                 var errorJson = JsonConvert.SerializeObject(errorResult);
