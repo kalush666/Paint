@@ -8,6 +8,7 @@ using Client.Helpers;
 using Client.Models;
 using Client.UIModels;
 using Common.Enums;
+using Common.Models;
 
 namespace Client.Handlers
 {

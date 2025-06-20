@@ -43,15 +43,28 @@ namespace Server.Repositories
                 return Result<string>.Failure(AppErrors.Mongo.InvalidJson);
 
             var filter = Builders<SketchDto>.Filter.Eq(d => d.Name, sketchDto.Name);
+    
             var exists = await _collection.Find(filter).AnyAsync();
             if (exists)
+            {
                 return Result<string>.Failure(AppErrors.Mongo.AlreadyExists);
+            }
 
-            await _collection.InsertOneAsync(sketchDto);
-            await _eventBus.PublishAsync(new SketchEvent(SketchEventType.Inserted, sketchDto.Name));
+            try
+            {
+                await _collection.InsertOneAsync(sketchDto);
 
-            return Result<string>.Success("Sketch inserted successfully.");
+                await _eventBus.PublishAsync(new SketchEvent(SketchEventType.Inserted, sketchDto.Name));
+                return Result<string>.Success($"{sketchDto.Name} inserted successfully.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[MongoSketchStore] Exception during insert: {ex.Message}");
+                return Result<string>.Failure("Exception during MongoDB insert: " + ex.Message);
+            }
         }
+
+
 
         public async Task<Result<string>> DeleteSketchAsync(string name)
         {

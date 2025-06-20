@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Client.Models
+namespace Common.Models
 {
     public struct Position
     {

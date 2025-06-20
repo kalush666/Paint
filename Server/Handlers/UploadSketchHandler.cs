@@ -36,14 +36,17 @@ namespace Server.Handlers
             try
             {
                 await context.MongoStore.InsertSketchAsync(sketchDto);
-                await ResponseHelper.SendAsync(context.Stream, $"{sketchDto.Name} uploaded successfully",
-                    context.CancellationToken);
-                return Result<string>.Success($"{sketchDto.Name} uploaded successfully.");
+                var result = Result<string>.Success($"{sketchDto.Name} uploaded successfully.");
+                var json = JsonConvert.SerializeObject(result);
+                await ResponseHelper.SendAsync(context.Stream, json, context.CancellationToken);
+                return result;
             }
             catch (Exception e)
             {
-                await ResponseHelper.SendAsync(context.Stream, sketchDto.Name, context.CancellationToken);
-                return Result<string>.Failure(AppErrors.Mongo.UploadError);
+                var errorResult = Result<string>.Failure(AppErrors.Mongo.UploadError);
+                var errorJson = JsonConvert.SerializeObject(errorResult);
+                await ResponseHelper.SendAsync(context.Stream, errorJson, context.CancellationToken);
+                return errorResult;
             }
         }
     }
