@@ -19,10 +19,21 @@ namespace Server.Repositories
 {
     public class MongoSketchStore
     {
+        private static MongoSketchStore? _instance;
+
+
         private readonly IMongoCollection<SketchDto> _collection;
         private readonly SketchEventBus<SketchEvent> _eventBus;
 
-        public MongoSketchStore(SketchEventBus<SketchEvent> eventBus)
+        public static MongoSketchStore Instance =>
+            _instance ?? throw new InvalidOperationException("MongoSketchStore is not initialized.");
+
+        public static void Initialize(SketchEventBus<SketchEvent> eventBus)
+        {
+            _instance ??= new MongoSketchStore(eventBus);
+        }
+
+        private MongoSketchStore(SketchEventBus<SketchEvent> eventBus)
         {
             _eventBus = eventBus;
             BsonSerializer.RegisterSerializer(new GuidSerializer(GuidRepresentation.Standard));
@@ -37,14 +48,16 @@ namespace Server.Repositories
             var document = await _collection.Find(filter).FirstOrDefaultAsync();
             if (document == null)
                 return Result<SketchDto>.Failure(AppErrors.Mongo.SketchNotFound);
-            Console.WriteLine($"[MongoSketchStore.Get] Retrieved - Name: {document.Name}, Shapes: {document.Shapes?.Count}");
-            
+            Console.WriteLine(
+                $"[MongoSketchStore.Get] Retrieved - Name: {document.Name}, Shapes: {document.Shapes?.Count}");
+
             return Result<SketchDto>.Success(document);
         }
 
         public async Task<Result<string>> InsertSketchAsync(SketchDto sketchDto)
         {
-            Console.WriteLine($"[MongoSketchStore.Insert] About to insert - Name: {sketchDto.Name}, Shapes: {sketchDto.Shapes?.Count}");
+            Console.WriteLine(
+                $"[MongoSketchStore.Insert] About to insert - Name: {sketchDto.Name}, Shapes: {sketchDto.Shapes?.Count}");
             if (string.IsNullOrWhiteSpace(sketchDto.Name))
                 return Result<string>.Failure(AppErrors.Mongo.InvalidJson);
 
