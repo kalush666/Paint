@@ -33,7 +33,7 @@ namespace Server.Services
             _port = int.TryParse(Environment.GetEnvironmentVariable("PORT"), out var envPort) ? envPort : 5000;
             _listener = new TcpListener(IPAddress.Any, _port);
             _mongoStore = sketchStore;
-            _handlerFactory = handlerFactory ?? new HandlerFactory();
+            _handlerFactory = handlerFactory ?? new SketchRequestFactory();
             _requestProcessor = requestProcessor ?? new RequestProcessor(_handlerFactory, _mongoStore, _lockManager);
         }
 

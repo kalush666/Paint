@@ -29,7 +29,7 @@ namespace Server.Handlers
 
         public async Task<Result<string>> ProcessAsync(string request, NetworkStream stream, CancellationToken token)
         {
-            var handler = _handlerFactory.getHandler(request);
+            var handler = _handlerFactory.GetHandler(request);
             if (handler == null)
             {
                 await ResponseHelper.SendAsync(stream, AppErrors.Request.UnsupportedType, token);

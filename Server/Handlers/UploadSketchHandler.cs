@@ -11,8 +11,15 @@ namespace Server.Handlers
     {
         private const int LengthOfRequestPrefix = 5;
 
+        private static readonly Lazy<UploadSketchHandler> _instance = new(() => new UploadSketchHandler());
+        public static UploadSketchHandler Instance => _instance.Value;
+
         public bool CanHandle(string request)
             => request.StartsWith("POST:", StringComparison.OrdinalIgnoreCase);
+
+        private UploadSketchHandler()
+        {
+        }
 
         public async Task<Result<string>> HandleAsync(RequestContext context)
         {

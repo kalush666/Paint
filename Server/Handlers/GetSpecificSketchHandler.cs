@@ -9,6 +9,12 @@ namespace Server.Handlers
     public class GetSpecificSketchHandler : IRequestHandler
     {
         private const int LengthOfRequestPrefix = 13;
+        public static readonly Lazy<GetSpecificSketchHandler> _instance = new(() => new GetSpecificSketchHandler());
+        public static GetSpecificSketchHandler Instance => _instance.Value;
+
+        private GetSpecificSketchHandler()
+        {
+        }
 
         public bool CanHandle(string request)
             => request.StartsWith("GET:SPECIFIC:", StringComparison.OrdinalIgnoreCase);
@@ -31,6 +37,7 @@ namespace Server.Handlers
                         context.CancellationToken);
                     return Result<string>.Failure(AppErrors.Mongo.SketchNotFound);
                 }
+
                 var result = JsonSerializer.Serialize(sketch.Value);
                 await ResponseHelper.SendAsync(context.Stream, sketch, context.CancellationToken);
                 return Result<string>.Success(sketch.Value.ToString());

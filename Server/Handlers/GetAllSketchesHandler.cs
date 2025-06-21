@@ -7,8 +7,13 @@ namespace Server.Handlers
 {
     public class GetAllSketchesHandler : IRequestHandler
     {
+        public static readonly GetAllSketchesHandler _instance = new GetAllSketchesHandler();
+        public static GetAllSketchesHandler Instance => _instance;
+        
         public bool CanHandle(string request) => request.Equals("GET:ALL", StringComparison.OrdinalIgnoreCase);
-
+        
+        private GetAllSketchesHandler() { }
+        
         public async Task<Result<String>> HandleAsync(RequestContext context)
         {
             try
