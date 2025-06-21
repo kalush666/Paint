@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using Common.Errors;
 using Server.Events;
+using Server.Models;
 using Server.Repositories;
 using Server.Services;
 using Server.ViewModel;
@@ -49,17 +51,19 @@ namespace Server.Views
         {
             try
             {
-                var sketchNamesResult = await _mongoStore.GetAllSketchNamesAsync();
-                if (!sketchNamesResult.IsSuccess)
+                var result = await _mongoStore.GetAllSketchesAsync();
+                if (!result.IsSuccess)
                 {
                     MessageBox.Show(AppErrors.Mongo.ReadError, "Error",
                         MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
 
-                foreach (var name in sketchNamesResult.Value)
+                foreach (var sketch in result.Value)
                 {
-                    if (!_viewModel.Sketches.Contains(name)) _viewModel.Sketches.Add(name);
+                    var entry = new SketchEntry { Id = sketch.Id, Name = sketch.Name };
+                    if (_viewModel.Sketches.All(s => s.Id != entry.Id))
+                        _viewModel.Sketches.Add(entry);
                 }
             }
             catch (Exception ex)
@@ -68,6 +72,7 @@ namespace Server.Views
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
 
        
 

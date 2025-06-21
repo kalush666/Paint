@@ -99,6 +99,19 @@ namespace Server.Repositories
             return Result<string>.Success($"{name} deleted successfully.");
         }
 
+        public async Task<Result<string>> DeleteSketchByIdAsync(Guid id)
+        {
+            var filter = Builders<SketchDto>.Filter.Eq(d => d.Id, id);
+            var result = await _collection.DeleteOneAsync(filter);
+
+            if (result.DeletedCount == 0)
+            {
+                return Result<string>.Failure(AppErrors.Mongo.DeleteError);
+            }
+            await _eventBus.PublishAsync(new SketchEvent(SketchEventType.Deleted, id.ToString()));
+            return Result<string>.Success($"sketch:{id} was deleted successfully.");
+        }
+
         public async Task<Result<List<SketchDto>>> GetAllSketchesAsync()
         {
             try

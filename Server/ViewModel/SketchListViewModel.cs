@@ -1,11 +1,14 @@
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Common.Helpers;
 using Server.Enums;
 using Server.Events;
+using Server.Models;
 using Server.Repositories;
 
 namespace Server.ViewModel
@@ -14,7 +17,7 @@ namespace Server.ViewModel
     {
         private readonly MongoSketchStore _store;
 
-        public ObservableCollection<string> Sketches { get; } = new();
+        public ObservableCollection<SketchEntry> Sketches { get; } = new();
 
         public ICommand DeleteCommand { get; }
 
@@ -22,12 +25,11 @@ namespace Server.ViewModel
         {
             _store = sketchStore;
 
-            DeleteCommand = new RelayCommand<string>(async name =>
+            DeleteCommand = new RelayCommand<SketchEntry>(async entry =>
             {
-                if (!string.IsNullOrWhiteSpace(name))
-                {
-                    await _store.DeleteSketchAsync(name);
-                }
+                if (entry?.Id == Guid.Empty) return;
+                if (entry != null)
+                    await _store.DeleteSketchAsync(entry.Id.ToString());
             });
         }
 
@@ -37,13 +39,20 @@ namespace Server.ViewModel
             {
                 if (evt.EventType == SketchEventType.Inserted)
                 {
-                    if (!Sketches.Contains(evt.SketchName))
-                        Sketches.Add(evt.SketchName);
+                    if (Sketches.All(s => s.Name != evt.SketchName))
+                    {
+                        var result = await _store.GetByNameAsync(evt.SketchName);
+                        if (!result.IsSuccess) continue;
+
+                        var dto = result.Value;
+                        Sketches.Add(new SketchEntry { Id = dto.Id, Name = dto.Name });
+                    }
                 }
                 else if (evt.EventType == SketchEventType.Deleted)
                 {
-                    if (Sketches.Contains(evt.SketchName))
-                        Sketches.Remove(evt.SketchName);
+                    var item = Sketches.FirstOrDefault(s => s.Name == evt.SketchName);
+                    if (item != null)
+                        Sketches.Remove(item);
                 }
             }
         }
