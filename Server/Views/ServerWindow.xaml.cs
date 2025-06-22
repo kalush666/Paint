@@ -74,8 +74,6 @@ namespace Server.Views
         }
 
 
-       
-
         private void SuspendButton_OnClick(object sender, RoutedEventArgs e)
         {
             if (!_isSuspended)

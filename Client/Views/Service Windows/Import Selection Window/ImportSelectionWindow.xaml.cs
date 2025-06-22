@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using Client.Services;
+using Common.Errors;
 using Common.Helpers;
 
 namespace Client.Views.Service_Windows.Import_Selection_Window
@@ -11,8 +12,7 @@ namespace Client.Views.Service_Windows.Import_Selection_Window
     {
         public string? SelectedSketch { get; private set; }
         private readonly ClientCommunicationService _communicationService = new ClientCommunicationService();
-        private string _message = "Select a sketch to import:";
-        private bool _canPopulateSketches = true;
+
         private ProgressBar _loadingSpinner = new ProgressBar
         {
             IsIndeterminate = true,
@@ -27,27 +27,30 @@ namespace Client.Views.Service_Windows.Import_Selection_Window
             InitializeComponent();
             Loaded += async (_, _) => await LoadSketchNames();
         }
-        
+
         private async Task LoadSketchNames()
         {
+            SketchImportList.Children.Clear();
             SketchImportList.Children.Add(_loadingSpinner);
-            
-            Result<List<string>> sketchNames = await _communicationService.GetAllSketchNames();
-            if (sketchNames.Value == null || sketchNames.Value.Count == 0)
-            {
-                _message = "No sketches available for import.";
-                _canPopulateSketches = false;
-            }
-            
-            SetMessage(_message);
 
-            if (!_canPopulateSketches)
+            var sketchNames = await _communicationService.GetAllSketchNames();
+
+            if (sketchNames.Error is AppErrors.Server.Suspended)
             {
+                SetMessage(AppErrors.Server.Suspended);
                 return;
             }
-            
+
+            if (sketchNames.Value == null || sketchNames.Value.Count == 0)
+            {
+                SetMessage("No sketches available for import.");
+                return;
+            }
+
+            SketchImportList.Children.Clear();
             PopulateSketchNames(sketchNames);
         }
+
         private void SetMessage(string message)
         {
             SketchImportList.Children.Clear();

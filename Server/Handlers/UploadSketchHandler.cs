@@ -25,6 +25,7 @@ namespace Server.Handlers
         {
             var sketchJson = context.Request.Substring(LengthOfRequestPrefix);
             SketchDto? sketchDto;
+
             try
             {
                 sketchDto = JsonConvert.DeserializeObject<SketchDto>(sketchJson);
@@ -40,19 +41,29 @@ namespace Server.Handlers
                 return Result<string>.Failure(AppErrors.Mongo.InvalidJson);
             }
 
+            if (context.CancellationToken.IsCancellationRequested)
+            {
+                await ResponseHelper.SendAsync(context.Stream, AppErrors.Server.Suspended, context.CancellationToken);
+                return Result<string>.Failure(AppErrors.Server.Suspended);
+            }
+
+            if (context.LockManager.IsLocked(sketchDto.Name))
+            {
+                await ResponseHelper.SendAsync(context.Stream, AppErrors.File.Locked, context.CancellationToken);
+                return Result<string>.Failure(AppErrors.File.Locked);
+            }
+
             try
             {
                 await context.MongoStore.InsertSketchAsync(sketchDto);
                 var result = Result<string>.Success($"{sketchDto.Name} uploaded successfully.");
-                var json = JsonConvert.SerializeObject(result);
-                await ResponseHelper.SendAsync(context.Stream, json, context.CancellationToken);
+                await ResponseHelper.SendAsync(context.Stream, result, context.CancellationToken);
                 return result;
             }
             catch
             {
                 var errorResult = Result<string>.Failure(AppErrors.Mongo.UploadError);
-                var errorJson = JsonConvert.SerializeObject(errorResult);
-                await ResponseHelper.SendAsync(context.Stream, errorJson, context.CancellationToken);
+                await ResponseHelper.SendAsync(context.Stream, errorResult, context.CancellationToken);
                 return errorResult;
             }
         }

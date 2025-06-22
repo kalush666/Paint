@@ -36,10 +36,7 @@ namespace Client.Services
             client.SendTimeout = _timeoutMs;
 
             var sketchDto = sketch.ToDto();
-            Console.WriteLine($"[Client.Upload] Converting sketch - Name: {sketch.Name}, Shapes: {sketch.Shapes?.Count}");
-            Console.WriteLine($"[Client.Upload] DTO created - Name: {sketchDto.Name}, Shapes: {sketchDto.Shapes?.Count}");
             var json = JsonConvert.SerializeObject(sketchDto, Formatting.Indented);
-            Console.WriteLine($"[Client.Upload] Serialized JSON: {json}");
             var request = $"POST:{json}";
             var data = Encoding.UTF8.GetBytes(request);
 
@@ -61,18 +58,21 @@ namespace Client.Services
                     responseStream.Write(responseChunk, 0, byteRead);
                     if (!stream.DataAvailable) break;
                 }
+
+                var responseJson = Encoding.UTF8.GetString(responseStream.ToArray());
+                return JsonConvert.DeserializeObject<Result<string>>(responseJson)
+                       ?? Result<string>.Failure(AppErrors.Generic.OperationFailed);
             }
-            catch (Exception ex)
+            catch (SocketException)
+            {
+                return Result<string>.Failure(AppErrors.Server.Suspended);
+            }
+            catch
             {
                 return Result<string>.Failure(AppErrors.Mongo.UploadError);
             }
-
-            var response = Encoding.UTF8.GetString(responseStream.ToArray());
-
-            return response.StartsWith("ERROR:")
-                ? Result<string>.Failure(AppErrors.Generic.OperationFailed)
-                : Result<string>.Success("Sketch uploaded successfully");
         }
+
 
         public async Task<Result<Sketch>?> DownloadSketchAsync(string sketchName)
         {
@@ -101,6 +101,10 @@ namespace Client.Services
                     if (!stream.DataAvailable) break;
                 }
             }
+            catch (SocketException)
+            {
+                return Result<Sketch>.Failure(AppErrors.Server.Suspended);
+            }
             catch (Exception ex)
             {
                 return Result<Sketch>.Failure(AppErrors.Mongo.ReadError);
@@ -116,10 +120,8 @@ namespace Client.Services
             {
                 return Result<Sketch>.Failure("Failed to deserialize response");
             }
-            Console.WriteLine($"[Client.Download] Received DTO - Name: {result.Value.Name}, Shapes: {result.Value.Shapes?.Count}");
 
             var sketch = result.Value.ToDomain();
-            Console.WriteLine($"[Client.Download] Converted to domain - Name: {sketch.Name}, Shapes: {sketch.Shapes?.Count}");
             return Result<Sketch>.Success(sketch);
         }
 
@@ -158,6 +160,10 @@ namespace Client.Services
                     return Result<List<string>>.Failure(AppErrors.Generic.OperationFailed);
 
                 return Result<List<string>>.Success(result.Value);
+            }
+            catch (SocketException)
+            {
+                return Result<List<string>>.Failure(AppErrors.Server.Suspended);
             }
             catch (Exception)
             {

@@ -22,7 +22,14 @@ namespace Server.Handlers
         public async Task<Result<string>> HandleAsync(RequestContext context)
         {
             var sketchName = context.Request.Substring(LengthOfRequestPrefix);
-            if (!context.LockManager.TryLock(sketchName, out var lockToken))
+
+            if (context.CancellationToken.IsCancellationRequested)
+            {
+                await ResponseHelper.SendAsync(context.Stream, AppErrors.Server.Suspended, context.CancellationToken);
+                return Result<string>.Failure(AppErrors.Server.Suspended);
+            }
+
+            if (context.LockManager.IsLocked(sketchName))
             {
                 await ResponseHelper.SendAsync(context.Stream, AppErrors.File.Locked, context.CancellationToken);
                 return Result<string>.Failure(AppErrors.File.Locked);
@@ -33,21 +40,15 @@ namespace Server.Handlers
                 var sketch = await context.MongoStore.GetByNameAsync(sketchName);
                 if (sketch.Error != null)
                 {
-                    await ResponseHelper.SendAsync(context.Stream, AppErrors.Mongo.SketchNotFound,
-                        context.CancellationToken);
+                    await ResponseHelper.SendAsync(context.Stream, AppErrors.Mongo.SketchNotFound, context.CancellationToken);
                     return Result<string>.Failure(AppErrors.Mongo.SketchNotFound);
                 }
 
-                var result = JsonSerializer.Serialize(sketch.Value);
-                await ResponseHelper.SendAsync(context.Stream, sketch, context.CancellationToken);
-                return Result<string>.Success(sketch.Value.ToString());
+                var json = JsonSerializer.Serialize(sketch.Value);
+                await ResponseHelper.SendAsync(context.Stream, json, context.CancellationToken);
+                return Result<string>.Success(json);
             }
-            catch (OperationCanceledException)
-            {
-                await ResponseHelper.SendAsync(context.Stream, AppErrors.File.AccessDenied, context.CancellationToken);
-                return Result<string>.Failure(AppErrors.File.AccessDenied);
-            }
-            catch (Exception e)
+            catch
             {
                 await ResponseHelper.SendAsync(context.Stream, AppErrors.Mongo.ReadError, context.CancellationToken);
                 return Result<string>.Failure(AppErrors.Mongo.ReadError);

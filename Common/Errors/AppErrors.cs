@@ -5,7 +5,7 @@
         public static class File
         {
             public const string NotFound = "File not found.";
-            public const string Locked = "File is locked.";
+            public const string Locked = "File is locked by another user.";
             public const string AccessDenied = "File access denied.";
         }
 
