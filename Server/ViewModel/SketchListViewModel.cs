@@ -29,7 +29,7 @@ namespace Server.ViewModel
             {
                 if (entry?.Id == Guid.Empty) return;
                 if (entry != null)
-                    await _store.DeleteSketchAsync(entry.Id.ToString());
+                    await _store.DeleteSketchByIdAsync(entry.Id);
             });
         }
 

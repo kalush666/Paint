@@ -101,14 +101,23 @@ namespace Server.Repositories
 
         public async Task<Result<string>> DeleteSketchByIdAsync(Guid id)
         {
-            var filter = Builders<SketchDto>.Filter.Eq(d => d.Id, id);
-            var result = await _collection.DeleteOneAsync(filter);
+            var getFilter = Builders<SketchDto>.Filter.Eq(d => d.Id, id);
+            var sketch = await _collection.Find(getFilter).FirstOrDefaultAsync();
+
+            if (sketch == null)
+            {
+                return Result<string>.Failure(AppErrors.Mongo.DeleteError);
+            }
+
+            var deleteFilter = Builders<SketchDto>.Filter.Eq(d => d.Id, id);
+            var result = await _collection.DeleteOneAsync(deleteFilter);
 
             if (result.DeletedCount == 0)
             {
                 return Result<string>.Failure(AppErrors.Mongo.DeleteError);
             }
-            await _eventBus.PublishAsync(new SketchEvent(SketchEventType.Deleted, id.ToString()));
+
+            await _eventBus.PublishAsync(new SketchEvent(SketchEventType.Deleted, sketch.Name));
             return Result<string>.Success($"sketch:{id} was deleted successfully.");
         }
 
