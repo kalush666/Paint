@@ -25,8 +25,7 @@ namespace Server.Views
         {
             InitializeComponent();
             _eventBus = new SketchEventBus<SketchEvent>();
-            MongoSketchStore.Initialize(_eventBus);
-            _mongoStore = MongoSketchStore.Instance;
+            _mongoStore = MongoSketchStore.GetInstance(_eventBus);
             _viewModel = new SketchListViewModel(_mongoStore);
             DataContext = _viewModel;
             _server = new TcpSketchServer(_mongoStore);

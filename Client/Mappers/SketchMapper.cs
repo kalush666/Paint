@@ -2,6 +2,7 @@ using System.Linq;
 using Client.Models;
 using Common.DTO;
 using MongoDB.Bson;
+using Server.Models;
 
 namespace Client.Mappers
 {
@@ -48,6 +49,8 @@ namespace Client.Mappers
                 _ => null
             };
         }
+        
+
 
         private static Line CreateLine(ShapeDto dto) => new Line
         {
