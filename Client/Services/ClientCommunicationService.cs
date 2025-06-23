@@ -86,8 +86,10 @@ namespace Client.Services
             using var client = new TcpClient();
             client.ReceiveTimeout = _timeoutMs;
             client.SendTimeout = _timeoutMs;
+
             var request = $"GET:SPECIFIC:{sketchName}";
-            Console.WriteLine("[DownloadSketchAsync] Request: " + request);
+            Console.WriteLine("[CLIENT] Sending: " + request);
+
             using var responseStream = new MemoryStream();
             var requestBuffer = new byte[DefaultChunkSize];
 
@@ -110,33 +112,51 @@ namespace Client.Services
             }
             catch (SocketException)
             {
+                Console.WriteLine("[CLIENT] SocketException: Server suspended?");
                 return Result<Sketch>.Failure(AppErrors.Server.Suspended);
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"[CLIENT] Exception while reading stream: {ex.Message}");
                 return Result<Sketch>.Failure(AppErrors.Mongo.ReadError);
             }
 
             var response = Encoding.UTF8.GetString(responseStream.ToArray());
+            Console.WriteLine("[CLIENT] Raw response: " + response);
 
-            if (response.StartsWith("ERROR:"))
-                return Result<Sketch>.Failure(AppErrors.Generic.OperationFailed);
-
-            var result = JsonConvert.DeserializeObject<Result<SketchDto>>(response);
-            if (result?.Value == null)
+            if (response.StartsWith("ERROR:") || response.Contains(AppErrors.File.Locked))
             {
-                return Result<Sketch>.Failure("Failed to deserialize response");
+                Console.WriteLine("[CLIENT] Error from server: File locked or failed.");
+                return Result<Sketch>.Failure(response);
             }
 
-            var sketch = result.Value.ToDomain();
-            return Result<Sketch>.Success(sketch);
+            try
+            {
+                var result = JsonConvert.DeserializeObject<Result<SketchDto>>(response);
+                if (result?.Value == null)
+                {
+                    Console.WriteLine("[CLIENT] Deserialized result is null or invalid.");
+                    return Result<Sketch>.Failure("Failed to deserialize response");
+                }
+
+                var sketch = result.Value.ToDomain();
+                Console.WriteLine("[CLIENT] Successfully downloaded sketch: " + sketch.Name);
+                return Result<Sketch>.Success(sketch);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("[CLIENT] Deserialization exception: " + ex.Message);
+                return Result<Sketch>.Failure("Deserialization failed");
+            }
         }
+
 
         public async Task<Result<List<string>>> GetAllSketchNames()
         {
             using var client = new TcpClient();
             client.ReceiveTimeout = _timeoutMs;
             client.SendTimeout = _timeoutMs;
+
 
             await client.ConnectAsync(_serverHost, _serverPort).ConfigureAwait(false);
             using var stream = client.GetStream();
@@ -159,6 +179,7 @@ namespace Client.Services
                 }
 
                 var response = Encoding.UTF8.GetString(responseStream.ToArray());
+
                 if (response.StartsWith("ERROR:") || response.Equals(AppErrors.Generic.OperationFailed))
                     return Result<List<string>>.Failure(response);
 
@@ -172,7 +193,7 @@ namespace Client.Services
             {
                 return Result<List<string>>.Failure(AppErrors.Server.Suspended);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return Result<List<string>>.Failure(AppErrors.Generic.OperationFailed);
             }

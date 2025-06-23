@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using MongoDB.Bson;
+using MongoDB.Bson.IO;
 using MongoDB.Bson.Serialization.Attributes;
 using Newtonsoft.Json;
 
@@ -8,6 +9,7 @@ namespace Common.DTO
     public class SketchDto
     {
         [BsonId]
+        [JsonConverter(typeof(Convertors.ObjectIdJsonConverter))]
         public ObjectId Id { get; set; }
 
         [JsonProperty("Name")] public string Name { get; set; } = string.Empty;

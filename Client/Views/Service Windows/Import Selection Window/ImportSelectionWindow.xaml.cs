@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -35,6 +36,8 @@ namespace Client.Views.Service_Windows.Import_Selection_Window
 
             var sketchNames = await _communicationService.GetAllSketchNames();
 
+            Console.WriteLine($"[UI] Result success: {sketchNames.IsSuccess}, Count: {sketchNames.Value?.Count}");
+
             if (sketchNames.Error is AppErrors.Server.Suspended)
             {
                 SetMessage(AppErrors.Server.Suspended);
@@ -51,21 +54,12 @@ namespace Client.Views.Service_Windows.Import_Selection_Window
             PopulateSketchNames(sketchNames);
         }
 
-        private void SetMessage(string message)
-        {
-            SketchImportList.Children.Clear();
-            SketchImportList.Children.Add(new TextBlock
-            {
-                Text = message,
-                HorizontalAlignment = HorizontalAlignment.Center,
-                Margin = new Thickness(10)
-            });
-        }
-
         private void PopulateSketchNames(Result<List<string>> sketchNames)
         {
+
             foreach (var sketchName in sketchNames.Value)
             {
+
                 var selectImport = new Button
                 {
                     Content = sketchName,
@@ -84,5 +78,18 @@ namespace Client.Views.Service_Windows.Import_Selection_Window
                 SketchImportList.Children.Add(selectImport);
             }
         }
+
+
+        private void SetMessage(string message)
+        {
+            SketchImportList.Children.Clear();
+            SketchImportList.Children.Add(new TextBlock
+            {
+                Text = message,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                Margin = new Thickness(10)
+            });
+        }
+        
     }
 }

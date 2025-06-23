@@ -29,7 +29,7 @@ namespace Server.Handlers
                     return Result<string>.Failure(AppErrors.Mongo.ReadError);
                 }
                 
-                await ResponseHelper.SendAsync(context.Stream, allSketchNames.Value, context.CancellationToken);
+                await ResponseHelper.SendAsync(context.Stream, allSketchNames, context.CancellationToken);
                 return Result<string>.Success("Names retrieved successfully");
             }
             catch (Exception e)
