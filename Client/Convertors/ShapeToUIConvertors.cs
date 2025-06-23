@@ -21,7 +21,7 @@ namespace Client.Convertors
 
             public UiBaseShape Convert(ShapeBase shape)
             {
-                return new UIRectangle((Rectangle)shape);
+                return new UiRectangle((Rectangle)shape);
             }
         }
 

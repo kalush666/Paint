@@ -1,6 +1,7 @@
 using System;
 using System.Windows;
 using System.Windows.Shapes;
+using Client.Helpers;
 using Client.Models;
 using Common.Models;
 
@@ -33,9 +34,9 @@ namespace Client.UIModels
         public override void EnsureFitsCanvas(double canvasWidth, double canvasHeight)
         {
             if (LogicShape is not Circle circle) return;
-
-            circle.StartPosition = Clamp(circle.StartPosition, canvasWidth, canvasHeight);
-            circle.EndPosition = Clamp(circle.EndPosition, canvasWidth, canvasHeight);
+            
+            circle.StartPosition = GeometryHelper.Clamp(circle.StartPosition, canvasWidth, canvasHeight);
+            circle.EndPosition = GeometryHelper.Clamp(circle.EndPosition, canvasWidth, canvasHeight);
         }
         
     }

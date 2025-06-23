@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 
 namespace Common.Models
 {
@@ -23,9 +24,5 @@ namespace Common.Models
             return Math.Sqrt(Math.Pow(this.X - p1.X, 2) + Math.Pow(this.Y - p1.Y, 2));
         }
 
-        public Position MidPosition(Position p1)
-        {
-            return new Position((this.X + p1.X) / 2, (this.Y + p1.Y) / 2);
-        }
     }
 }

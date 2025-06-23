@@ -1,12 +1,13 @@
 using System;
 using System.Windows;
+using Client.Helpers;
 using Client.Models;
 
 namespace Client.UIModels
 {
-    public class UIRectangle : UiBaseShape
+    public class UiRectangle : UiBaseShape
     {
-        public UIRectangle(Rectangle rect) : base(rect) { }
+        public UiRectangle(Rectangle rect) : base(rect) { }
 
         public override UIElement Render()
         {
@@ -27,8 +28,8 @@ namespace Client.UIModels
         public override void EnsureFitsCanvas(double canvasWidth, double canvasHeight)
         {
             var rect = (Rectangle)LogicShape;
-            rect.StartPosition = Clamp(rect.StartPosition, canvasWidth, canvasHeight);
-            rect.EndPosition = Clamp(rect.EndPosition, canvasWidth, canvasHeight);
+            rect.StartPosition = GeometryHelper.Clamp(rect.StartPosition, canvasWidth, canvasHeight);
+            rect.EndPosition = GeometryHelper.Clamp(rect.EndPosition, canvasWidth, canvasHeight);
         }
 
     }

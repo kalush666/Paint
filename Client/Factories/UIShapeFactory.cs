@@ -12,7 +12,7 @@ namespace Client.Factories
             return shape switch
             {
                 Line line => new UILine(line),
-                Rectangle rect => new UIRectangle(rect),
+                Rectangle rect => new UiRectangle(rect),
                 Circle circle => new UiCircle(circle),
                 _ => null
             };
@@ -23,7 +23,7 @@ namespace Client.Factories
             return type switch
             {
                 BasicShapeType.Line => new UILine(new Line(start, end)),
-                BasicShapeType.Rectangle => new UIRectangle(new Rectangle(start, end)),
+                BasicShapeType.Rectangle => new UiRectangle(new Rectangle(start, end)),
                 BasicShapeType.Circle => new UiCircle(new Circle
                 {
                     StartPosition = start,

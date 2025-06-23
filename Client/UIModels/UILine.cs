@@ -1,4 +1,5 @@
 using System.Windows;
+using Client.Helpers;
 using Client.Models;
 
 namespace Client.UIModels
@@ -24,8 +25,8 @@ namespace Client.UIModels
         public override void EnsureFitsCanvas(double canvasWidth, double canvasHeight)
         {
             var line = (Line)LogicShape;
-            line.Start = Clamp(line.Start, canvasWidth, canvasHeight);
-            line.End = Clamp(line.End, canvasWidth, canvasHeight);
+            line.Start = GeometryHelper.Clamp(line.Start, canvasWidth, canvasHeight);
+            line.End = GeometryHelper.Clamp(line.End, canvasWidth, canvasHeight);
         }
 
     }

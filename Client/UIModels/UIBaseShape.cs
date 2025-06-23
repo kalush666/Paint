@@ -18,15 +18,8 @@ namespace Client.UIModels
             LogicShape = logicShape;
         }
         
+      
         
-        protected Position Clamp(Position p, double maxWidth, double maxHeight)
-        {
-            return new Position(
-                Math.Max(0, Math.Min(p.X, maxWidth)),
-                Math.Max(0, Math.Min(p.Y, maxHeight))
-            );
-        }
-
         
         public abstract UIElement Render();
         public abstract void EnsureFitsCanvas(double canvasWidth, double canvasHeight);
