@@ -29,7 +29,6 @@ PaintProject/
 │   │   ├── JsonToShapeConvertor.cs
 │   │   └── ShapeToUIConvertors.cs
 │   ├── Enums/
-│   │   ├── BasicShapeType.cs
 │   │   └── CommandTypes.cs
 │   ├── Factories/
 │   │   ├── DrawingCommandFactory.cs
@@ -39,12 +38,13 @@ PaintProject/
 │   │   └── DrawingHandler.cs
 │   ├── Helpers/
 │   │   ├── BrushMappingHelper.cs
-│   │   ├── CanvasGeometryHelper.cs
+│   │   ├── GeometryHelper.cs
 │   │   └── ShapeSelectionHighlighter.cs
+│   ├── Mappers/
+│   │   └── SketchMapper.cs
 │   ├── Models/
 │   │   ├── Circle.cs
 │   │   ├── Line.cs
-│   │   ├── Position.cs
 │   │   ├── Rectangle.cs
 │   │   ├── ShapeBase.cs
 │   │   └── Sketch.cs
@@ -57,50 +57,78 @@ PaintProject/
 │   │   ├── UICircle.cs
 │   │   ├── UILine.cs
 │   │   └── UIRectangle.cs
-│   ├── Views/
-│   │   ├── ClientWindow.xaml
-│   │   ├── ClientWindow.xaml.cs
-│   │   ├── ImportSelectionWindow.xaml
-│   │   ├── ImportSelectionWindow.xaml.cs
-│   │   ├── OptionsWindow.xaml
-│   │   └── OptionsWindow.xaml.cs
+│   └── Views/
+│       ├── MainClientWindow/
+│       │   ├── ClientWindow.xaml
+│       │   └── ClientWindow.xaml.cs
+│       └── Service Windows/
+│           ├── Import Selection Window/
+│           │   ├── ImportSelectionWindow.xaml
+│           │   └── ImportSelectionWindow.xaml.cs
+│           └── Options Window/
+│               ├── OptionsWindow.xaml
+│               └── OptionsWindow.xaml.cs
 │
 ├── Common/
 │   ├── Common.csproj
 │   ├── Constants/
+│   │   ├── Ports.cs
 │   │   └── SketchFields.cs
+│   ├── Convertors/
+│   │   └── ObjectIdToJsonConvertor.cs
+│   ├── DTO/
+│   │   ├── ShapeDto.cs
+│   │   └── SketchDto.cs
+│   ├── Enums/
+│   │   └── BasicShapeType.cs
 │   ├── Errors/
 │   │   └── AppErrors.cs
 │   ├── Events/
 │   │   └── LockHub.cs
-│   └── Helpers/
-│       ├── RelayCommand.cs
-│       ├── ResponseHelper.cs
-│       └── Result.cs
-│
-├── Server/
-│   ├── Server.csproj
-│   ├── App.xaml
-│   ├── App.xaml.cs
-│   ├── Config/
-│   │   └── MongoConfig.cs
-│   ├── Enums/
-│   │   └── SketchEventType.cs
-│   ├── Events/
-│   │   └── SketchEvent.cs
-│   ├── Handlers/
-│   │   ├── DownloadHandler.cs
-│   │   └── UploadHandler.cs
 │   ├── Helpers/
-│   │   └── SketchStoreNotifier.cs
-│   ├── Repositories/
-│   │   └── MongoSketchStore.cs
-│   ├── Services/
-│   │   ├── LockManager.cs
-│   │   └── TcpSketchServer.cs
-│   └── Views/
-│       ├── ServerWindow.xaml
-│       └── ServerWindow.xaml.cs
+│   │   ├── RelayCommand.cs
+│   │   ├── ResponseHelper.cs
+│   │   └── Result.cs
+│   └── Models/
+│       └── Position.cs
+│
+└── Server/
+    ├── Server.csproj
+    ├── App.xaml
+    ├── App.xaml.cs
+    ├── Config/
+    │   └── MongoConfig.cs
+    ├── Enums/
+    │   └── SketchEventType.cs
+    ├── Events/
+    │   ├── SketchEvent.cs
+    │   └── SketchEventBus.cs
+    ├── Factories/
+    │   ├── IHandlerFactory.cs
+    │   └── SketchRequestFactory.cs
+    ├── Handlers/
+    │   ├── GetAllNamesHandler.cs
+    │   ├── GetAllSketchesHandler.cs
+    │   ├── GetSpecificSketchHandler.cs
+    │   ├── IRequestHandler.cs
+    │   ├── IRequestProcessor.cs
+    │   └── UploadSketchHandler.cs
+    ├── Mappers/
+    │   └── ServerSketchMappers.cs
+    ├── Models/
+    │   ├── ServerBaseShape.cs
+    │   ├── ServerSketch.cs
+    │   └── SketchEntry.cs
+    ├── Repositories/
+    │   └── MongoSketchStore.cs
+    ├── Services/
+    │   ├── LockManager.cs
+    │   └── TcpSketchServer.cs
+    ├── ViewModel/
+    │   └── SketchListViewModel.cs
+    └── Views/
+        ├── ServerWindow.xaml
+        └── ServerWindow.xaml.cs
 ```
 
 ---
@@ -116,11 +144,12 @@ PaintProject/
 
 ## 🛠️ Technologies Used
 
-* 💻 **WPF** (.NET) – Graphical client interface
+* 💻 **WPF** (.NET 5.0) – Graphical client interface
 * 🧠 **C# .NET** – Server logic and shared models
 * 🧾 **MongoDB** – Shape data storage
 * 🐳 **Docker** – Containerization for database
 * 🔁 **JSON** – Data exchange format
+* 🌐 **TCP** – Client-server communication
 
 ---
 
@@ -151,17 +180,19 @@ start cmd /k "dotnet run --project Client\Client.csproj"
 
 * 🐳 Starts MongoDB via Docker.
 * 🖥️ Runs the backend server.
-* 🖼️ Opens the WPF client.
+* 🖼️ Opens multiple WPF clients.
 
 ---
 
 ## 📦 Features
 
-* ✏️ Draw shapes (line, rectangle, circle...)
+* ✏️ Draw shapes (line, rectangle, circle)
 * 💾 Save/load drawings from MongoDB
-* ♻️ Real-time client-server communication
+* ♻️ Real-time client-server communication via TCP
 * 🏗️ Shared model logic via common class library
 * 🧪 Import/export data from database
+* 🔒 Lock management for concurrent access
+* 🎯 Shape selection and highlighting
 
 ---
 
@@ -189,9 +220,9 @@ volumes:
 
 | Folder    | Purpose                                                                      |
 |-----------|------------------------------------------------------------------------------|
-| `Client/` | WPF UI app for drawing shapes                                                |
-| `Server/` | Handles shape logic and Mongo integration + UI for managing files/access     |
-| `Common/` | Contains utilities, events, and shared errors used by both client and server |
+| `Client/` | WPF UI app for drawing shapes with command pattern implementation            |
+| `Server/` | TCP server handling shape logic and MongoDB integration with management UI   |
+| `Common/` | Shared DTOs, models, enums, and utilities used by both client and server    |
 
 ---
 
@@ -199,6 +230,8 @@ volumes:
 
 * 🟨 If shapes are not loading: make sure MongoDB is running and properly populated.
 * 🔁 Data is serialized using `Newtonsoft.Json`.
+* 🚪 Default MongoDB port is 27017.
+* 🔌 Client-server communication uses TCP sockets.
 
 ---
 
