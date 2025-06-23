@@ -9,7 +9,7 @@ namespace Client.Convertors
         {
             public bool CanConvert(ShapeBase shape) => shape is Line;
 
-            public UIBaseShape Convert(ShapeBase shape)
+            public UiBaseShape Convert(ShapeBase shape)
             {
                 return new UILine((Line)shape);
             }
@@ -19,7 +19,7 @@ namespace Client.Convertors
         {
             public bool CanConvert(ShapeBase shape) => shape is Rectangle;
 
-            public UIBaseShape Convert(ShapeBase shape)
+            public UiBaseShape Convert(ShapeBase shape)
             {
                 return new UIRectangle((Rectangle)shape);
             }
@@ -29,7 +29,7 @@ namespace Client.Convertors
         {
             public bool CanConvert(ShapeBase shape) => shape is Circle;
 
-            public UIBaseShape Convert(ShapeBase shape)
+            public UiBaseShape Convert(ShapeBase shape)
             {
                 return new UiCircle((Circle)shape);
             }

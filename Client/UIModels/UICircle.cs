@@ -6,7 +6,7 @@ using Common.Models;
 
 namespace Client.UIModels
 {
-    public class UiCircle : UIBaseShape
+    public class UiCircle : UiBaseShape
     {
         public UiCircle(Circle circle) : base(circle)
         {

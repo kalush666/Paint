@@ -4,7 +4,7 @@ using Client.Models;
 
 namespace Client.UIModels
 {
-    public class UIRectangle : UIBaseShape
+    public class UIRectangle : UiBaseShape
     {
         public UIRectangle(Rectangle rect) : base(rect) { }
 

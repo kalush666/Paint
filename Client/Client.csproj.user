@@ -2,16 +2,9 @@
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup />
   <ItemGroup />
-  <ItemGroup>
-    <Compile Update="Views\OptionsWindow.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Page Update="Views\MainClientWindow\ClientWindow.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Views\OptionsWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

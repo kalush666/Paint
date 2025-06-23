@@ -3,7 +3,7 @@ using Client.Models;
 
 namespace Client.UIModels
 {
-    public class UILine : UIBaseShape
+    public class UILine : UiBaseShape
     {
         public UILine(Line shape) : base(shape){}
 

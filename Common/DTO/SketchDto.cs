@@ -1,5 +1,5 @@
-using System;
 using System.Collections.Generic;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using Newtonsoft.Json;
 
@@ -7,9 +7,8 @@ namespace Common.DTO
 {
     public class SketchDto
     {
-        [BsonIgnoreIfNull]
-        [JsonProperty("_id", NullValueHandling = NullValueHandling.Ignore)]
-        public Guid Id { get; set; }
+        [BsonId]
+        public ObjectId Id { get; set; }
 
         [JsonProperty("Name")] public string Name { get; set; } = string.Empty;
 
@@ -25,7 +24,7 @@ namespace Common.DTO
             Shapes = shapes ?? new List<ShapeDto>();
         }
 
-        public SketchDto(Guid id, string name, List<ShapeDto> shapes)
+        public SketchDto(ObjectId id, string name, List<ShapeDto> shapes)
         {
             Id = id;
             Name = name;

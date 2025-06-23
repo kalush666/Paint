@@ -34,7 +34,6 @@ namespace Server.Handlers
                     return Result<string>.Failure(AppErrors.Mongo.InvalidJson);
                 }
 
-                sketchDto.Id = Guid.NewGuid();
             }
             catch
             {

@@ -7,23 +7,17 @@ using Common.Models;
 
 namespace Client.UIModels
 {
-    public abstract class UIBaseShape
+    public abstract class UiBaseShape
     {
-        public bool IsSelected { get; set; }
         public Brush StrokeColor { get; set; } = Brushes.Black;
         public double StrokeThickness { get; set; } = 2;
         protected ShapeBase LogicShape { get; }
 
-        protected UIBaseShape(ShapeBase logicShape)
+        protected UiBaseShape(ShapeBase logicShape)
         {
             LogicShape = logicShape;
         }
         
-        protected Position EnsureFitsPosition(Position p, double maxWidth, double maxHeight)
-        {
-            return new Position(Math.Max(0, Math.Min(p.X, maxWidth)),
-                Math.Max(0, Math.Min(p.Y, maxHeight)));
-        }
         
         protected Position Clamp(Position p, double maxWidth, double maxHeight)
         {

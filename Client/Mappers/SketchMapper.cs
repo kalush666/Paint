@@ -1,8 +1,7 @@
-using System;
 using System.Linq;
 using Client.Models;
 using Common.DTO;
-using System.Collections.Generic;
+using MongoDB.Bson;
 
 namespace Client.Mappers
 {
@@ -12,7 +11,7 @@ namespace Client.Mappers
         {
             return new Sketch
             {
-                Id = dto.Id == Guid.Empty ? Guid.NewGuid() : dto.Id,
+                Id = dto.Id,
                 Name = dto.Name,
                 Shapes = dto.Shapes.Select(s => s.ToDomain()).Where(s => s != null).ToList()!
             };
@@ -22,7 +21,7 @@ namespace Client.Mappers
         {
             return new SketchDto
             {
-                Id = sketch.Id,
+                Id = sketch.Id == ObjectId.Empty ? ObjectId.Empty : sketch.Id,
                 Name = sketch.Name,
                 Shapes = sketch.Shapes.Select(s => s.ToDto()).Where(s => s != null).ToList()!
             };
@@ -54,7 +53,6 @@ namespace Client.Mappers
         {
             Start = dto.StartPosition,
             End = dto.EndPosition,
-            Id = dto.Id
         };
 
         private static Rectangle CreateRectangle(ShapeDto dto) => new Rectangle
@@ -63,23 +61,19 @@ namespace Client.Mappers
             EndPosition = dto.EndPosition,
             Width = dto.Width,
             Height = dto.Height,
-            Id = dto.Id
         };
 
         private static Circle CreateCircle(ShapeDto dto) => new Circle
         {
             StartPosition = dto.StartPosition,
             EndPosition = dto.EndPosition,
-            Id = dto.Id
         };
-
 
         private static ShapeDto ConvertLine(Line line) => new ShapeDto
         {
             StartPosition = line.Start,
             EndPosition = line.End,
             ShapeType = (int)line.shapeType,
-            Id = line.Id
         };
 
         private static ShapeDto ConvertRectangle(Rectangle rect) => new ShapeDto
@@ -89,7 +83,6 @@ namespace Client.Mappers
             Width = rect.Width,
             Height = rect.Height,
             ShapeType = (int)rect.shapeType,
-            Id = rect.Id
         };
 
         private static ShapeDto ConvertCircle(Circle circle) => new ShapeDto
@@ -97,7 +90,6 @@ namespace Client.Mappers
             StartPosition = circle.StartPosition,
             EndPosition = circle.EndPosition,
             ShapeType = (int)circle.shapeType,
-            Id = circle.Id
         };
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,6 +12,7 @@ using Common.Helpers;
 using Client.Models;
 using Common.Constants;
 using Common.DTO;
+using MongoDB.Bson;
 
 namespace Client.Services
 {
@@ -36,7 +38,12 @@ namespace Client.Services
             client.SendTimeout = _timeoutMs;
 
             var sketchDto = sketch.ToDto();
-            var json = JsonConvert.SerializeObject(sketchDto, Formatting.Indented);
+            var json = JsonConvert.SerializeObject(sketchDto, new JsonSerializerSettings
+            {
+                Formatting = Formatting.Indented,
+                DefaultValueHandling = DefaultValueHandling.Ignore
+            });
+
             var request = $"POST:{json}";
             var data = Encoding.UTF8.GetBytes(request);
 
@@ -127,23 +134,23 @@ namespace Client.Services
 
         public async Task<Result<List<string>>> GetAllSketchNames()
         {
+            using var client = new TcpClient();
+            client.ReceiveTimeout = _timeoutMs;
+            client.SendTimeout = _timeoutMs;
+
+            await client.ConnectAsync(_serverHost, _serverPort).ConfigureAwait(false);
+            using var stream = client.GetStream();
+
+            var request = "GET:ALL:NAMES";
+            var requestData = Encoding.UTF8.GetBytes(request);
+            await stream.WriteAsync(requestData, 0, requestData.Length).ConfigureAwait(false);
+            await stream.FlushAsync().ConfigureAwait(false);
+
+            using var responseStream = new MemoryStream();
+            var responseBuffer = new byte[DefaultChunkSize];
+            int bytesRead;
             try
             {
-                using var client = new TcpClient();
-                client.ReceiveTimeout = _timeoutMs;
-                client.SendTimeout = _timeoutMs;
-
-                await client.ConnectAsync(_serverHost, _serverPort).ConfigureAwait(false);
-                using var stream = client.GetStream();
-
-                var request = "GET:ALL:NAMES";
-                var requestData = Encoding.UTF8.GetBytes(request);
-                await stream.WriteAsync(requestData, 0, requestData.Length).ConfigureAwait(false);
-                await stream.FlushAsync().ConfigureAwait(false);
-
-                using var responseStream = new MemoryStream();
-                var responseBuffer = new byte[DefaultChunkSize];
-                int bytesRead;
                 while ((bytesRead =
                            await stream.ReadAsync(responseBuffer, 0, responseBuffer.Length).ConfigureAwait(false)) > 0)
                 {
@@ -155,11 +162,11 @@ namespace Client.Services
                 if (response.StartsWith("ERROR:") || response.Equals(AppErrors.Generic.OperationFailed))
                     return Result<List<string>>.Failure(response);
 
-                var result = JsonConvert.DeserializeObject<Result<List<string>>>(response);
+                var result = JsonConvert.DeserializeObject<Result<IEnumerable<string>>>(response);
                 if (result == null || result.IsSuccess == false || result.Value == null)
                     return Result<List<string>>.Failure(AppErrors.Generic.OperationFailed);
 
-                return Result<List<string>>.Success(result.Value);
+                return Result<List<string>>.Success(result.Value.ToList());
             }
             catch (SocketException)
             {

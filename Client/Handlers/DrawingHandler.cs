@@ -27,7 +27,7 @@ namespace Client.Handlers
         private Position _startPosition;
         private Position _lastMousePosition;
         private Sketch _currentSketch = new Sketch();
-        private UIBaseShape? _previewShape;
+        private UiBaseShape? _previewShape;
         private UIElement? _previewElement;
         private bool _isDrawing;
         private DateTime _lastUpdateTime = DateTime.MinValue;
@@ -177,7 +177,7 @@ namespace Client.Handlers
                 _canvas.Children.Add(element);
         }
 
-        private void ApplyStyle(UIBaseShape? uiShape)
+        private void ApplyStyle(UiBaseShape? uiShape)
         {
             if (uiShape == null) return;
             uiShape.StrokeColor = CurrentColor;

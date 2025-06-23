@@ -6,6 +6,6 @@ namespace Client.Convertors
     public interface IUiShapeConvertor
     {
         bool CanConvert(ShapeBase shape);
-        UIBaseShape Convert(ShapeBase shape);
+        UiBaseShape Convert(ShapeBase shape);
     }
 }

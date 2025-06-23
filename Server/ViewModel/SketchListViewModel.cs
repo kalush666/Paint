@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Common.Helpers;
+using MongoDB.Bson;
 using Server.Enums;
 using Server.Events;
 using Server.Models;
@@ -27,8 +28,7 @@ namespace Server.ViewModel
 
             DeleteCommand = new RelayCommand<SketchEntry>(async entry =>
             {
-                if (entry?.Id == Guid.Empty) return;
-                if (entry != null)
+                if (entry is null || entry.Id == ObjectId.Empty) return;
                     await _store.DeleteSketchByIdAsync(entry.Id);
             });
         }

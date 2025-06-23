@@ -7,8 +7,8 @@ namespace Common.DTO
 {
     public class ShapeDto
     {
-        [BsonRepresentation(BsonType.String)]
-        public Guid Id { get; set; }
+        [BsonId]
+        public ObjectId Id { get; set; }
         public Position StartPosition { get; set; }
         public Position EndPosition { get; set; }
         public double Width { get; set; }

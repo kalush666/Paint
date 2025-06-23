@@ -15,9 +15,9 @@ namespace Server.Views
     public partial class ServerWindow : Window
     {
         private readonly TcpSketchServer _server;
-        private readonly CancellationTokenSource suspendToken = new CancellationTokenSource();
+        private readonly CancellationTokenSource _suspendToken = new();
         private readonly MongoSketchStore _mongoStore;
-        private bool _isSuspended = false;
+        private bool _isSuspended;
         private readonly SketchListViewModel _viewModel;
         private readonly SketchEventBus<SketchEvent> _eventBus;
 
@@ -38,7 +38,7 @@ namespace Server.Views
         protected override async void OnContentRendered(EventArgs eventArgs)
         {
             base.OnContentRendered(eventArgs);
-            await _viewModel.ListenAsync(_eventBus, suspendToken.Token);
+            await _viewModel.ListenAsync(_eventBus, _suspendToken.Token);
         }
 
 
@@ -59,11 +59,11 @@ namespace Server.Views
                     return;
                 }
 
-                foreach (var sketch in result.Value)
+                foreach (var entry in result.Value
+                             .Select(sketch => new SketchEntry { Id = sketch.Id, Name = sketch.Name })
+                             .Where(entry => _viewModel.Sketches.All(s => s.Id != entry.Id)))
                 {
-                    var entry = new SketchEntry { Id = sketch.Id, Name = sketch.Name };
-                    if (_viewModel.Sketches.All(s => s.Id != entry.Id))
-                        _viewModel.Sketches.Add(entry);
+                    _viewModel.Sketches.Add(entry);
                 }
             }
             catch (Exception ex)

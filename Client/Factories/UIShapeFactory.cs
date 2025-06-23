@@ -7,7 +7,7 @@ namespace Client.Factories
 {
     public class UiShapeFactory
     {
-        public UIBaseShape? Create(ShapeBase shape)
+        public UiBaseShape? Create(ShapeBase shape)
         {
             return shape switch
             {
@@ -18,7 +18,7 @@ namespace Client.Factories
             };
         }
 
-        public UIBaseShape? Create(BasicShapeType type, Position start, Position end)
+        public UiBaseShape? Create(BasicShapeType type, Position start, Position end)
         {
             return type switch
             {
