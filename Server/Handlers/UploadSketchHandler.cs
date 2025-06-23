@@ -10,9 +10,12 @@ namespace Server.Handlers
     public class UploadSketchHandler : IRequestHandler
     {
         private const int LengthOfRequestPrefix = 5;
-
-        private static readonly Lazy<UploadSketchHandler> _instance = new(() => new UploadSketchHandler());
-        public static UploadSketchHandler Instance => _instance.Value;
+        
+        private static UploadSketchHandler _instance;
+        public static UploadSketchHandler GetInstance()
+        {
+            return _instance ??= new UploadSketchHandler();
+        }
 
         public bool CanHandle(string request)
             => request.StartsWith("POST:", StringComparison.OrdinalIgnoreCase);

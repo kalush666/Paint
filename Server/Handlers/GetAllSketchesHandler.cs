@@ -5,15 +5,22 @@ using Common.Helpers;
 
 namespace Server.Handlers
 {
-    public class GetAllSketchesHandler : IRequestHandler
+    public sealed class GetAllSketchesHandler : IRequestHandler
     {
-        public static readonly GetAllSketchesHandler _instance = new GetAllSketchesHandler();
-        public static GetAllSketchesHandler Instance => _instance;
-        
+        private static GetAllSketchesHandler _instance;
+
+        public static GetAllSketchesHandler GetInstance()
+        {
+            return _instance ??= new GetAllSketchesHandler();
+        }
+
+        private GetAllSketchesHandler()
+        {
+        }
+
         public bool CanHandle(string request) => request.Equals("GET:ALL", StringComparison.OrdinalIgnoreCase);
-        
-        private GetAllSketchesHandler() { }
-        
+
+
         public async Task<Result<String>> HandleAsync(RequestContext context)
         {
             try

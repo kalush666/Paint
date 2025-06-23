@@ -9,12 +9,12 @@ namespace Server.Factories
 {
     public class SketchRequestFactory : IHandlerFactory
     {
-        private readonly List<IRequestHandler> _handlers = new()
+        private readonly List<Type> _handlerTypes = new()
         {
-            UploadSketchHandler.Instance,
-            GetAllNamesHandler.Instance,
-            GetAllSketchesHandler.Instance,
-            GetSpecificSketchHandler.Instance
+            typeof(UploadSketchHandler),
+            typeof(GetAllNamesHandler),
+            typeof(GetAllSketchesHandler),
+            typeof(GetSpecificSketchHandler)
         };
 
         public SketchRequestFactory()
@@ -23,7 +23,12 @@ namespace Server.Factories
 
         public IRequestHandler? GetHandler(string request)
         {
-            return _handlers.FirstOrDefault(h => h.CanHandle(request));
+            return (from handlerType in _handlerTypes
+                    select handlerType.GetMethod("GetInstance", BindingFlags.Public | BindingFlags.Static)
+                    into getInstanceMethod
+                    where getInstanceMethod != null
+                    select getInstanceMethod.Invoke(null, null)).OfType<IRequestHandler>()
+                .FirstOrDefault(handler => handler.CanHandle(request));
         }
     }
 }

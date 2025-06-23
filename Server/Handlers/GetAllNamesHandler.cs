@@ -7,15 +7,20 @@ using Newtonsoft.Json;
 
 namespace Server.Handlers
 {
-    public class GetAllNamesHandler : IRequestHandler
+    public sealed class GetAllNamesHandler : IRequestHandler
     {
-        public static readonly Lazy<GetAllNamesHandler> _instance = new(() => new GetAllNamesHandler());
-        public static GetAllNamesHandler Instance => _instance.Value;
+        private static GetAllNamesHandler _instance;
         private GetAllNamesHandler() { }
+        
+        public static GetAllNamesHandler GetInstance()
+        {
+            return _instance ??= new GetAllNamesHandler();
+        }
         
         public bool CanHandle(string request)
             => request.Equals("GET:ALL:NAMES", StringComparison.OrdinalIgnoreCase);
 
+        
         public async Task<Result<string>> HandleAsync(RequestContext context)
         {
             try
