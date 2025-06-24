@@ -153,20 +153,20 @@ namespace Client.Services
             client.ReceiveTimeout = _timeoutMs;
             client.SendTimeout = _timeoutMs;
 
-
-            await client.ConnectAsync(_serverHost, _serverPort).ConfigureAwait(false);
-            using var stream = client.GetStream();
-
-            var request = GetAllSketchNamesRequest;
-            var requestData = Encoding.UTF8.GetBytes(request);
-            await stream.WriteAsync(requestData, 0, requestData.Length).ConfigureAwait(false);
-            await stream.FlushAsync().ConfigureAwait(false);
-
-            using var responseStream = new MemoryStream();
-            var responseBuffer = new byte[DefaultChunkSize];
-            int bytesRead;
             try
             {
+                await client.ConnectAsync(_serverHost, _serverPort).ConfigureAwait(false);
+                using var stream = client.GetStream();
+
+                var request = GetAllSketchNamesRequest;
+                var requestData = Encoding.UTF8.GetBytes(request);
+                await stream.WriteAsync(requestData, 0, requestData.Length).ConfigureAwait(false);
+                await stream.FlushAsync().ConfigureAwait(false);
+
+                using var responseStream = new MemoryStream();
+                var responseBuffer = new byte[DefaultChunkSize];
+                int bytesRead;
+        
                 while ((bytesRead =
                            await stream.ReadAsync(responseBuffer, Offset, responseBuffer.Length).ConfigureAwait(false)) > 0)
                 {
