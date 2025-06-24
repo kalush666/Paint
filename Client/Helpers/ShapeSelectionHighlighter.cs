@@ -6,11 +6,12 @@ namespace Client.Helpers
 {
     public class ShapeSelectionHighlighter
     {
+        private const int ButtonPanelIndex = 1;
         private readonly StackPanel _buttonPanel;
 
         public ShapeSelectionHighlighter(StackPanel rootPanel)
         {
-            _buttonPanel = rootPanel.Children[1] as StackPanel ?? rootPanel;
+            _buttonPanel = rootPanel.Children[ButtonPanelIndex] as StackPanel ?? rootPanel;
         }
 
         public void Highlight(BasicShapeType selectedShape)

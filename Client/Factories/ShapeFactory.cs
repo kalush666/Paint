@@ -8,30 +8,19 @@ namespace Client.Factories
 {
     public static class ShapeFactory
     {
-        public static ShapeBase Create(BasicShapeType type)
-        {
-            return type switch
-            {
-                BasicShapeType.Line => new Line(),
-                BasicShapeType.Rectangle => new Rectangle(),
-                BasicShapeType.Circle => new Circle(),
-                _ => throw new NotSupportedException(AppErrors.Shapes.NotAShape)
-            };
-        }
-
         public static ShapeBase Create(BasicShapeType type, Position startPoint, Position endPoint)
         {
-            return type switch
+            switch (type)
             {
-                BasicShapeType.Line => new Line(startPoint, endPoint),
-                BasicShapeType.Rectangle => new Rectangle(startPoint, endPoint),
-                BasicShapeType.Circle => new Circle
-                {
-                    StartPosition = startPoint,
-                    EndPosition = endPoint
-                },
-                _ => throw new NotSupportedException(AppErrors.Shapes.NotAShape)
-            };
+                case BasicShapeType.Line:
+                    return new Line(startPoint, endPoint);
+                case BasicShapeType.Rectangle:
+                    return new Rectangle(startPoint, endPoint);
+                case BasicShapeType.Circle:
+                    return new Circle { StartPosition = startPoint, EndPosition = endPoint };
+                default:
+                    throw new NotSupportedException(AppErrors.Shapes.NotAShape);
+            }
         }
     }
 }

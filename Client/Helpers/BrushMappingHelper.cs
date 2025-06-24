@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Windows.Media;
 
 namespace Client.Helpers
@@ -22,8 +21,6 @@ namespace Client.Helpers
             { Brushes.Green, "Green" },
             { Brushes.Blue, "Blue" }
         };
-
-        private static readonly Dictionary<string, Brush> NameToBrush = BrushToName.ToDictionary(kvp => kvp.Value, kvp => kvp.Key);
 
         public static int GetIndex(Brush brush) => Array.IndexOf(BrushesList, brush);
 

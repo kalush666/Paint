@@ -34,9 +34,8 @@ namespace Client.Views.Service_Windows.Import_Selection_Window
             SketchImportList.Children.Clear();
             SketchImportList.Children.Add(_loadingSpinner);
 
-            var sketchNames = await _communicationService.GetAllSketchNames();
+            Result<List<string>> sketchNames = await _communicationService.GetAllSketchNames();
 
-            Console.WriteLine($"[UI] Result success: {sketchNames.IsSuccess}, Count: {sketchNames.Value?.Count}");
 
             if (sketchNames.Error is AppErrors.Server.Suspended)
             {

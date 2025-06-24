@@ -11,7 +11,6 @@ namespace Client.Models
 
         public override BasicShapeType shapeType => BasicShapeType.Circle;
 
-        // radius is half the smaller side of the rectangle
         public double Radius
             => Math.Min(Math.Abs(EndPosition.X - StartPosition.X),
                 Math.Abs(EndPosition.Y - StartPosition.Y)) / 2;

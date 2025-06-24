@@ -25,6 +25,7 @@ namespace Client.Services
         private const string UploadSketchRequestPrefix = "POST:";
         private const string DownloadSketchRequestPrefix = "GET:SPECIFIC:";
         private const string GetAllSketchNamesRequest = "GET:ALL:NAMES";
+        private const int Offset = 0;
 
         public ClientCommunicationService(string serverHost = Ports.DefaultHost, int serverPort = Ports.DefaultPort,
             int timeoutMs = Ports.DefaultTimeout)
@@ -58,14 +59,14 @@ namespace Client.Services
                 await client.ConnectAsync(_serverHost, _serverPort).ConfigureAwait(false);
                 await using var stream = client.GetStream();
 
-                await stream.WriteAsync(data, 0, data.Length).ConfigureAwait(false);
+                await stream.WriteAsync(data, Offset, data.Length).ConfigureAwait(false);
                 await stream.FlushAsync().ConfigureAwait(false);
 
                 int byteRead;
                 while ((byteRead =
-                           await stream.ReadAsync(responseChunk, 0, responseChunk.Length).ConfigureAwait(false)) > 0)
+                           await stream.ReadAsync(responseChunk, Offset, responseChunk.Length).ConfigureAwait(false)) > 0)
                 {
-                    responseStream.Write(responseChunk, 0, byteRead);
+                    responseStream.Write(responseChunk, Offset, byteRead);
                     if (!stream.DataAvailable) break;
                 }
 
@@ -101,14 +102,14 @@ namespace Client.Services
                 await using var stream = client.GetStream();
 
                 var requestData = Encoding.UTF8.GetBytes(request);
-                await stream.WriteAsync(requestData, 0, requestData.Length).ConfigureAwait(false);
+                await stream.WriteAsync(requestData, Offset, requestData.Length).ConfigureAwait(false);
                 await stream.FlushAsync().ConfigureAwait(false);
 
                 int bytesRead;
                 while ((bytesRead =
-                           await stream.ReadAsync(requestBuffer, 0, requestBuffer.Length).ConfigureAwait(false)) > 0)
+                           await stream.ReadAsync(requestBuffer, Offset, requestBuffer.Length).ConfigureAwait(false)) > 0)
                 {
-                    responseStream.Write(requestBuffer, 0, bytesRead);
+                    responseStream.Write(requestBuffer,Offset, bytesRead);
                     if (!stream.DataAvailable) break;
                 }
             }
@@ -167,9 +168,9 @@ namespace Client.Services
             try
             {
                 while ((bytesRead =
-                           await stream.ReadAsync(responseBuffer, 0, responseBuffer.Length).ConfigureAwait(false)) > 0)
+                           await stream.ReadAsync(responseBuffer, Offset, responseBuffer.Length).ConfigureAwait(false)) > 0)
                 {
-                    responseStream.Write(responseBuffer, 0, bytesRead);
+                    responseStream.Write(responseBuffer, Offset, bytesRead);
                     if (!stream.DataAvailable) break;
                 }
 
