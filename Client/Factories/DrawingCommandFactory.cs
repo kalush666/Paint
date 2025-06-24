@@ -8,11 +8,6 @@ using Common.Enums;
 
 namespace Client.Factories
 {
-    public interface IDrawingCommandFactory
-    {
-        IDrawingCommand? Create(Enum key);
-    }
-
     public class DrawingCommandFactory : IDrawingCommandFactory
     {
         private readonly List<IDrawingCommand> _commands = new();
@@ -76,7 +71,6 @@ namespace Client.Factories
             _commands.Add(new ShapeSelectionCommand(handler, BasicShapeType.Line));
             _commands.Add(new ShapeSelectionCommand(handler, BasicShapeType.Rectangle));
             _commands.Add(new ShapeSelectionCommand(handler, BasicShapeType.Circle));
-
         }
 
         public IDrawingCommand? Create(Enum commandEnum)
