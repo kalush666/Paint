@@ -122,7 +122,6 @@ namespace Server.Repositories
             }
             catch (Exception ex)
             {
-                Console.WriteLine("[MongoSketchStore] Exception during fetch all: " + ex.Message);
                 return Result<List<SketchDto>>.Failure(AppErrors.Mongo.ReadError);
             }
         }
@@ -143,7 +142,6 @@ namespace Server.Repositories
             }
             catch (Exception ex)
             {
-                Console.WriteLine("[MongoSketchStore] Exception during name fetch: " + ex.Message);
                 return Result<IEnumerable<string>>.Failure(AppErrors.Mongo.ReadError);
             }
         }
