@@ -5,6 +5,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Common.Constants;
 using Common.Errors;
 using Common.Helpers;
 using Server.Factories;
@@ -16,6 +17,7 @@ namespace Server.Services
     public class TcpSketchServer
     {
         private const int SizeOfChunk = 4096;
+        private const int Offset = 0;
 
         private readonly int _port;
         private TcpListener _listener;
@@ -30,7 +32,7 @@ namespace Server.Services
 
         public TcpSketchServer(MongoSketchStore sketchStore,ISketchRequestProcessor? requestProcessor = null, ISketchHandlerFactory? handlerFactory = null)
         {
-            _port = int.TryParse(Environment.GetEnvironmentVariable("PORT"), out var envPort) ? envPort : 5000;
+            _port = int.TryParse(Environment.GetEnvironmentVariable("PORT"), out var envPort) ? envPort : Ports.DefaultPort;
             _listener = new TcpListener(IPAddress.Any, _port);
             _mongoStore = sketchStore;
             _sketchHandlerFactory = handlerFactory ?? new SketchRequestFactory();
@@ -110,9 +112,9 @@ namespace Server.Services
                 using var requestStream = new MemoryStream();
                 var requestChunk = new byte[SizeOfChunk];
                 int bytesRead;
-                while ((bytesRead = await stream.ReadAsync(requestChunk, 0, requestChunk.Length, token)) > 0)
+                while ((bytesRead = await stream.ReadAsync(requestChunk, Offset, requestChunk.Length, token)) > 0)
                 {
-                    requestStream.Write(requestChunk, 0, bytesRead);
+                    requestStream.Write(requestChunk, Offset, bytesRead);
                     if (!stream.DataAvailable) break;
                 }
 

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\jonat\\RiderProjects\\Paint\\Client\\Client.csproj": {}
+    "C:\\Users\\jonat\\Desktop\\PROJECTS\\PaintProject\\Client\\Client.csproj": {}
   },
   "projects": {
-    "C:\\Users\\jonat\\RiderProjects\\Paint\\Client\\Client.csproj": {
+    "C:\\Users\\jonat\\Desktop\\PROJECTS\\PaintProject\\Client\\Client.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\jonat\\RiderProjects\\Paint\\Client\\Client.csproj",
+        "projectUniqueName": "C:\\Users\\jonat\\Desktop\\PROJECTS\\PaintProject\\Client\\Client.csproj",
         "projectName": "Client",
-        "projectPath": "C:\\Users\\jonat\\RiderProjects\\Paint\\Client\\Client.csproj",
+        "projectPath": "C:\\Users\\jonat\\Desktop\\PROJECTS\\PaintProject\\Client\\Client.csproj",
         "packagesPath": "C:\\Users\\jonat\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\jonat\\RiderProjects\\Paint\\Client\\obj\\",
+        "outputPath": "C:\\Users\\jonat\\Desktop\\PROJECTS\\PaintProject\\Client\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -32,11 +32,11 @@
           "net5.0-windows7.0": {
             "targetAlias": "net5.0-windows",
             "projectReferences": {
-              "C:\\Users\\jonat\\RiderProjects\\Paint\\Common\\Common.csproj": {
-                "projectPath": "C:\\Users\\jonat\\RiderProjects\\Paint\\Common\\Common.csproj"
+              "C:\\Users\\jonat\\Desktop\\PROJECTS\\PaintProject\\Common\\Common.csproj": {
+                "projectPath": "C:\\Users\\jonat\\Desktop\\PROJECTS\\PaintProject\\Common\\Common.csproj"
               },
-              "C:\\Users\\jonat\\RiderProjects\\Paint\\Server\\Server.csproj": {
-                "projectPath": "C:\\Users\\jonat\\RiderProjects\\Paint\\Server\\Server.csproj"
+              "C:\\Users\\jonat\\Desktop\\PROJECTS\\PaintProject\\Server\\Server.csproj": {
+                "projectPath": "C:\\Users\\jonat\\Desktop\\PROJECTS\\PaintProject\\Server\\Server.csproj"
               }
             }
           }
@@ -86,14 +86,14 @@
         }
       }
     },
-    "C:\\Users\\jonat\\RiderProjects\\Paint\\Common\\Common.csproj": {
+    "C:\\Users\\jonat\\Desktop\\PROJECTS\\PaintProject\\Common\\Common.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\jonat\\RiderProjects\\Paint\\Common\\Common.csproj",
+        "projectUniqueName": "C:\\Users\\jonat\\Desktop\\PROJECTS\\PaintProject\\Common\\Common.csproj",
         "projectName": "Common",
-        "projectPath": "C:\\Users\\jonat\\RiderProjects\\Paint\\Common\\Common.csproj",
+        "projectPath": "C:\\Users\\jonat\\Desktop\\PROJECTS\\PaintProject\\Common\\Common.csproj",
         "packagesPath": "C:\\Users\\jonat\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\jonat\\RiderProjects\\Paint\\Common\\obj\\",
+        "outputPath": "C:\\Users\\jonat\\Desktop\\PROJECTS\\PaintProject\\Common\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -154,14 +154,14 @@
         }
       }
     },
-    "C:\\Users\\jonat\\RiderProjects\\Paint\\Server\\Server.csproj": {
+    "C:\\Users\\jonat\\Desktop\\PROJECTS\\PaintProject\\Server\\Server.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\jonat\\RiderProjects\\Paint\\Server\\Server.csproj",
+        "projectUniqueName": "C:\\Users\\jonat\\Desktop\\PROJECTS\\PaintProject\\Server\\Server.csproj",
         "projectName": "Server",
-        "projectPath": "C:\\Users\\jonat\\RiderProjects\\Paint\\Server\\Server.csproj",
+        "projectPath": "C:\\Users\\jonat\\Desktop\\PROJECTS\\PaintProject\\Server\\Server.csproj",
         "packagesPath": "C:\\Users\\jonat\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\jonat\\RiderProjects\\Paint\\Server\\obj\\",
+        "outputPath": "C:\\Users\\jonat\\Desktop\\PROJECTS\\PaintProject\\Server\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -182,8 +182,8 @@
           "net5.0-windows7.0": {
             "targetAlias": "net5.0-windows",
             "projectReferences": {
-              "C:\\Users\\jonat\\RiderProjects\\Paint\\Common\\Common.csproj": {
-                "projectPath": "C:\\Users\\jonat\\RiderProjects\\Paint\\Common\\Common.csproj"
+              "C:\\Users\\jonat\\Desktop\\PROJECTS\\PaintProject\\Common\\Common.csproj": {
+                "projectPath": "C:\\Users\\jonat\\Desktop\\PROJECTS\\PaintProject\\Common\\Common.csproj"
               }
             }
           }

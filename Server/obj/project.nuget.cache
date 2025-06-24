@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "nq5Uazl/kWg=",
+  "dgSpecHash": "cZ8Pqehbbg4=",
   "success": true,
-  "projectFilePath": "C:\\Users\\jonat\\RiderProjects\\Paint\\Server\\Server.csproj",
+  "projectFilePath": "C:\\Users\\jonat\\Desktop\\PROJECTS\\PaintProject\\Server\\Server.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\jonat\\.nuget\\packages\\dnsclient\\1.6.1\\dnsclient.1.6.1.nupkg.sha512",
     "C:\\Users\\jonat\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\2.0.0\\microsoft.extensions.logging.abstractions.2.0.0.nupkg.sha512",

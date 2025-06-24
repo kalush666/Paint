@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "RbmTajI4yWY=",
+  "dgSpecHash": "IE6gnAP9jGU=",
   "success": true,
-  "projectFilePath": "C:\\Users\\jonat\\RiderProjects\\Paint\\Client\\Client.csproj",
+  "projectFilePath": "C:\\Users\\jonat\\Desktop\\PROJECTS\\PaintProject\\Client\\Client.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\jonat\\.nuget\\packages\\communitytoolkit.mvvm\\8.4.0\\communitytoolkit.mvvm.8.4.0.nupkg.sha512",
     "C:\\Users\\jonat\\.nuget\\packages\\dnsclient\\1.6.1\\dnsclient.1.6.1.nupkg.sha512",

@@ -12,4 +12,4 @@ build_property.PublishSingleFile =
 build_property.IncludeAllContentForSelfExtract = 
 build_property._SupportedPlatformList = Android,iOS,Linux,macOS,Windows
 build_property.RootNamespace = Client
-build_property.ProjectDir = C:\Users\jonat\RiderProjects\Paint\Client\
+build_property.ProjectDir = C:\Users\jonat\Desktop\PROJECTS\PaintProject\Client\

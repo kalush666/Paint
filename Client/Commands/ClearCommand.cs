@@ -8,7 +8,6 @@ namespace Client.Commands
     {
         private readonly DrawingHandler? _handler;
 
-
         public ClearCommand(DrawingHandler handler) => _handler = handler;
 
         public Enum Key => CommandTypes.Clear;

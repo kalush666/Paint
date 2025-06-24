@@ -80,8 +80,7 @@ namespace Server.Repositories
             try
             {
                 if (serverSketch.Shapes.Any(s =>
-                        s.StartPosition.X == 0 && s.StartPosition.Y == 0 && s.EndPosition.X == 0 &&
-                        s.EndPosition.Y == 0))
+                        s.StartPosition.X == 0 && s.StartPosition.Y == 0 && s.EndPosition is { X: 0, Y: 0 }))
                 {
                     return Result<string>.Failure("Shapes must have valid start and end positions.");
                 }
