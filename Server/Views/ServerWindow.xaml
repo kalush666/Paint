@@ -33,7 +33,7 @@
                                     Padding="10,5"
                                     MinWidth="80"
                                     Background="LightCoral"
-                                    Command="{Binding DeleteCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                    Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                     CommandParameter="{Binding}" />
                         </StackPanel>
                     </DataTemplate>

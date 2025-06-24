@@ -36,7 +36,7 @@ namespace Server.Services
             _listener = new TcpListener(IPAddress.Any, _port);
             _mongoStore = sketchStore;
             _sketchHandlerFactory = handlerFactory ?? new SketchRequestFactory();
-            _sketchRequestProcessor = requestProcessor ?? new SketchSketchRequestProcessor(_sketchHandlerFactory, _mongoStore, _lockManager);
+            _sketchRequestProcessor = requestProcessor ?? new SketchRequestProcessor(_sketchHandlerFactory, _mongoStore, _lockManager);
         }
 
 

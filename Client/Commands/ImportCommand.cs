@@ -34,7 +34,12 @@ namespace Client.Commands
 
                 if (response is not { Error: null })
                 {
-                    MessageBox.Show(AppErrors.Mongo.ReadError, "Import Error",
+                    string errorMessage = response.Error ?? AppErrors.Mongo.ReadError;
+                    if (errorMessage.StartsWith("\"") && errorMessage.EndsWith("\""))
+                    {
+                        errorMessage = errorMessage.Substring(1, errorMessage.Length - 2);
+                    }
+                    MessageBox.Show(errorMessage, "Import Error",
                         MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
@@ -45,7 +50,6 @@ namespace Client.Commands
                         MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
-
                 LockHub.TriggerUnlock(_handler.CurrentSketch?.Name ?? string.Empty);
                 _handler.ImportSketch(response.Value);
                 LockHub.TriggerLock(_handler.CurrentSketch?.Name ?? string.Empty);

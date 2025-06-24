@@ -9,13 +9,13 @@ using Server.Services;
 
 namespace Server.Handlers
 {
-    public class SketchSketchRequestProcessor : ISketchRequestProcessor
+    public class SketchRequestProcessor : ISketchRequestProcessor
     {
         private readonly ISketchHandlerFactory _sketchHandlerFactory;
         private readonly MongoSketchStore _mongoSketchStore;
         private readonly LockManager _lockManager;
 
-        public SketchSketchRequestProcessor(ISketchHandlerFactory sketchHandlerFactory, MongoSketchStore mongoSketchStore,
+        public SketchRequestProcessor(ISketchHandlerFactory sketchHandlerFactory, MongoSketchStore mongoSketchStore,
             LockManager lockManager)
         {
             _sketchHandlerFactory = sketchHandlerFactory;

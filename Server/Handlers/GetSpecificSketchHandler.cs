@@ -35,7 +35,7 @@ namespace Server.Handlers
                 return Result<string>.Failure(AppErrors.Server.Suspended);
             }
 
-            if (context.LockManager.IsLocked(sketchName))
+            if (context.LockManager.IsLocked(sketchName) || !context.LockManager.TryLock(sketchName, out var lockToken))
             {
                 await ResponseHelper.SendAsync(context.Stream, AppErrors.File.Locked, context.CancellationToken);
                 return Result<string>.Failure(AppErrors.File.Locked);
@@ -47,6 +47,7 @@ namespace Server.Handlers
 
                 if (sketchResult.Error != null || sketchResult.Value == null)
                 {
+                    context.LockManager.Unlock(sketchName);
                     await ResponseHelper.SendAsync(context.Stream, AppErrors.Mongo.SketchNotFound,
                         context.CancellationToken);
                     return Result<string>.Failure(AppErrors.Mongo.SketchNotFound);
