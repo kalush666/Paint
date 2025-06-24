@@ -6,6 +6,5 @@ namespace Client.Services
     {
         T GetService<T>();
         object GetService(Type serviceType);
-        void RegisterService<T>(T service);
     }
 }

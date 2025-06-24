@@ -1,5 +1,4 @@
 using System;
-using Client.Enums;
 
 namespace Client.Commands
 {

@@ -10,8 +10,8 @@ namespace Common.Models
 
         public Position(double x, double y)
         {
-            this.X = x;
-            this.Y = y;
+            X = x;
+            Y = y;
         }
 
         public override string ToString()
@@ -21,7 +21,7 @@ namespace Common.Models
 
         public double Distance(Position p1)
         {
-            return Math.Sqrt(Math.Pow(this.X - p1.X, 2) + Math.Pow(this.Y - p1.Y, 2));
+            return Math.Sqrt(Math.Pow(X - p1.X, 2) + Math.Pow(Y - p1.Y, 2));
         }
 
     }

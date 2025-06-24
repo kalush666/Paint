@@ -56,8 +56,6 @@ namespace Server.Repositories
             if (document == null)
                 return Result<SketchDto>.Failure(AppErrors.Mongo.SketchNotFound);
 
-            Console.WriteLine(
-                $"[MongoSketchStore.Get] Retrieved - Name: {document.Name}, Shapes: {document.Shapes?.Count}");
 
             return Result<SketchDto>.Success(document.ToDto());
         }
@@ -71,7 +69,6 @@ namespace Server.Repositories
 
             if (serverSketch.Shapes == null || serverSketch.Shapes.Count == 0)
             {
-                Console.WriteLine("[MongoSketchStore] Insert failed: sketch has no shapes.");
                 return Result<string>.Failure("Sketch must contain at least one shape.");
             }
 
@@ -82,9 +79,10 @@ namespace Server.Repositories
 
             try
             {
-                if (serverSketch.Shapes.Any(s => s.StartPosition.X == 0 && s.StartPosition.Y == 0 && s.EndPosition.X == 0 && s.EndPosition.Y == 0))
+                if (serverSketch.Shapes.Any(s =>
+                        s.StartPosition.X == 0 && s.StartPosition.Y == 0 && s.EndPosition.X == 0 &&
+                        s.EndPosition.Y == 0))
                 {
-                    Console.WriteLine("[MongoSketchStore] Insert failed: one or more shapes have default (0,0) positions.");
                     return Result<string>.Failure("Shapes must have valid start and end positions.");
                 }
 
@@ -94,7 +92,6 @@ namespace Server.Repositories
             }
             catch (Exception ex)
             {
-                Console.WriteLine("[MongoSketchStore] Exception during insert: " + ex.Message);
                 return Result<string>.Failure("Exception during MongoDB insert: " + ex.Message);
             }
         }

@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -7,8 +6,9 @@ using Server.Handlers;
 
 namespace Server.Factories
 {
-    public class SketchRequestFactory : IHandlerFactory
+    public class SketchRequestFactory : ISketchHandlerFactory
     {
+        private const string NameOfInstanceMethod = "GetInstance";
         private readonly List<Type> _handlerTypes = new()
         {
             typeof(UploadSketchHandler),
@@ -21,13 +21,13 @@ namespace Server.Factories
         {
         }
 
-        public IRequestHandler? GetHandler(string request)
+        public ISketchRequestHandler? GetHandler(string request)
         {
             return (from handlerType in _handlerTypes
-                    select handlerType.GetMethod("GetInstance", BindingFlags.Public | BindingFlags.Static)
+                    select handlerType.GetMethod(NameOfInstanceMethod, BindingFlags.Public | BindingFlags.Static)
                     into getInstanceMethod
                     where getInstanceMethod != null
-                    select getInstanceMethod.Invoke(null, null)).OfType<IRequestHandler>()
+                    select getInstanceMethod.Invoke(null, null)).OfType<ISketchRequestHandler>()
                 .FirstOrDefault(handler => handler.CanHandle(request));
         }
     }

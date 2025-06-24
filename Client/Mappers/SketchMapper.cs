@@ -2,7 +2,6 @@ using System.Linq;
 using Client.Models;
 using Common.DTO;
 using MongoDB.Bson;
-using Server.Models;
 
 namespace Client.Mappers
 {

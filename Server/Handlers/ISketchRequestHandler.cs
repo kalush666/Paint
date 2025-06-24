@@ -7,7 +7,7 @@ using Server.Services;
 
 namespace Server.Handlers
 {
-    public interface IRequestHandler
+    public interface ISketchRequestHandler
     {
         public bool CanHandle(string request);
         public Task<Result<string>> HandleAsync(RequestContext context);

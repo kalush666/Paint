@@ -32,7 +32,6 @@ namespace Server.Services
             if (_locks.TryAdd(name, cts))
             {
                 token = cts.Token;
-                Console.WriteLine($"Locked: {name}");
                 return true;
             }
 

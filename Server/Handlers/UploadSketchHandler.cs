@@ -7,18 +7,20 @@ using Newtonsoft.Json;
 
 namespace Server.Handlers
 {
-    public class UploadSketchHandler : IRequestHandler
+    public class UploadSketchHandler : ISketchRequestHandler
     {
         private const int LengthOfRequestPrefix = 5;
+        private const string UploadRequestPrefix = "POST:";
         
         private static UploadSketchHandler _instance;
+
         public static UploadSketchHandler GetInstance()
         {
             return _instance ??= new UploadSketchHandler();
         }
 
         public bool CanHandle(string request)
-            => request.StartsWith("POST:", StringComparison.OrdinalIgnoreCase);
+            => request.StartsWith(UploadRequestPrefix, StringComparison.OrdinalIgnoreCase);
 
         private UploadSketchHandler()
         {
@@ -36,7 +38,6 @@ namespace Server.Handlers
                 {
                     return Result<string>.Failure(AppErrors.Mongo.InvalidJson);
                 }
-
             }
             catch
             {

@@ -8,7 +8,7 @@ namespace Common.DTO
     public class ShapeDto
     {
         [BsonId]
-        [JsonConverter(typeof(Common.Convertors.ObjectIdJsonConverter))]
+        [JsonConverter(typeof(Convertors.ObjectIdJsonConverter))]
         public ObjectId Id { get; set; }
         public Position StartPosition { get; set; }
         public Position EndPosition { get; set; }

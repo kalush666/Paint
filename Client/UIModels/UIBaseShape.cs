@@ -9,8 +9,11 @@ namespace Client.UIModels
 {
     public abstract class UiBaseShape
     {
-        public Brush StrokeColor { get; set; } = Brushes.Black;
-        public double StrokeThickness { get; set; } = 2;
+        private static readonly Brush DefaultColor = Brushes.Black;
+        private const double DefaultStrokeThickness = 2;
+        
+        public Brush StrokeColor { get; set; } = DefaultColor;
+        public double StrokeThickness { get; set; } = DefaultStrokeThickness;
         protected ShapeBase LogicShape { get; }
 
         protected UiBaseShape(ShapeBase logicShape)

@@ -1,6 +1,6 @@
 namespace Common.Constants
 {
-    public class Ports
+    public static class Ports
     {
         public const int DefaultPort = 5000;
         public const string DefaultHost = "localhost";

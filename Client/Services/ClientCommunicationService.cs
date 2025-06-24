@@ -22,6 +22,9 @@ namespace Client.Services
         private readonly string _serverHost;
         private readonly int _serverPort;
         private readonly int _timeoutMs;
+        private const string UploadSketchRequestPrefix = "POST:";
+        private const string DownloadSketchRequestPrefix = "GET:SPECIFIC:";
+        private const string GetAllSketchNamesRequest = "GET:ALL:NAMES";
 
         public ClientCommunicationService(string serverHost = Ports.DefaultHost, int serverPort = Ports.DefaultPort,
             int timeoutMs = Ports.DefaultTimeout)
@@ -44,7 +47,7 @@ namespace Client.Services
                 DefaultValueHandling = DefaultValueHandling.Ignore
             });
 
-            var request = $"POST:{json}";
+            var request = $"{UploadSketchRequestPrefix}{json}";
             var data = Encoding.UTF8.GetBytes(request);
 
             using var responseStream = new MemoryStream();
@@ -87,8 +90,7 @@ namespace Client.Services
             client.ReceiveTimeout = _timeoutMs;
             client.SendTimeout = _timeoutMs;
 
-            var request = $"GET:SPECIFIC:{sketchName}";
-            Console.WriteLine("[CLIENT] Sending: " + request);
+            var request = $"{DownloadSketchRequestPrefix}{sketchName}";
 
             using var responseStream = new MemoryStream();
             var requestBuffer = new byte[DefaultChunkSize];
@@ -112,21 +114,17 @@ namespace Client.Services
             }
             catch (SocketException)
             {
-                Console.WriteLine("[CLIENT] SocketException: Server suspended?");
                 return Result<Sketch>.Failure(AppErrors.Server.Suspended);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[CLIENT] Exception while reading stream: {ex.Message}");
                 return Result<Sketch>.Failure(AppErrors.Mongo.ReadError);
             }
 
             var response = Encoding.UTF8.GetString(responseStream.ToArray());
-            Console.WriteLine("[CLIENT] Raw response: " + response);
 
             if (response.StartsWith("ERROR:") || response.Contains(AppErrors.File.Locked))
             {
-                Console.WriteLine("[CLIENT] Error from server: File locked or failed.");
                 return Result<Sketch>.Failure(response);
             }
 
@@ -135,17 +133,14 @@ namespace Client.Services
                 var result = JsonConvert.DeserializeObject<Result<SketchDto>>(response);
                 if (result?.Value == null)
                 {
-                    Console.WriteLine("[CLIENT] Deserialized result is null or invalid.");
                     return Result<Sketch>.Failure("Failed to deserialize response");
                 }
 
-                var sketch = result.Value.ToDomain();
-                Console.WriteLine("[CLIENT] Successfully downloaded sketch: " + sketch.Name);
+                Sketch sketch = result.Value.ToDomain();
                 return Result<Sketch>.Success(sketch);
             }
             catch (Exception ex)
             {
-                Console.WriteLine("[CLIENT] Deserialization exception: " + ex.Message);
                 return Result<Sketch>.Failure("Deserialization failed");
             }
         }
@@ -161,7 +156,7 @@ namespace Client.Services
             await client.ConnectAsync(_serverHost, _serverPort).ConfigureAwait(false);
             using var stream = client.GetStream();
 
-            var request = "GET:ALL:NAMES";
+            var request = GetAllSketchNamesRequest;
             var requestData = Encoding.UTF8.GetBytes(request);
             await stream.WriteAsync(requestData, 0, requestData.Length).ConfigureAwait(false);
             await stream.FlushAsync().ConfigureAwait(false);

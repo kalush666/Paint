@@ -13,7 +13,7 @@ namespace Common.Helpers
         {
             try
             {
-                string message = JsonConvert.SerializeObject(data);
+                var message = JsonConvert.SerializeObject(data);
                 var responseBytes = Encoding.UTF8.GetBytes(message);
                 await stream.WriteAsync(responseBytes, 0, responseBytes.Length, token);
                 await stream.FlushAsync(token);

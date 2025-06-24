@@ -4,9 +4,9 @@ using Client.Models;
 
 namespace Client.UIModels
 {
-    public class UILine : UiBaseShape
+    public class UiLine : UiBaseShape
     {
-        public UILine(Line shape) : base(shape){}
+        public UiLine(Line shape) : base(shape){}
 
         public override UIElement Render()
         {

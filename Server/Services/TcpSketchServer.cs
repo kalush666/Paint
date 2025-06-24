@@ -21,20 +21,20 @@ namespace Server.Services
         private TcpListener _listener;
         private CancellationTokenSource _cancellationTokenSource = new();
         private Task? _listenerTask;
-        private readonly IRequestProcessor _requestProcessor;
-        private readonly IHandlerFactory _handlerFactory;
+        private readonly ISketchRequestProcessor _sketchRequestProcessor;
+        private readonly ISketchHandlerFactory _sketchHandlerFactory;
         private readonly MongoSketchStore _mongoStore;
         private bool _isSuspended = false;
         private readonly object _suspendLock = new object();
         private readonly LockManager _lockManager = new();
 
-        public TcpSketchServer(MongoSketchStore sketchStore,IRequestProcessor? requestProcessor = null, IHandlerFactory? handlerFactory = null)
+        public TcpSketchServer(MongoSketchStore sketchStore,ISketchRequestProcessor? requestProcessor = null, ISketchHandlerFactory? handlerFactory = null)
         {
             _port = int.TryParse(Environment.GetEnvironmentVariable("PORT"), out var envPort) ? envPort : 5000;
             _listener = new TcpListener(IPAddress.Any, _port);
             _mongoStore = sketchStore;
-            _handlerFactory = handlerFactory ?? new SketchRequestFactory();
-            _requestProcessor = requestProcessor ?? new RequestProcessor(_handlerFactory, _mongoStore, _lockManager);
+            _sketchHandlerFactory = handlerFactory ?? new SketchRequestFactory();
+            _sketchRequestProcessor = requestProcessor ?? new SketchSketchRequestProcessor(_sketchHandlerFactory, _mongoStore, _lockManager);
         }
 
 
@@ -47,7 +47,6 @@ namespace Server.Services
 
             _listener = new TcpListener(IPAddress.Any, _port);
             _listener.Start();
-            Console.WriteLine($"TCP Sketch Server listening on port {_port}");
 
             _listenerTask = Task.Run(async () =>
             {
@@ -75,7 +74,6 @@ namespace Server.Services
         {
             lock (_suspendLock)
             {
-                Console.WriteLine("Suspending server...");
                 _isSuspended = true;
                 _cancellationTokenSource.Cancel();
                 _listener.Stop();
@@ -86,7 +84,6 @@ namespace Server.Services
         {
             lock (_suspendLock)
             {
-                Console.WriteLine("Resuming server...");
                 _isSuspended = false;
                 _cancellationTokenSource = new CancellationTokenSource();
                 StartListener();
@@ -120,7 +117,7 @@ namespace Server.Services
                 }
 
                 var clientRequest = Encoding.UTF8.GetString(requestStream.ToArray());
-                var precessingResult = await _requestProcessor.ProcessAsync(clientRequest, stream, token);
+                Result<string> precessingResult = await _sketchRequestProcessor.ProcessAsync(clientRequest, stream, token);
 
                 return precessingResult.Error != null
                     ? Result<string>.Failure(precessingResult.Error)

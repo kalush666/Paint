@@ -9,7 +9,7 @@ namespace Common.DTO
     public class SketchDto
     {
         [BsonId]
-        [JsonConverter(typeof(Common.Convertors.ObjectIdJsonConverter))]
+        [JsonConverter(typeof(Convertors.ObjectIdJsonConverter))]
         public ObjectId Id { get; set; }
 
         [JsonProperty("Name")] public string Name { get; set; } = string.Empty;

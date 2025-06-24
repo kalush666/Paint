@@ -14,7 +14,7 @@ namespace Client.Views.Service_Windows.Import_Selection_Window
         public string? SelectedSketch { get; private set; }
         private readonly ClientCommunicationService _communicationService = new ClientCommunicationService();
 
-        private ProgressBar _loadingSpinner = new ProgressBar
+        private readonly ProgressBar _loadingSpinner = new ProgressBar
         {
             IsIndeterminate = true,
             Width = 150,

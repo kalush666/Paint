@@ -218,11 +218,11 @@ volumes:
 
 ## 🧠 Key Folders
 
-| Folder    | Purpose                                                                      |
-|-----------|------------------------------------------------------------------------------|
-| `Client/` | WPF UI app for drawing shapes with command pattern implementation            |
-| `Server/` | TCP server handling shape logic and MongoDB integration with management UI   |
-| `Common/` | Shared DTOs, models, enums, and utilities used by both client and server    |
+| Folder    | Purpose                                                                    |
+|-----------|----------------------------------------------------------------------------|
+| `Client/` | WPF UI app for drawing shapes with command pattern implementation          |
+| `Server/` | TCP server handling shape logic and MongoDB integration with management UI |
+| `Common/` | Shared DTOs, models, enums, and utilities used by both client and server   |
 
 ---
 

@@ -10,7 +10,7 @@ using Client.Services;
 using Common.Enums;
 using Common.Events;
 
-namespace Client.Views.Main_Window
+namespace Client.Views.MainClientWindow
 {
     public partial class ClientWindow : Window
     {

@@ -1,10 +1,10 @@
-using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Common.DTO;
 using Common.Helpers;
 using MongoDB.Bson;
 using Server.Enums;
@@ -29,28 +29,26 @@ namespace Server.ViewModel
             DeleteCommand = new RelayCommand<SketchEntry>(async entry =>
             {
                 if (entry is null || entry.Id == ObjectId.Empty) return;
-                    await _store.DeleteSketchByIdAsync(entry.Id);
+                await _store.DeleteSketchByIdAsync(entry.Id);
             });
         }
 
         public async Task ListenAsync(SketchEventBus<SketchEvent> bus, CancellationToken token)
         {
-            await foreach (var evt in bus.Events.WithCancellation(token))
+            await foreach (SketchEvent evt in bus.Events.WithCancellation(token))
             {
                 if (evt.EventType == SketchEventType.Inserted)
                 {
-                    if (Sketches.All(s => s.Name != evt.SketchName))
-                    {
-                        var result = await _store.GetByNameAsync(evt.SketchName);
-                        if (!result.IsSuccess) continue;
+                    if (Sketches.Any(s => s.Name == evt.SketchName)) continue;
+                    Result<SketchDto> result = await _store.GetByNameAsync(evt.SketchName);
+                    if (!result.IsSuccess) continue;
 
-                        var dto = result.Value;
-                        Sketches.Add(new SketchEntry { Id = dto.Id, Name = dto.Name });
-                    }
+                    var dto = result.Value;
+                    Sketches.Add(new SketchEntry { Id = dto.Id, Name = dto.Name });
                 }
                 else if (evt.EventType == SketchEventType.Deleted)
                 {
-                    var item = Sketches.FirstOrDefault(s => s.Name == evt.SketchName);
+                    SketchEntry item = Sketches.FirstOrDefault(s => s.Name == evt.SketchName);
                     if (item != null)
                         Sketches.Remove(item);
                 }

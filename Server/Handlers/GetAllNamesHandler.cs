@@ -7,8 +7,9 @@ using Newtonsoft.Json;
 
 namespace Server.Handlers
 {
-    public sealed class GetAllNamesHandler : IRequestHandler
+    public sealed class GetAllNamesHandler : ISketchRequestHandler
     {
+        private const string GetAllNamesRequest = "GET:ALL:NAMES";
         private static GetAllNamesHandler _instance;
         private GetAllNamesHandler() { }
         
@@ -18,7 +19,7 @@ namespace Server.Handlers
         }
         
         public bool CanHandle(string request)
-            => request.Equals("GET:ALL:NAMES", StringComparison.OrdinalIgnoreCase);
+            => request.Equals(GetAllNamesRequest, StringComparison.OrdinalIgnoreCase);
 
         
         public async Task<Result<string>> HandleAsync(RequestContext context)

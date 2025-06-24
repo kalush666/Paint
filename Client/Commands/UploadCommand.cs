@@ -3,7 +3,6 @@ using System.Windows;
 using Client.Enums;
 using Client.Handlers;
 using Client.Services;
-using Common.Errors;
 
 namespace Client.Commands
 {
@@ -18,7 +17,7 @@ namespace Client.Commands
             _service = service;
         }
 
-        public bool CanExecute(string key) => _handler.CurrentSketch.Shapes.Count > 0 && key.Equals(Key);
+        public bool CanExecute(string key) => _handler.CurrentSketch.Shapes.Count > 0 && Key.ToString().Equals(key);
 
         public Enum Key => CommandTypes.Upload;
 

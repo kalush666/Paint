@@ -144,12 +144,10 @@ namespace Client.Handlers
 
         private void RemovePreview()
         {
-            if (_previewElement != null)
-            {
-                _canvas.Children.Remove(_previewElement);
-                _previewElement = null;
-                _previewShape = null;
-            }
+            if (_previewElement == null) return;
+            _canvas.Children.Remove(_previewElement);
+            _previewElement = null;
+            _previewShape = null;
         }
 
         private void FinalizeShape(Position start, Position end)

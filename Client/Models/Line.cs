@@ -15,8 +15,8 @@ namespace Client.Models
 
         public Line(Position start, Position end)
         {
-            this.Start = start;
-            this.End = end;
+            Start = start;
+            End = end;
         }
 
     }
