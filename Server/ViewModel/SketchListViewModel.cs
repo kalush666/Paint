@@ -14,7 +14,7 @@ using Server.Repositories;
 
 namespace Server.ViewModel
 {
-    public class SketchListViewModel : INotifyPropertyChanged
+    public class SketchListViewModel
     {
         private readonly MongoSketchStore _store;
 
@@ -54,7 +54,5 @@ namespace Server.ViewModel
                 }
             }
         }
-
-        public event PropertyChangedEventHandler? PropertyChanged;
     }
 }
