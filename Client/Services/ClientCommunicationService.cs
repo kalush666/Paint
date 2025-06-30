@@ -158,7 +158,7 @@ namespace Client.Services
                 await client.ConnectAsync(_serverHost, _serverPort).ConfigureAwait(false);
                 using var stream = client.GetStream();
 
-                var request = GetAllSketchNamesRequest;
+                string request = GetAllSketchNamesRequest;
                 var requestData = Encoding.UTF8.GetBytes(request);
                 await stream.WriteAsync(requestData, 0, requestData.Length).ConfigureAwait(false);
                 await stream.FlushAsync().ConfigureAwait(false);
@@ -180,8 +180,6 @@ namespace Client.Services
                     return Result<List<string>>.Failure(response);
 
                 var result = JsonConvert.DeserializeObject<Result<IEnumerable<string>>>(response);
-                if (result == null || result.IsSuccess == false || result.Value == null)
-                    return Result<List<string>>.Failure(AppErrors.Generic.OperationFailed);
 
                 return Result<List<string>>.Success(result.Value.ToList());
             }
