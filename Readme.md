@@ -257,17 +257,6 @@ If you prefer manual control:
 
 ## ⚙️ Configuration
 
-### MongoDB Connection
-
-The application connects to MongoDB using these default settings:
-
-- **Host**: `localhost:27017`
-- **Database**: `PainterDB`
-- **Username**: `root`
-- **Password**: `jonathan06`
-
-To modify these settings, update the `docker-compose.yml` file and `Server/Config/MongoConfig.cs`.
-
 ### Network Ports
 
 - **MongoDB**: `27017`
